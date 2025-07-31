@@ -1,13 +1,11 @@
 // project-imports
-import buySeans from './buy-seans';
-import seansHistory from './seans-history';
-import support from './support';
-import pages from './pages';
+import buySeans from './buy-session';
+import sessionHistory from './session-history';
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [seansHistory, buySeans]
+  items: [sessionHistory, buySeans]
 };
 
 export default menuItems;

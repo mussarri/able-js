@@ -16,7 +16,7 @@ import Drawer from './Drawer';
 import Header from './Header';
 import Footer from './Footer';
 import HorizontalBar from './Drawer/HorizontalBar';
-import Breadcrumbs from 'components/@extended/Breadcrumbs';
+import Title from 'components/@extended/Title';
 import Loader from 'components/Loader';
 
 import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
@@ -25,6 +25,7 @@ import useConfig from 'hooks/useConfig';
 
 // assets
 import { ShoppingCart } from '@wandersonalwes/iconsax-react';
+import Breadcrumbs from 'components/@extended/Breadcrumbs';
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
@@ -64,7 +65,7 @@ export default function DashboardLayout({ children }) {
             flexDirection: 'column'
           }}
         >
-          {/* <Breadcrumbs /> */}
+          <Breadcrumbs />
           {children}
           <Footer />
         </Container>

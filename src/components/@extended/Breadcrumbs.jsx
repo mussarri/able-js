@@ -109,6 +109,9 @@ export default function Breadcrumbs({
   let CollapseIcon;
   let ItemIcon;
 
+  
+  console.log(item);
+
   // collapse item
   if (!custom && main && main.type === 'collapse' && main.breadcrumbs === true) {
     CollapseIcon = main.icon ? main.icon : Buildings2;
@@ -253,7 +256,6 @@ export default function Breadcrumbs({
                 </Typography>
               </Grid>
             )}
-            <Grid>{tempContent}</Grid>
             {title && titleBottom && (
               <Grid sx={{ mt: card === false ? 0 : 1 }}>
                 <Typography variant="h2" sx={{ fontWeight: 700 }}>

@@ -20,7 +20,7 @@ export default function GuestGuard({ children }) {
       const res = await fetch('/api/auth/protected');
       const json = await res?.json();
       if (json?.protected) {
-        router.push('/sample-page');
+        router.push('/buy-session');
       }
     };
     fetchData();

@@ -49,7 +49,7 @@ export let NavActionType;
 
 const config = {
   fontFamily: inter.style.fontFamily,
-  i18n: 'en',
+  i18n: 'tr',
   menuOrientation: MenuOrientation.VERTICAL,
   menuCaption: true,
   miniDrawer: false,

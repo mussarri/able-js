@@ -4,17 +4,17 @@
 import HistoryIcon from '@mui/icons-material/History';
 // icons
 const icons = {
-  samplePage: HistoryIcon
+  sessionHistory: HistoryIcon
 };
 
 // ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
 //seans satin al
-const samplePage = {
-  id: 'Seans Geçmişi',
-  title: 'Seans Geçmişi',
+const sessionHistory = {
+  id: 'session-history',
+  title: 'session-history',
   type: 'group',
-  url: '/buy-seans',
-  icon: icons.samplePage
+  url: '/session-history',
+  icon: icons.sessionHistory
 };
 
-export default samplePage;
+export default sessionHistory;

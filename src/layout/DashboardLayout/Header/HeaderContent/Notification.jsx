@@ -93,9 +93,9 @@ export default function NotificationPage() {
                 <MainCard border={false} content={false}>
                   <CardContent>
                     <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                      <Typography variant="h5">Notifications</Typography>
+                      <Typography variant="h5">Bildirimler</Typography>
                       <Link href="#" variant="h6" color="primary">
-                        Mark all read
+                        Okundu işaretle
                       </Link>
                     </Stack>
                     <SimpleBar style={{ maxHeight: 'calc(100vh - 180px)' }}>

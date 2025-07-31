@@ -14,11 +14,13 @@ function loadLocaleData(locale) {
       return import('utils/locales/fr.json');
     case 'ro':
       return import('utils/locales/ro.json');
+    case 'en':
+      return import('utils/locales/en.json');
     case 'zh':
       return import('utils/locales/zh.json');
-    case 'en':
+    case 'tr':
     default:
-      return import('utils/locales/en.json');
+      return import('utils/locales/tr.json');
   }
 }
 

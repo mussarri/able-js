@@ -2,20 +2,20 @@
 
 // assets
 import { CardPos } from '@wandersonalwes/iconsax-react';
-
+import HistoryIcon from '@mui/icons-material/History';
 // icons
 const icons = {
-  samplePage: CardPos
+  buySession: CardPos
 };
 
 // ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
 //seans satin al
-const samplePage = {
-  id: 'Seans Satın Al',
-  title: 'Seans Satın Al',
+const buySession = {
+  id: 'buy-session',
+  title: 'buy-session',
   type: 'group',
-  url: '/sample-page',
-  icon: icons.samplePage
+  url: '/buy-session',
+  icon: icons.buySession
 };
 
-export default samplePage;
+export default buySession;

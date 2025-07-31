@@ -20,31 +20,18 @@ import MainCard from 'components/MainCard';
 import useConfig from 'hooks/useConfig';
 
 // assets
-import { LanguageSquare, Moon } from '@wandersonalwes/iconsax-react';
+import { LanguageSquare, Moon, Sun, Sun1 } from '@wandersonalwes/iconsax-react';
 
 // ==============================|| HEADER CONTENT - LOCALIZATION ||============================== //
 
 export default function Localization() {
   const downMD = useMediaQuery((theme) => theme.breakpoints.down('md'));
-
-  const { i18n, onChangeLocalization } = useConfig();
-
   const anchorRef = useRef(null);
-  const [open, setOpen] = useState(false);
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
 
-  const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
-      return;
-    }
-    setOpen(false);
-  };
+  const { mode, onChangeMode } = useConfig();
 
-  const handleListItemClick = (lang) => {
-    onChangeLocalization(lang);
-    setOpen(false);
+  const handleClick = () => {
+    onChangeMode(mode === 'light' ? 'dark' : 'light');
   };
 
   return (
@@ -56,7 +43,7 @@ export default function Localization() {
         ref={anchorRef}
         aria-controls={open ? 'localization-grow' : undefined}
         aria-haspopup="true"
-        onClick={handleToggle}
+        onClick={handleClick}
         size="large"
         sx={(theme) => ({
           p: 1,
@@ -65,7 +52,7 @@ export default function Localization() {
           ...theme.applyStyles('dark', { bgcolor: open ? 'background.paper' : 'background.default' })
         })}
       >
-        <Moon variant="Bulk" size={26} />
+        {mode === 'light' ? <Sun1 variant="Bulk" size={26} /> : <Moon variant="Bulk" size={26} />}
       </IconButton>
     </Box>
   );
