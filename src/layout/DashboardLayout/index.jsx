@@ -64,7 +64,7 @@ export default function DashboardLayout({ children }) {
             flexDirection: 'column'
           }}
         >
-          <Breadcrumbs />
+          {/* <Breadcrumbs /> */}
           {children}
           <Footer />
         </Container>
