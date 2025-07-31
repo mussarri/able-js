@@ -68,16 +68,6 @@ export default function DashboardLayout({ children }) {
           {children}
           <Footer />
         </Container>
-        <Links style={{ textDecoration: 'none' }} href="https://1.envato.market/zNkqj6" target="_blank">
-          <Button
-            variant="contained"
-            color="error"
-            startIcon={<ShoppingCart />}
-            sx={{ zIndex: 1199, position: 'fixed', bottom: 50, right: 30 }}
-          >
-            Buy Now
-          </Button>
-        </Links>
       </Box>
     </Box>
   );

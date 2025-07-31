@@ -1,8 +1,8 @@
 // This is example of menu item without group for horizontal layout. There will be no children.
 
 // assets
-import { CardPos } from '@wandersonalwes/iconsax-react';
-
+import { CardPos, DocumentCode2 } from '@wandersonalwes/iconsax-react';
+import HistoryIcon from '@mui/icons-material/History';
 // icons
 const icons = {
   samplePage: CardPos

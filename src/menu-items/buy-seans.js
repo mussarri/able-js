@@ -1,20 +1,19 @@
 // This is example of menu item without group for horizontal layout. There will be no children.
 
 // assets
-import { CardPos } from '@wandersonalwes/iconsax-react';
-
+import HistoryIcon from '@mui/icons-material/History';
 // icons
 const icons = {
-  samplePage: CardPos
+  samplePage: HistoryIcon
 };
 
 // ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
 //seans satin al
 const samplePage = {
-  id: 'Seans Satın Al',
-  title: 'Seans Satın Al',
+  id: 'Seans Geçmişi',
+  title: 'Seans Geçmişi',
   type: 'group',
-  url: '/sample-page',
+  url: '/buy-seans',
   icon: icons.samplePage
 };
 

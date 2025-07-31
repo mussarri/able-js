@@ -1,12 +1,13 @@
 // project-imports
-import samplePage from './sample-page';
+import buySeans from './buy-seans';
+import seansHistory from './seans-history';
 import support from './support';
 import pages from './pages';
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [samplePage, pages, support]
+  items: [seansHistory, buySeans]
 };
 
 export default menuItems;
