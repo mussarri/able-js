@@ -16,6 +16,7 @@ import Search from './Search';
 import { MenuOrientation } from 'config';
 import useConfig from 'hooks/useConfig';
 import DrawerHeader from 'layout/DashboardLayout/Drawer/DrawerHeader';
+import DarkMode from './DarkMode';
 
 // ==============================|| HEADER - CONTENT ||============================== //
 
@@ -32,13 +33,9 @@ export default function HeaderContent() {
     <>
       {menuOrientation === MenuOrientation.HORIZONTAL && !downLG && <DrawerHeader open={true} />}
       {!downLG && <Search />}
-      {!downLG && megaMenu}
-      {!downLG && localization}
       {downLG && <Box sx={{ width: 1, ml: 1 }} />}
-
+      <DarkMode />
       <Notification />
-      {!downLG && <FullScreen />}
-      <Message />
       {!downLG && <Profile />}
       {downLG && <MobileSection />}
     </>
