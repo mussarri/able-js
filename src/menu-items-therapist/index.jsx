@@ -1,5 +1,5 @@
 // project-imports
-import buySeans from './buy-session';
+import buySeans from './my-appointments';
 import sessionHistory from './session-history';
 
 // ==============================|| MENU ITEMS ||============================== //
