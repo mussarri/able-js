@@ -21,6 +21,7 @@ export default function GuestGuard({ children }) {
       const json = await res?.json();
       if (json?.protected) {
         router.push('/buy-session');
+        // if therapist router.push('/therapist/my-sessions');
       }
     };
     fetchData();

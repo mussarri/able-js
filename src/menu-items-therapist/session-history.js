@@ -1,0 +1,20 @@
+// This is example of menu item without group for horizontal layout. There will be no children.
+
+// assets
+import HistoryIcon from '@mui/icons-material/History';
+// icons
+const icons = {
+  sessionHistory: HistoryIcon
+};
+
+// ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
+//seans satin al
+const sessionHistory = {
+  id: 'session-history',
+  title: 'session-history',
+  type: 'group',
+  url: '/session-history',
+  icon: icons.sessionHistory
+};
+
+export default sessionHistory;

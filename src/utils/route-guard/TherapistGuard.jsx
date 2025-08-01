@@ -20,7 +20,7 @@ export default function AuthGuard({ children }) {
     const fetchData = async () => {
       const res = await fetch('/api/auth/protected');
       const json = await res?.json();
-      //check is user or therapist route
+      //check is therapist route
       if (!json?.protected) {
         router.push('/login');
       }
