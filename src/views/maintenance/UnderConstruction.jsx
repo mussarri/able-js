@@ -42,13 +42,13 @@ export default function UnderConstructionPage() {
           <Grid size={{ md: 6 }}>
             <Stack sx={{ gap: 2, justifyContent: 'center', alignItems: 'center' }}>
               <Typography align="center" variant="h1">
-                Under Construction
+                Bakım halinde
               </Typography>
               <Typography align="center" sx={{ color: 'text.secondary', width: '85%' }}>
-                Hey! Please check out this site later. We are doing some maintenance on it right now.
+                Merhaba! Lütfen daha sonra bu siteye göz atın. Şu anda üzerinde biraz bakım çalışması yapıyoruz.
               </Typography>
               <Button component={Link} href={APP_DEFAULT_PATH} variant="contained">
-                Back To Home
+                Ana Sayfaya Dön{' '}
               </Button>
             </Stack>
           </Grid>

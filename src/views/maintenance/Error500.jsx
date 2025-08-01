@@ -35,13 +35,13 @@ export default function Error500Page() {
       <Grid size={12}>
         <Stack sx={{ justifyContent: 'center', alignItems: 'center' }}>
           <Typography align="center" variant={downSM ? 'h2' : 'h1'}>
-            Internal Server Error
+            İç Sunucu Hatası
           </Typography>
           <Typography variant="body2" align="center" sx={{ color: 'text.secondary', width: { xs: '73%', sm: '70%' }, mt: 1 }}>
-            Server error 500. we fixing the problem. please try again at a later stage.
+            Server hatası 500. Sorunu düzeltiyoruz. Lütfen daha sonra tekrar deneyin.
           </Typography>
           <Button component={Link} href={APP_DEFAULT_PATH} variant="contained" sx={{ textTransform: 'none', mt: 4 }}>
-            Back To Home
+            Ana Sayfaya Dön
           </Button>
         </Stack>
       </Grid>

@@ -11,7 +11,9 @@ import Typography from '@mui/material/Typography';
 export default function Footer() {
   return (
     <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', p: '24px 16px 0px', mt: 'auto' }}>
-      <Typography variant="caption">&copy; SakinHayat.com ♥ ile geliştirildi. </Typography>
+      <Typography variant="caption">
+        &copy; SakinHayat.com <span style={{ color: 'red', fontSize: '14px' }}>❤ </span> ile geliştirildi.{' '}
+      </Typography>
     </Stack>
   );
 }

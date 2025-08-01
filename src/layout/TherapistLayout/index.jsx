@@ -13,7 +13,7 @@ import Box from '@mui/material/Box';
 
 // project-imports
 import Drawer from './Drawer';
-import Header from './Header';
+import Header from '../DashboardLayout/Header';
 import Footer from './Footer';
 import HorizontalBar from './Drawer/HorizontalBar';
 import Title from 'components/@extended/Title';

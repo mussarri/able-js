@@ -38,12 +38,12 @@ export default function Error404Page() {
       </Grid>
       <Grid size={12}>
         <Stack sx={{ gap: 2, justifyContent: 'center', alignItems: 'center' }}>
-          <Typography variant="h1">Page Not Found</Typography>
+          <Typography variant="h1">Sayfa Bulunamadı</Typography>
           <Typography align="center" sx={{ color: 'text.secondary', width: { xs: '73%', sm: '61%' } }}>
-            The page you are looking was moved, removed, renamed, or might never exist!
+            Aradığınız sayfa taşınmış, kaldırılmış, adı değiştirilmiş veya hiç var olmamış olabilir!
           </Typography>
           <Button component={Link} href={APP_DEFAULT_PATH} variant="contained">
-            Back To Home
+            Ana Sayfaya Dön
           </Button>
         </Stack>
       </Grid>

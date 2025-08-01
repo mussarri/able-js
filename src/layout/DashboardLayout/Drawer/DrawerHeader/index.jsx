@@ -14,7 +14,7 @@ import useConfig from 'hooks/useConfig';
 export default function DrawerHeader({ open }) {
   const downLG = useMediaQuery((theme) => theme.breakpoints.down('lg'));
 
-  const { menuOrientation } = useConfig();
+  const { menuOrientation, mode } = useConfig();
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downLG;
 
   return (
@@ -28,7 +28,7 @@ export default function DrawerHeader({ open }) {
         paddingLeft: isHorizontal ? { xs: '24px', lg: '0' } : open ? '24px' : 0
       }}
     >
-      <Logo isIcon={!open} sx={{ width: open ? 'auto' : 52, height: 'auto' }} />
+      <Logo mode={mode} isIcon={!open} sx={{ width: open ? 'auto' : 52, height: 'auto' }} />
     </DrawerHeaderStyled>
   );
 }
