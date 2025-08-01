@@ -72,6 +72,7 @@ export default function UserList() {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
+    router.push('/account-info');
     setAnchorEl(null);
   };
 

@@ -22,6 +22,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import countries from 'utils/countries';
 
 // third-party
 import * as Yup from 'yup';
@@ -35,8 +36,9 @@ import { APP_DEFAULT_PATH } from 'config';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets
-import { Eye, EyeSlash } from '@wandersonalwes/iconsax-react';
-import { Checkbox, FormControlLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Eye, EyeSlash, Flag, Flag2, Whatsapp } from '@wandersonalwes/iconsax-react';
+import { Autocomplete, CardMedia, Checkbox, FormControlLabel, MenuItem, Select, TextField } from '@mui/material';
+import { FlagCircleRounded } from '@mui/icons-material';
 
 const Auth0 = '/assets/images/icons/auth0.svg';
 const Cognito = '/assets/images/icons/aws-cognito.svg';
@@ -47,6 +49,8 @@ const Google = '/assets/images/icons/google.svg';
 export default function AuthRegister({ providers, csrfToken }) {
   const router = useRouter();
   const [checked, setChecked] = useState(false);
+  const [checked2, setChecked2] = useState(false);
+  const [checked3, setChecked3] = useState(false);
 
   const downSM = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
@@ -69,7 +73,7 @@ export default function AuthRegister({ providers, csrfToken }) {
     changePassword('');
   }, []);
 
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(2);
 
   return (
     <>
@@ -78,17 +82,22 @@ export default function AuthRegister({ providers, csrfToken }) {
           rumuz: '',
           gsm: '',
           password: '',
-          countryCode: '+90',
+          country: '+90',
+          password_repeat: '',
+          password: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
           rumuz: Yup.string().max(255).required('Rumuz zorunludur'),
           gsm: Yup.string().max(255).required('Gsm zorunludur'),
-          countryCode: Yup.string().max(255).required('Ulke kodu zorunludur'),
+          country: Yup.string().max(255).required('Ulke kodu zorunludur'),
           password: Yup.string()
             .required('Şifre zorunludur')
             .test('no-leading-trailing-whitespace', 'Şifre boşluk içermemelidir', (value) => value === value.trim())
-            .max(10, 'Şifre en fazla 10 karakter olabilir')
+            .max(10, 'Şifre en fazla 10 karakter olabilir'),
+          password_repeat: Yup.string()
+            .equals([Yup.ref('password'), null], 'Şifreler eşleşmelidir')
+            .required('Şifre tekrarı zorunludur')
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           signIn('register', {
@@ -96,7 +105,7 @@ export default function AuthRegister({ providers, csrfToken }) {
             rumuz: values.rumuz,
             password: values.password,
             gsm: values.gsm,
-            countryCode: values.countryCode
+            country: values.country
           }).then((res) => {
             if (res?.error) {
               setErrors({ submit: res.error });
@@ -107,141 +116,266 @@ export default function AuthRegister({ providers, csrfToken }) {
           });
         }}
       >
-        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-          <form noValidate onSubmit={handleSubmit}>
-            <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-            <Grid container spacing={3}>
-              {step === 0 && (
-                <Grid size={12}>
-                  <Stack sx={{ gap: 1 }}>
-                    <InputLabel htmlFor="rumuz-signup">Rumuz*</InputLabel>
-                    <OutlinedInput
-                      id="rumuz-signup"
-                      type="text"
-                      value={values.rumuz}
-                      name="rumuz"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      placeholder="John"
-                      fullWidth
-                      error={Boolean(touched.rumuz && errors.rumuz)}
-                    />
-                    {touched.rumuz && errors.rumuz && <FormHelperText error>{errors.rumuz}</FormHelperText>}
-                  </Stack>
-                  <Button
-                    type="button"
-                    variant="contained"
-                    sx={{ mt: 2 }}
-                    onClick={() => setStep(1)}
-                    disabled={!values.rumuz || Boolean(errors.rumuz)}
-                  >
-                    İleri
-                  </Button>
-                </Grid>
-              )}
-
-              {step == 1 && (
-                <Grid size={12}>
-                  <InputLabel htmlFor="personal-phone">Telefon No*</InputLabel>
-                  <Stack direction="row" sx={{ gap: 2, justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Select value={values.countryCode} name="countryCode" onBlur={handleBlur} onChange={handleChange}>
-                      <MenuItem value="+90">+90</MenuItem>
-                      <MenuItem value="diger">Diger</MenuItem>
-                    </Select>
-                    <OutlinedInput
-                      type="text"
-                      fullWidth
-                      error={Boolean(touched.gsm && errors.gsm)}
-                      id="gsm"
-                      value={values.gsm}
-                      name="gsm"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      placeholder={values.countryCode === 'diger' ? '+01-54433322211' : '54433322211'}
-                    />
-                  </Stack>
-                  <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                    <Button variant="outlined" onClick={() => setStep(0)}>
-                      Geri
-                    </Button>
-                    <Button
-                      variant="contained"
-                      onClick={() => setStep(2)}
-                      disabled={!values.gsm || Boolean(errors.gsm) || !values.countryCode || Boolean(errors.countryCode)}
-                    >
-                      İleri
-                    </Button>
-                  </Stack>
-                </Grid>
-              )}
-
-              {step === 2 && (
-                <Grid size={12}>
-                  <Stack sx={{ gap: 1 }}>
-                    <InputLabel htmlFor="password-signup">Şifre</InputLabel>
-                    <OutlinedInput
-                      fullWidth
-                      error={Boolean(touched.password && errors.password)}
-                      id="password-signup"
-                      type="password"
-                      value={values.password}
-                      name="password"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      placeholder="******"
-                    />
-                    {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
-                  </Stack>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checked}
-                        onChange={(event) => setChecked(event.target.checked)}
-                        name="checked"
-                        color="primary"
-                        size="small"
-                      />
-                    }
-                    label={
-                      <Typography variant="body2">
-                        {' '}
-                        <Link component={NextLink} href="/" passHref variant="subtitle2">
-                          Kullanıcı sözleşmesini
-                        </Link>
-                        &nbsp; okudum onaylıyorum &nbsp;
-                      </Typography>
-                    }
-                  />
-
-                  <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                    <Button variant="outlined" onClick={() => setStep(1)}>
-                      Geri
-                    </Button>
-                    <AnimateButton>
-                      <Button
-                        disableElevation
-                        disabled={!values.password || Boolean(errors.password) || !checked || isSubmitting}
+        {({ errors, handleBlur, setFieldValue, handleChange, handleSubmit, isSubmitting, touched, values }) => {
+          console.log(values);
+          return (
+            <form noValidate onSubmit={handleSubmit}>
+              <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+              <Grid container spacing={3}>
+                {step === 0 && (
+                  <Grid size={12}>
+                    <Stack sx={{ gap: 1 }}>
+                      <InputLabel htmlFor="rumuz-signup">Rumuz*</InputLabel>
+                      <OutlinedInput
+                        id="rumuz-signup"
+                        type="text"
+                        value={values.rumuz}
+                        name="rumuz"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        placeholder="Bir takma ad"
                         fullWidth
-                        size="large"
-                        type="submit"
+                        error={Boolean(touched.rumuz && errors.rumuz)}
+                      />
+                      {touched.rumuz && errors.rumuz && <FormHelperText error>{errors.rumuz}</FormHelperText>}
+                    </Stack>
+                    <Stack sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                      <Button
+                        type="button"
                         variant="contained"
-                        color="primary"
+                        sx={{ mt: 2, ml: 'auto' }}
+                        onClick={() => setStep(1)}
+                        disabled={!values.rumuz || Boolean(errors.rumuz)}
                       >
-                        Kayıt Ol
+                        İleri
                       </Button>
-                    </AnimateButton>
-                  </Stack>
-                </Grid>
-              )}
+                    </Stack>
+                  </Grid>
+                )}
 
-              {errors.submit && (
-                <Grid size={12}>
-                  <FormHelperText error>{errors.submit}</FormHelperText>
-                </Grid>
-              )}
-            </Grid>
-          </form>
-        )}
+                {step == 1 && (
+                  <Grid size={12}>
+                    {values.country !== '+90' && (
+                      <Typography fontSize={13} sx={{ mb: 5 }} color={'textSecondary'}>
+                        Türkiye üzerinden yapılacak üyeliklerin onayı Whatsapp üzerinden yapılmaktadır.Lütfen aşağıya Whatsapp numaranızı
+                        yazınız.
+                      </Typography>
+                    )}
+                    <Stack sx={{ gap: 1 }}>
+                      <Stack direction="row" sx={{ gap: 2, justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Stack sx={{ gap: 0 }}>
+                          <Autocomplete
+                            id="personal-country"
+                            fullWidth
+                            onBlur={handleBlur}
+                            value={countries.find((item) => item.phone === values.country) || null}
+                            onChange={(_, newValue) => {
+                              // Backend'e göndereceğin değer: telefon kodu
+                              setFieldValue('country', newValue ? newValue.phone : '');
+                            }}
+                            options={countries}
+                            autoHighlight
+                            isOptionEqualToValue={(option, value) => option.code === value?.code}
+                            getOptionLabel={(option) => `${option.phone}`}
+                            renderOption={(props, option) => (
+                              <Box key={option.code} component="li" sx={{ '& > img': { mr: 1, flexShrink: 0 } }} {...props}>
+                                {option.code && (
+                                  <CardMedia
+                                    component="img"
+                                    loading="lazy"
+                                    sx={{ width: 20 }}
+                                    src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                                    srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                                    alt="country"
+                                  />
+                                )}
+                                {option.code && `${option.phone}`}
+                              </Box>
+                            )}
+                            renderInput={(params) => {
+                              return (
+                                <TextField
+                                  {...params}
+                                  placeholder="Ülke kodu seçiniz"
+                                  name="country"
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  value={values.country}
+                                  helperText={touched.country && errors.country ? errors.country : ''}
+                                  error={Boolean(touched.country && errors.country)}
+                                  slotProps={{
+                                    htmlInput: {
+                                      ...params.inputProps,
+                                      autoComplete: 'new-password' // disable autocomplete and autofill
+                                    }
+                                  }}
+                                />
+                              );
+                            }}
+                          />
+                        </Stack>
+                        {values.country !== '+90' ? (
+                          <OutlinedInput
+                            type="text"
+                            fullWidth
+                            error={Boolean(touched.gsm && errors.gsm)}
+                            id="gsm"
+                            value={values.gsm}
+                            name="gsm"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            placeholder={'54433322211'}
+                          />
+                        ) : (
+                          <OutlinedInput
+                            type="text"
+                            fullWidth
+                            error={Boolean(touched.gsm && errors.gsm)}
+                            id="gsm"
+                            value={values.gsm}
+                            name="gsm"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            placeholder={'+01-54433322211'}
+                          />
+                        )}
+                      </Stack>
+                      <Stack direction="row" spacing={2} sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+                        <Button variant="outlined" onClick={() => setStep(0)}>
+                          Geri
+                        </Button>
+                        <Button
+                          variant="contained"
+                          onClick={() => setStep(2)}
+                          disabled={!values.gsm || Boolean(errors.gsm) || !values.country || Boolean(errors.country)}
+                        >
+                          İleri
+                        </Button>
+                      </Stack>
+                    </Stack>
+                  </Grid>
+                )}
+
+                {step === 2 && (
+                  <Grid size={12}>
+                    <Stack sx={{ gap: 1 }}>
+                      <InputLabel htmlFor="password-signup">Parola</InputLabel>
+                      <OutlinedInput
+                        fullWidth
+                        error={Boolean(touched.password && errors.password)}
+                        id="password-signup"
+                        type="password"
+                        value={values.password}
+                        name="password"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        placeholder="******"
+                      />
+                      {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
+                    </Stack>
+                    <Stack sx={{ gap: 1, marginTop: '15px' }}>
+                      <InputLabel htmlFor="password-signup">Parola Tekrar</InputLabel>
+                      <OutlinedInput
+                        fullWidth
+                        error={Boolean(touched.password && errors.password)}
+                        id="password-repeat-signup"
+                        type="password_repeat"
+                        value={values.password_repeat}
+                        name="password_repeat"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        placeholder="******"
+                      />
+                      {touched.password_repeat && errors.password_repeat && <FormHelperText error>{errors.password_repeat}</FormHelperText>}
+                    </Stack>
+                    <Stack sx={{ gap: 1, marginTop: '15px', px: 1 }}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={checked}
+                            onChange={(event) => setChecked(event.target.checked)}
+                            name="checked"
+                            color="primary"
+                            size="small"
+                            sx={{ padding: 0, mr: '5px' }}
+                          />
+                        }
+                        label={
+                          <Typography variant="body2">
+                            {' '}
+                            <Link component={NextLink} href="/" passHref variant="subtitle2">
+                              Kullanıcı sözleşmesini'ni
+                            </Link>
+                            &nbsp; okudum, onaylıyorum. &nbsp;
+                          </Typography>
+                        }
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={checked2}
+                            onChange={(event) => setChecked2(event.target.checked)}
+                            name="checked2"
+                            color="primary"
+                            size="small"
+                            sx={{ padding: 0, mr: '5px' }}
+                          />
+                        }
+                        label={
+                          <Typography variant="body2">
+                            {' '}
+                            <Link component={NextLink} href="/" passHref variant="subtitle2">
+                              KVKK Aydınlatma Metni'ni
+                            </Link>
+                            &nbsp; okudum, onaylıyorum. &nbsp;
+                          </Typography>
+                        }
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={checked3}
+                            onChange={(event) => setChecked3(event.target.checked)}
+                            name="checked3"
+                            color="primary"
+                            size="small"
+                            sx={{ padding: 0, mr: '5px' }}
+                          />
+                        }
+                        label={<Typography variant="body2">Eletronik ileti almayi onaylıyorum. &nbsp;</Typography>}
+                      />
+                    </Stack>
+
+                    <Stack direction="row" spacing={2} sx={{ mt: 3, display: 'flex', justifyContent: 'space-between' }}>
+                      <Button variant="outlined" onClick={() => setStep(1)}>
+                        Geri
+                      </Button>
+                      <AnimateButton>
+                        <Button
+                          disableElevation
+                          disabled={!values.password || Boolean(errors.password) || !checked || !checked2 || isSubmitting}
+                          fullWidth
+                          size="large"
+                          type="submit"
+                          variant="contained"
+                          color="primary"
+                        >
+                          Kayıt Ol
+                        </Button>
+                      </AnimateButton>
+                    </Stack>
+                  </Grid>
+                )}
+
+                {errors.submit && (
+                  <Grid size={12}>
+                    <FormHelperText error>{errors.submit}</FormHelperText>
+                  </Grid>
+                )}
+              </Grid>
+            </form>
+          );
+        }}
       </Formik>
     </>
   );
