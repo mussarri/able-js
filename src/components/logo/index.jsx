@@ -15,15 +15,17 @@ export default function LogoSection({ reverse, isIcon, sx, to, mode }) {
   return (
     <ButtonBase disableRipple component={Link} href={!to ? APP_DEFAULT_PATH : to} sx={sx}>
       {isIcon ? (
-        <Image alt="logo" src="/assets/images/logo/sakin hayat logo.svg" width={50} height={50} />
+        <Image alt="logo" src="/assets/images/logo/sakin hayat logo.svg" width={30} height={30} />
       ) : (
         <div
           className="relative overflow-hidden"
           style={{
+            height: 50,
             maxHeight: 50,
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
+            paddingTop: 20
           }}
         >
           <Image
@@ -35,8 +37,8 @@ export default function LogoSection({ reverse, isIcon, sx, to, mode }) {
                   ? '/assets/images/logo/sakin hayat logo-white.svg'
                   : ''
             }
-            height={100}
-            width={200}
+            width={150}
+            height={60}
             objectFit="contain"
           />
         </div>

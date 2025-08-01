@@ -44,13 +44,13 @@ export default function Error500() {
       <Grid size={12}>
         <Stack justifyContent="center" alignItems="center">
           <Typography align="center" variant={downSM ? 'h2' : 'h1'}>
-            Internal Server Error
+            İç Sunucu Hatası
           </Typography>
           <Typography color="text.secondary" variant="body2" align="center" sx={{ width: { xs: '73%', sm: '70%' }, mt: 1 }}>
-            Server error 500. we fixing the problem. please try again at a later stage.
+            Sunucu Hatasu 500. Sorunu düzeltiyoruz. Lütfen daha sonra tekrar deneyin.
           </Typography>
           <Button component={Link} href={APP_DEFAULT_PATH} variant="contained" sx={{ textTransform: 'none', mt: 4 }}>
-            Back To Home
+            Ana sayfaya dön
           </Button>
         </Stack>
       </Grid>

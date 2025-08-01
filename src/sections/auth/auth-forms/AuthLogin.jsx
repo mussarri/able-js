@@ -98,7 +98,7 @@ export default function AuthLogin({ providers, csrfToken }) {
             <Grid container spacing={3}>
               <Grid size={12}>
                 <Stack sx={{ gap: 1 }}>
-                  <InputLabel htmlFor="email-login">Email Address</InputLabel>
+                  <InputLabel htmlFor="email-login">E-posta Adresi </InputLabel>
                   <OutlinedInput
                     id="email-login"
                     type="email"
@@ -119,7 +119,7 @@ export default function AuthLogin({ providers, csrfToken }) {
               </Grid>
               <Grid size={12}>
                 <Stack sx={{ gap: 1 }}>
-                  <InputLabel htmlFor="password-login">Password</InputLabel>
+                  <InputLabel htmlFor="password-login">Şifre</InputLabel>
                   <OutlinedInput
                     fullWidth
                     error={Boolean(touched.password && errors.password)}
@@ -164,10 +164,10 @@ export default function AuthLogin({ providers, csrfToken }) {
                         size="small"
                       />
                     }
-                    label={<Typography variant="h6">Keep me sign in</Typography>}
+                    label={<Typography variant="h6">Oturumu açık tut</Typography>}
                   />
                   <Links variant="h6" component={Link} href={session ? '/auth/forgot-password' : '/forgot-password'} color="text.primary">
-                    Forgot Password?
+                    Şifremi Unuttum?
                   </Links>
                 </Stack>
               </Grid>
@@ -179,7 +179,7 @@ export default function AuthLogin({ providers, csrfToken }) {
               <Grid size={12}>
                 <AnimateButton>
                   <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                    Login
+                    Giriş Yap
                   </Button>
                 </AnimateButton>
               </Grid>
@@ -188,7 +188,7 @@ export default function AuthLogin({ providers, csrfToken }) {
         )}
       </Formik>
 
-      {providers && (
+      {/* {providers && (
         <Stack
           direction="row"
           spacing={{ xs: 1, sm: 2 }}
@@ -247,7 +247,7 @@ export default function AuthLogin({ providers, csrfToken }) {
         <Box sx={{ mt: 3 }}>
           <FirebaseSocial />
         </Box>
-      )}
+      )} */}
     </>
   );
 }
