@@ -19,9 +19,6 @@ import Box from '@mui/material/Box';
 import Dot from 'components/@extended/Dot';
 import IconButton from 'components/@extended/IconButton';
 
-// third-party
-import { FormattedMessage } from 'react-intl';
-
 import { handlerHorizontalActiveItem, handlerActiveItem, handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
 import { MenuOrientation, NavActionType } from 'config';
 import useConfig from 'hooks/useConfig';
@@ -50,12 +47,14 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
     false
   );
 
-  const isSelected = openItem === item.id;
   const pathname = usePathname();
+  const isSelected = pathname === item.url || item.url.split('/')[1] === pathname.split('/');
 
   // active menu item on page load
   useEffect(() => {
-    if (pathname === item.url) handlerActiveItem(item.id);
+    console.log(item.url.split('/')[1] === pathname.split('/')[1]);
+
+    if (pathname === item.url || item.url.split('/')[1] === pathname.split('/')[1]) handlerActiveItem(item.id);
     // eslint-disable-next-line
   }, [pathname]);
 
@@ -153,7 +152,7 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
                       fontWeight: isSelected ? 500 : 400
                     })}
                   >
-                    <FormattedMessage id={item.title} />
+                    {item.title}{' '}
                   </Typography>
                 }
               />
@@ -163,7 +162,12 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
                 color={item.chip.color}
                 variant={item.chip.variant}
                 size={item.chip.size}
-                label={<FormattedMessage id={item.chip.label} />}
+                label={
+                  <Typography variant="caption">
+                    {item.chip.label}
+                    {}
+                  </Typography>
+                }
                 avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
               />
             )}
@@ -270,7 +274,7 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
                   fontWeight: isSelected ? 500 : 400
                 })}
               >
-                <FormattedMessage id={item.title} />
+                {item.title}
               </Typography>
             }
           />

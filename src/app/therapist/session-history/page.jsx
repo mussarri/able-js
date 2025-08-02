@@ -1,8 +1,8 @@
 // project-imports
-import SamplePagePage from 'views/other/SamplePage';
+import Table from 'views/table/SortingTable';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
 export default function SamplePage() {
-  return <SamplePagePage />;
+  return <Table />;
 }

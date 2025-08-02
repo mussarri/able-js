@@ -23,7 +23,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import countries from 'utils/countries';
-
+import OtpInput from 'react-otp-input';
 // third-party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -85,12 +85,14 @@ export default function AuthRegister({ providers, csrfToken }) {
           country: '+90',
           password_repeat: '',
           password: '',
+          otp: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
           rumuz: Yup.string().max(255).required('Rumuz zorunludur'),
           gsm: Yup.string().max(255).required('Gsm zorunludur'),
           country: Yup.string().max(255).required('Ulke kodu zorunludur'),
+          otp: Yup.string().max(6).required('Doğrulama kod zorunludur'),
           password: Yup.string()
             .required('Şifre zorunludur')
             .test('no-leading-trailing-whitespace', 'Şifre boşluk içermemelidir', (value) => value === value.trim())
@@ -118,6 +120,7 @@ export default function AuthRegister({ providers, csrfToken }) {
       >
         {({ errors, handleBlur, setFieldValue, handleChange, handleSubmit, isSubmitting, touched, values }) => {
           console.log(values);
+          const selected = countries.find((c) => c.phone === values.country) || null;
           return (
             <form noValidate onSubmit={handleSubmit}>
               <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
@@ -165,8 +168,9 @@ export default function AuthRegister({ providers, csrfToken }) {
                       <Stack direction="row" sx={{ gap: 2, justifyContent: 'space-between', alignItems: 'center' }}>
                         <Stack sx={{ gap: 0 }}>
                           <Autocomplete
-                            id="personal-country"
+                            id="country"
                             fullWidth
+                            disableClearable
                             onBlur={handleBlur}
                             value={countries.find((item) => item.phone === values.country) || null}
                             onChange={(_, newValue) => {
@@ -200,13 +204,12 @@ export default function AuthRegister({ providers, csrfToken }) {
                                   name="country"
                                   onChange={handleChange}
                                   onBlur={handleBlur}
-                                  value={values.country}
                                   helperText={touched.country && errors.country ? errors.country : ''}
                                   error={Boolean(touched.country && errors.country)}
                                   slotProps={{
                                     htmlInput: {
                                       ...params.inputProps,
-                                      autoComplete: 'new-password' // disable autocomplete and autofill
+                                      autoComplete: 'Ülke kodu seçiniz' // disable autocomplete and autofill
                                     }
                                   }}
                                 />
@@ -256,7 +259,62 @@ export default function AuthRegister({ providers, csrfToken }) {
                   </Grid>
                 )}
 
-                {step === 2 && (
+                {step == 2 && (
+                  <Grid size={12}>
+                    <Stack>
+                      <Box
+                        sx={(theme) => ({
+                          '& input:focus-visible': {
+                            outline: 'none !important',
+                            borderColor: `${theme.palette.primary.main} !important`,
+                            boxShadow: `${theme.customShadows.primary} !important`
+                          }
+                        })}
+                      >
+                        <OtpInput
+                          value={values.otp}
+                          onChange={(otp) => setFieldValue('otp', otp)}
+                          inputType="tel"
+                          shouldAutoFocus
+                          renderInput={(props) => <input {...props} />}
+                          numInputs={4}
+                          containerStyle={{ justifyContent: 'space-between', margin: -8 }}
+                          inputStyle={{
+                            width: '100%',
+                            margin: '8px',
+                            padding: '10px',
+                            border: '1px solid',
+                            outline: 'none',
+                            borderRadius: 4,
+                            borderColor: touched.otp && errors.otp ? theme.palette.error.main : theme.palette.divider
+                          }}
+                        />
+                        {touched.otp && errors.otp && (
+                          <FormHelperText error id="standard-weight-helper-text-otp">
+                            {errors.otp}
+                          </FormHelperText>
+                        )}
+                      </Box>
+                    </Stack>
+                    <Grid size={12}>
+                      <AnimateButton>
+                        <Button disableElevation fullWidth size="large" type="submit" variant="contained">
+                          Continue
+                        </Button>
+                      </AnimateButton>
+                    </Grid>
+                    <Grid size={12}>
+                      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
+                        <Typography>Did not receive the email? Check your spam filter, or</Typography>
+                        <Typography variant="body1" sx={{ minWidth: 87, textDecoration: 'none', cursor: 'pointer' }} color="primary">
+                          Resend code
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                )}
+
+                {step === 3 && (
                   <Grid size={12}>
                     <Stack sx={{ gap: 1 }}>
                       <InputLabel htmlFor="password-signup">Parola</InputLabel>
@@ -279,7 +337,7 @@ export default function AuthRegister({ providers, csrfToken }) {
                         fullWidth
                         error={Boolean(touched.password && errors.password)}
                         id="password-repeat-signup"
-                        type="password_repeat"
+                        type="password"
                         value={values.password_repeat}
                         name="password_repeat"
                         onBlur={handleBlur}

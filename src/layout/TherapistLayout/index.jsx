@@ -14,7 +14,7 @@ import Box from '@mui/material/Box';
 // project-imports
 import Drawer from './Drawer';
 import Header from '../DashboardLayout/Header';
-import Footer from './Footer';
+import Footer from '../DashboardLayout/Footer';
 import HorizontalBar from './Drawer/HorizontalBar';
 import Title from 'components/@extended/Title';
 import Loader from 'components/Loader';

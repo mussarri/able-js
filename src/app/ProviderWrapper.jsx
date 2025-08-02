@@ -8,7 +8,6 @@ import { SessionProvider } from 'next-auth/react';
 import ThemeCustomization from 'themes';
 import { ConfigProvider } from 'contexts/ConfigContext';
 import RTLLayout from 'components/RTLLayout';
-import Locales from 'components/Locales';
 import ScrollTop from 'components/ScrollTop';
 
 import Snackbar from 'components/@extended/Snackbar';
@@ -20,14 +19,12 @@ export default function ProviderWrapper({ children }) {
     <ConfigProvider>
       <ThemeCustomization>
         <RTLLayout>
-          <Locales>
-            <ScrollTop>
-              <SessionProvider refetchInterval={0}>
-                <Snackbar />
-                {children}
-              </SessionProvider>
-            </ScrollTop>
-          </Locales>
+          <ScrollTop>
+            <SessionProvider refetchInterval={0}>
+              <Snackbar />
+              {children}
+            </SessionProvider>
+          </ScrollTop>
         </RTLLayout>
       </ThemeCustomization>
     </ConfigProvider>

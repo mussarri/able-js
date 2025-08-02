@@ -7,7 +7,7 @@ import Drawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 
 // project-imports
-import DrawerHeader from './DrawerHeader';
+import DrawerHeader from '../../DashboardLayout/Drawer/DrawerHeader';
 import DrawerContent from './DrawerContent';
 import MiniDrawerStyled from './MiniDrawerStyled';
 

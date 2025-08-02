@@ -19,9 +19,6 @@ import MainCard from 'components/MainCard';
 import { ThemeDirection } from 'config';
 import navigation from 'menu-items';
 
-// third-party
-import { FormattedMessage } from 'react-intl';
-
 // assets
 import { ArrowRight2, Buildings2, Home3 } from '@wandersonalwes/iconsax-react';
 
@@ -109,9 +106,6 @@ export default function Breadcrumbs({
   let CollapseIcon;
   let ItemIcon;
 
-  
-  console.log(item);
-
   // collapse item
   if (!custom && main && main.type === 'collapse' && main.breadcrumbs === true) {
     CollapseIcon = main.icon ? main.icon : Buildings2;
@@ -125,45 +119,10 @@ export default function Breadcrumbs({
         sx={{ textDecoration: 'none' }}
       >
         {icons && <CollapseIcon style={iconSX} />}
-        <FormattedMessage id={main.title} />
+       {main.title}
       </Typography>
     );
-    breadcrumbContent = (
-      <MainCard
-        border={card}
-        sx={card === false ? { mb: 3, bgcolor: 'transparent', ...sx } : { mb: 3, ...sx }}
-        {...others}
-        content={card}
-        boxShadow={false}
-      >
-        <Grid
-          container
-          direction={rightAlign ? 'row' : 'column'}
-          justifyContent={rightAlign ? 'space-between' : 'flex-start'}
-          alignItems={rightAlign ? 'center' : 'flex-start'}
-          spacing={0.5}
-        >
-          <Grid>
-            <MuiBreadcrumbs aria-label="breadcrumb" maxItems={maxItems || 8} separator={separatorIcon}>
-              <Typography component={NextLink} href="/" passHref variant="body1" color="text.primary" sx={{ textDecoration: 'none' }}>
-                {icons && <Home3 style={iconSX} />}
-                {icon && !icons && <Home3 variant="Bold" style={{ ...iconSX, marginRight: 0 }} />}
-                {(!icon || icons) && <FormattedMessage id="home" />}
-              </Typography>
-              {mainContent}
-            </MuiBreadcrumbs>
-          </Grid>
-          {title && titleBottom && (
-            <Grid sx={{ mt: card === false ? 0 : 1 }}>
-              <Typography variant="h2" sx={{ fontWeight: 700 }}>
-                <FormattedMessage id={main.title} />
-              </Typography>
-            </Grid>
-          )}
-        </Grid>
-        {card === false && divider !== false && <Divider sx={{ mt: 2 }} />}
-      </MainCard>
-    );
+   
   }
 
   // items
@@ -174,7 +133,7 @@ export default function Breadcrumbs({
     itemContent = (
       <Typography variant="body1" color="text.primary" sx={{ display: 'flex', fontWeight: 500, alignItems: 'center' }}>
         {icons && <ItemIcon style={iconSX} />}
-        <FormattedMessage id={itemTitle} />
+        {item?.title}
       </Typography>
     );
 
@@ -190,47 +149,14 @@ export default function Breadcrumbs({
         >
           {icons && <Home3 style={iconSX} />}
           {icon && !icons && <Home3 variant="Bold" style={{ ...iconSX, marginRight: 0 }} />}
-          {(!icon || icons) && <FormattedMessage id="home" />}
+          {(!icon || icons) && item?.title}
         </Typography>
         {mainContent}
         {itemContent}
       </MuiBreadcrumbs>
     );
 
-    if (custom && links && links?.length > 0) {
-      tempContent = (
-        <MuiBreadcrumbs aria-label="breadcrumb" maxItems={maxItems || 8} separator={separatorIcon}>
-          {links?.map((link, index) => {
-            CollapseIcon = link.icon ? link.icon : Buildings2;
-            const key = index.toString();
-            let breadcrumbLink = (
-              <Typography
-                key={index}
-                variant="body1"
-                sx={{ textDecoration: 'none', fontWeight: 500, ...(link.to && { fontWeight: 400, cursor: 'pointer' }) }}
-                color={link.to ? 'text.secondary' : 'text.primary'}
-              >
-                {link.icon && <CollapseIcon style={iconSX} />}
-                <FormattedMessage id={link.title} />
-              </Typography>
-            );
-            if (link.to) {
-              breadcrumbLink = (
-                <NextLink
-                  key={key}
-                  href={link.to}
-                  passHref
-                  style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-                >
-                  {breadcrumbLink}
-                </NextLink>
-              );
-            }
-            return breadcrumbLink;
-          })}
-        </MuiBreadcrumbs>
-      );
-    }
+     
 
     // main
     if (item?.breadcrumbs !== false || custom) {
@@ -252,14 +178,14 @@ export default function Breadcrumbs({
             {title && !titleBottom && (
               <Grid>
                 <Typography variant="h2" sx={{ fontWeight: 700 }}>
-                  <FormattedMessage id={custom ? heading : item?.title} />
+                  {item?.title}
                 </Typography>
               </Grid>
             )}
             {title && titleBottom && (
               <Grid sx={{ mt: card === false ? 0 : 1 }}>
                 <Typography variant="h2" sx={{ fontWeight: 700 }}>
-                  <FormattedMessage id={custom ? heading : item?.title} />
+                  {item?.title}
                 </Typography>
               </Grid>
             )}

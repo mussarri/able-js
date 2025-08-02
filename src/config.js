@@ -24,6 +24,13 @@ export let ThemeMode;
   ThemeMode['AUTO'] = 'auto';
 })(ThemeMode || (ThemeMode = {}));
 
+export let Gender;
+
+(function (Gender) {
+  Gender['FEMALE'] = 'female';
+  Gender['MALE'] = 'male';
+})(Gender || (Gender = {}));
+
 export let MenuOrientation;
 
 (function (MenuOrientation) {

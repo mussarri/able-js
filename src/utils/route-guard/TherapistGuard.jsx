@@ -16,21 +16,21 @@ export default function AuthGuard({ children }) {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch('/api/auth/protected');
-      const json = await res?.json();
-      //check is therapist route
-      if (!json?.protected) {
-        router.push('/login');
-      }
-    };
-    fetchData();
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const res = await fetch('/api/auth/protected');
+  //     const json = await res?.json();
+  //     //check is therapist route
+  //     if (!json?.protected) {
+  //       router.push('/login');
+  //     }
+  //   };
+  //   fetchData();
 
-    // eslint-disable-next-line
-  }, [session]);
+  //   // eslint-disable-next-line
+  // }, [session]);
 
-  if (status == 'loading' || !session?.user) return <Loader />;
+  // if (status == 'loading' || !session?.user) return <Loader />;
 
   return <>{children}</>;
 }

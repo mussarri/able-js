@@ -10,10 +10,9 @@ const icons = {
 // ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
 //seans satin al
 const sessionHistory = {
-  id: 'session-history',
-  title: 'session-history',
+  title: 'Seans Geçmişi',
   type: 'group',
-  url: '/session-history',
+  url: '/therapist/session-history',
   icon: icons.sessionHistory
 };
 

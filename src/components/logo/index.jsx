@@ -35,7 +35,7 @@ export default function LogoSection({ reverse, isIcon, sx, to, mode }) {
                 ? '/assets/images/logo/sakin hayat logo-black.svg'
                 : mode === 'dark'
                   ? '/assets/images/logo/sakin hayat logo-white.svg'
-                  : ''
+                  : '/assets/images/logo/sakin hayat logo-black.svg'
             }
             width={150}
             height={60}

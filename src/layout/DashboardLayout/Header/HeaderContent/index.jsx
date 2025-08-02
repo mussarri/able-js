@@ -17,6 +17,7 @@ import { MenuOrientation } from 'config';
 import useConfig from 'hooks/useConfig';
 import DrawerHeader from 'layout/DashboardLayout/Drawer/DrawerHeader';
 import DarkMode from './DarkMode';
+import Link from 'next/link';
 
 // ==============================|| HEADER - CONTENT ||============================== //
 
@@ -35,6 +36,7 @@ export default function HeaderContent() {
       {!downLG && <Box sx={{ width: 1, mr: 1 }} />}
       {downLG && <Box sx={{ width: 1, ml: 1 }} />}
 
+      <Link href={'/therapist/'}>Uzman</Link>
       <DarkMode />
       <Notification />
 

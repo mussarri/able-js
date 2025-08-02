@@ -17,7 +17,6 @@ import { ThemeDirection } from 'config';
 import navigation from 'menu-items';
 
 // third-party
-import { FormattedMessage } from 'react-intl';
 
 // assets
 import { ArrowRight2, Buildings2, Home3 } from '@wandersonalwes/iconsax-react';
@@ -84,7 +83,7 @@ export default function Breadcrumbs({
   ItemIcon = item?.icon ? item.icon : Buildings2;
   itemContent = (
     <Typography variant="body1" color="text.primary" sx={{ display: 'flex', fontWeight: 500, alignItems: 'center' }}>
-      <FormattedMessage id={itemTitle} />
+      {item.title}
     </Typography>
   );
 

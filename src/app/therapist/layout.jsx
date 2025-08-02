@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types';
 // project-imports
 import TherapistLayout from 'layout/TherapistLayout';
-import AuthGuard from 'utils/route-guard/TherapistGuard';
+import TherapistAuthGuard from 'utils/route-guard/TherapistGuard';
 
 // ==============================|| DASHBOARD LAYOUT ||============================== //
 
 export default function Layout({ children }) {
   return (
-    <AuthGuard>
+    <TherapistAuthGuard>
       <TherapistLayout>{children}</TherapistLayout>
-    </AuthGuard>
+    </TherapistAuthGuard>
   );
 }
 

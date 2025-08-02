@@ -32,7 +32,6 @@ import useConfig from 'hooks/useConfig';
 import useMenuCollapse from 'hooks/useMenuCollapse';
 
 // third-party
-import { FormattedMessage } from 'react-intl';
 
 // assets
 import { ArrowDown2, ArrowUp2, ArrowRight2, Copy } from '@wandersonalwes/iconsax-react';
@@ -266,13 +265,13 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
                       ...theme.applyStyles('dark', { color: darkTextColor })
                     })}
                   >
-                    <FormattedMessage id={menu.title} />
+                    {menu.title}
                   </Typography>
                 }
                 secondary={
                   menu.caption && (
                     <Typography variant="caption" color="secondary">
-                      <FormattedMessage id={menu.caption} />
+                      {menu.title}
                     </Typography>
                   )
                 }

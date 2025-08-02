@@ -11,7 +11,6 @@ const icons = {
 // ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
 //seans satin al
 const buySession = {
-  id: 'account-info',
   title: 'Hesap Bilgileri',
   type: 'group',
   url: '/account-info',

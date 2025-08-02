@@ -2,8 +2,8 @@
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // project-imports
-import NavUser from './NavUser';
-import NavCard from './NavCard';
+import NavUser from '../../../DashboardLayout/Drawer/DrawerContent/NavUser';
+import NavCard from '../../../DashboardLayout/Drawer/DrawerContent/NavCard';
 import Navigation from './Navigation';
 import { useGetMenuMaster } from 'api/menu';
 import SimpleBar from 'components/third-party/SimpleBar';

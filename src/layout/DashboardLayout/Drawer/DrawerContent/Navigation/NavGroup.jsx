@@ -18,9 +18,6 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 
-// third-party
-import { FormattedMessage } from 'react-intl';
-
 // project-imports
 import NavItem from './NavItem';
 import NavCollapse from './NavCollapse';
@@ -259,11 +256,11 @@ export default function NavGroup({
                         ...theme.applyStyles('dark', { color: 'text.secondary' })
                       })}
                     >
-                      <FormattedMessage id={item.title} />
+                      {item.title}
                     </Typography>
                     {item.caption && (
                       <Typography variant="caption" color="secondary">
-                        <FormattedMessage id={item.caption} />
+                        {item.title}
                       </Typography>
                     )}
                   </Box>
@@ -306,7 +303,7 @@ export default function NavGroup({
                     ...((isSelected || anchorEl) && { color: 'primary.main' })
                   })}
                 >
-                  <FormattedMessage id={currentItem.id === lastItemId ? 'more-items' : currentItem.title} />
+                  {'belli degil'}
                 </Typography>
               }
             />
