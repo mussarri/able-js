@@ -1,8 +1,8 @@
 // project-imports
-import SamplePagePage from 'views/other/SamplePage';
+import BuySession from 'views/other/BuySession';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
 export default function SamplePage() {
-  return <SamplePagePage />;
+  return <BuySession />;
 }

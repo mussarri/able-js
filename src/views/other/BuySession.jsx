@@ -1,7 +1,9 @@
 import React from 'react';
+import BasicPickers from 'components/BuySessionSelect';
+import MainCard from 'components/MainCard';
 
 const BuySession = () => {
-  return <div>BuySession</div>;
+  return <BasicPickers />;
 };
 
 export default BuySession;
