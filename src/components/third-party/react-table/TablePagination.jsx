@@ -47,47 +47,7 @@ export default function TablePagination({ getPageCount, setPageIndex, setPageSiz
   };
 
   return (
-    <Grid spacing={1} container sx={{ alignItems: 'center', justifyContent: 'space-between', width: 'auto' }}>
-      <Grid>
-        <Stack direction="row" sx={{ gap: 1, alignItems: 'center' }}>
-          <Stack direction="row" sx={{ gap: 1, alignItems: 'center' }}>
-            <Typography variant="caption" color="secondary">
-              Row per page
-            </Typography>
-            <FormControl sx={{ m: 1 }}>
-              <Select
-                id="demo-controlled-open-select"
-                open={open}
-                onClose={handleClose}
-                onOpen={handleOpen}
-                value={getState().pagination.pageSize}
-                onChange={handleChange}
-                size="small"
-                sx={{ '& .MuiSelect-select': { py: 0.75, px: 1.25 } }}
-              >
-                {options.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Stack>
-          <Typography variant="caption" color="secondary">
-            Go to
-          </Typography>
-          <TextField
-            size="small"
-            type="number"
-            value={getState().pagination.pageIndex + 1}
-            onChange={(e) => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0;
-              setPageIndex(page);
-            }}
-            sx={{ '& .MuiOutlinedInput-input': { py: 0.75, px: 1.25, width: 36 } }}
-          />
-        </Stack>
-      </Grid>
+    <Grid spacing={1} container sx={{ alignItems: 'center', justifyContent: 'center', width: 'auto' }}>
       <Grid sx={{ mt: { xs: 2, sm: 0 } }}>
         <Pagination
           sx={{ '& .MuiPaginationItem-root': { my: 0.5 } }}
