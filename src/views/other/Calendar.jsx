@@ -7,6 +7,7 @@ import Dialog from '@mui/material/Dialog';
 import SpeedDial from '@mui/material/SpeedDial';
 import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
 
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -25,176 +26,131 @@ import Toolbar from 'sections/calendar/Toolbar';
 // assets
 import { Add } from '@wandersonalwes/iconsax-react';
 import allLocales from '@fullcalendar/core/locales-all';
+import times from 'utils/times';
+import Button from '@mui/material/Button';
+import { fontWeight, minWidth } from '@mui/system';
 // ==============================|| CALENDAR - MAIN ||============================== //
+function getNext30Days() {
+  const days = [];
+  const today = new Date();
+
+  for (let i = 0; i <= 30; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+
+    const day = date.getDate();
+    const monthName = date.toLocaleString('tr-TR', { month: 'long' });
+    const formatted = `${day} ${monthName.charAt(0).toUpperCase() + monthName.slice(1)}`;
+
+    days.push(formatted);
+  }
+
+  return days;
+}
 
 export default function Calendar() {
-  const downSM = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+  const days = getNext30Days();
+  const theme = useTheme();
+  const [selectedDate, setSelectedDate] = useState();
+  const [selectedTime, setSelectedTime] = useState();
 
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState();
-  const [calendarView, setCalendarView] = useState();
-  const [date, setDate] = useState(new Date());
-  const [selectedRange, setSelectedRange] = useState(null);
-  const calendarRef = useRef(null);
-  const { events } = useGetEvents();
-
-  useEffect(() => {
-    const calendarEl = calendarRef.current;
-
-    if (calendarEl) {
-      const calendarApi = calendarEl.getApi();
-      const newView = downSM ? 'listWeek' : 'dayGridMonth';
-      calendarApi.changeView(newView);
-      setCalendarView(newView);
-    }
-  }, [downSM]);
-
-  // calendar toolbar events
-  const handleDateToday = () => {
-    const calendarEl = calendarRef.current;
-
-    if (calendarEl) {
-      const calendarApi = calendarEl.getApi();
-
-      calendarApi.today();
-      setDate(calendarApi.getDate());
+  const style = {
+    unset: {
+      borderColor: theme.palette.secondary.light,
+      color: theme.palette.secondary.main
+    },
+    available: {
+      borderColor: theme.palette.success.main,
+      color: theme.palette.success.dark,
+      background: theme.palette.success.lighter,
+      fontWeight: 500
+    },
+    full: {
+      borderColor: theme.palette.error.light,
+      color: theme.palette.error.main,
+      fontWeight: 500
     }
   };
 
-  const handleViewChange = (newView) => {
-    const calendarEl = calendarRef.current;
-
-    if (calendarEl) {
-      const calendarApi = calendarEl.getApi();
-
-      calendarApi.changeView(newView);
-      setCalendarView(newView);
-    }
-  };
-
-  const handleDatePrev = () => {
-    const calendarEl = calendarRef.current;
-
-    if (calendarEl) {
-      const calendarApi = calendarEl.getApi();
-
-      calendarApi.prev();
-      setDate(calendarApi.getDate());
-    }
-  };
-
-  const handleDateNext = () => {
-    const calendarEl = calendarRef.current;
-
-    if (calendarEl) {
-      const calendarApi = calendarEl.getApi();
-
-      calendarApi.next();
-      setDate(calendarApi.getDate());
-    }
-  };
-
-  // calendar events
-  const handleRangeSelect = (arg) => {
-    const calendarEl = calendarRef.current;
-    if (calendarEl) {
-      const calendarApi = calendarEl.getApi();
-      calendarApi.unselect();
-    }
-
-    setSelectedRange({ start: arg.start, end: arg.end });
-    setModalOpen(true);
-  };
-
-  const handleEventSelect = (arg) => {
-    if (arg?.event?.id) {
-      const event = events.find((event) => event.id === arg.event.id);
-      setSelectedEvent(event);
-    }
-
-    setModalOpen(true);
-  };
-
-  const handleEventUpdate = async ({ event }) => {
-    await updateEvent(event.id, {
-      allDay: event.allDay,
-      start: event.start,
-      end: event.end
-    });
-  };
-
-  const modalCallback = (openModal) => {
-    // open/close modal based on dialog state
-    if (!openModal) {
-      setSelectedEvent(null);
-    }
-    setModalOpen(openModal);
-  };
-
-  const handleModal = () => {
-    if (isModalOpen) {
-      setSelectedEvent(null);
-    }
-    setModalOpen(!isModalOpen);
-  };
+  const full = { borderColor: selectedTime == theme.palette.error.light, color: selectedTime == theme.palette.error.main };
 
   return (
-    <Box sx={{ position: 'relative' }}>
-      <CalendarStyled>
-        <Toolbar
-          date={date}
-          view={calendarView}
-          onClickNext={handleDateNext}
-          onClickPrev={handleDatePrev}
-          onClickToday={handleDateToday}
-          onChangeView={handleViewChange}
-        />
-
-        <FullCalendar
-          locales={allLocales}
-          locale={'tr'}
-          weekends
-          editable
-          droppable
-          selectable
-          events={events}
-          ref={calendarRef}
-          rerenderDelay={10}
-          initialDate={date}
-          initialView={calendarView}
-          dayMaxEventRows={3}
-          eventDisplay="block"
-          headerToolbar={false}
-          allDayMaintainDuration
-          eventResizableFromStart
-          select={handleRangeSelect}
-          eventDrop={handleEventUpdate}
-          eventClick={handleEventSelect}
-          eventResize={handleEventUpdate}
-          height={downSM ? 'auto' : 720}
-          plugins={[listPlugin, dayGridPlugin, timelinePlugin, timeGridPlugin, interactionPlugin]}
-        />
-      </CalendarStyled>
-
-      {/* Dialog renders its body even if not open */}
-      <Dialog
-        maxWidth="sm"
-        slots={{ transition: PopupTransition }}
-        fullWidth
-        onClose={handleModal}
-        open={isModalOpen}
-        sx={{ '& .MuiDialog-paper': { p: 0, bgcolor: 'secondary.lighter' } }}
+    <div className="">
+      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', width: '100%', overflowX: 'scroll', scrollbarWidth: 'none' }}>
+        {days.map((item, index) => (
+          <Box
+            sx={{
+              minWidth: 'max-content',
+              border: '2px solid',
+              borderRadius: '10px',
+              padding: '12px 24px',
+              cursor: 'pointer',
+              borderColor: item == selectedDate ? theme.palette.primary.main : theme.palette.secondary.light,
+              color: item == selectedDate ? theme.palette.primary.main : theme.palette.secondary.main
+            }}
+            onClick={() => setSelectedDate(item)}
+            key={index}
+          >
+            {item}
+          </Box>
+        ))}
+      </Box>
+      <Box
+        sx={{
+          width: '100%',
+          maxWidth: '1050px',
+          margin: '100px auto 20px',
+          display: 'grid',
+          gap: 1,
+          gridTemplateColumns: 'repeat(8, minmax(100px, 1fr))'
+        }}
       >
-        <AddEventForm modalCallback={modalCallback} event={selectedEvent} range={selectedRange} onCancel={handleModal} />
-      </Dialog>
-      <Tooltip title="Yeni Seans Ekle">
-        <SpeedDial
-          ariaLabel="add-event-fab"
-          sx={{ display: 'inline-flex', position: 'sticky', bottom: 24, left: '100%', transform: 'translate(-50%, -50% )' }}
-          icon={<Add />}
-          onClick={handleModal}
-        />
-      </Tooltip>
-    </Box>
+        {times.map((item, index) => {
+          const sx =
+            Math.random() > 0.66
+              ? {
+                  border: '1px solid',
+                  textAlign: 'center',
+                  borderRadius: '10px',
+                  padding: '8px 12px',
+                  cursor: 'pointer',
+                  ...style.unset
+                }
+              : Math.random() > 0.33
+                ? {
+                    border: '1px solid',
+                    textAlign: 'center',
+                    borderRadius: '10px',
+                    padding: '8px 12px',
+                    cursor: 'pointer',
+                    ...style.available
+                  }
+                : {
+                    border: '1px solid',
+                    textAlign: 'center',
+                    borderRadius: '10px',
+                    padding: '8px 12px',
+                    cursor: 'pointer',
+                    ...style.full
+                  };
+          return (
+            <Box sx={sx} onClick={() => setSelectedTime(item)} key={index}>
+              <span style={{ minWidth: 140 }}> {times[index] + '-' + (times[index + 1] ? times[index + 1] : times[0])}</span>
+            </Box>
+          );
+        })}
+      </Box>
+      <Box
+        sx={{
+          textAlign: 'right',
+          margin: '0px 0',
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'flex-end'
+        }}
+      >
+        <Button>Kaydet</Button>
+      </Box>
+    </div>
   );
 }

@@ -19,8 +19,8 @@ export default function GuestGuard({ children }) {
     const fetchData = async () => {
       const res = await fetch('/api/auth/protected');
       const json = await res?.json();
+      router.push('/buy-session');
       if (json?.protected) {
-        router.push('/buy-session');
         // if therapist router.push('/therapist/my-sessions');
       }
     };
@@ -29,7 +29,7 @@ export default function GuestGuard({ children }) {
     // eslint-disable-next-line
   }, [session]);
 
-  if (status === 'loading' || session?.user) return <Loader />;
+  // if (status === 'loading' || session?.user) return <Loader />;
 
   return <>{children}</>;
 }

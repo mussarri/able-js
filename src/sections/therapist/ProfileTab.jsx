@@ -15,16 +15,14 @@ import { CardCoin, Lock, Profile, Setting3 } from '@wandersonalwes/iconsax-react
 function getPathIndex(pathname) {
   let selectedTab = 0;
   switch (pathname) {
-    case '/account-info/payment':
+    case '/therapist/account-info/invoice':
       selectedTab = 1;
       break;
-    case '/account-info/password':
+    case '/therapist/account-info/password':
       selectedTab = 2;
       break;
-    case '/account-info/settings':
-      selectedTab = 3;
-      break;
-    case '/account-info/personal':
+
+    case '/therapist/account-info/personal':
     default:
       selectedTab = 0;
   }
@@ -49,21 +47,21 @@ export default function ProfileTab() {
 
   return (
     <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32, color: 'secondary.main' } }}>
-      <ListItemButton selected={selectedIndex === 0} onClick={() => handleListItemClick(0, '/account-info/personal')}>
+      <ListItemButton selected={selectedIndex === 0} onClick={() => handleListItemClick(0, '/therapist/account-info/personal')}>
         <ListItemIcon>
           <Profile size={18} />
         </ListItemIcon>
         <ListItemText primary="Personal Information" />
       </ListItemButton>
 
-      <ListItemButton selected={selectedIndex === 1} onClick={() => handleListItemClick(1, '/account-info/invoice')}>
+      <ListItemButton selected={selectedIndex === 1} onClick={() => handleListItemClick(1, '/therapist/account-info/invoice')}>
         <ListItemIcon>
           <Lock size={18} />
         </ListItemIcon>
         <ListItemText primary="Fatura Bilgileri" />
       </ListItemButton>
 
-      <ListItemButton selected={selectedIndex === 2} onClick={() => handleListItemClick(1, '/account-info/password')}>
+      <ListItemButton selected={selectedIndex === 2} onClick={() => handleListItemClick(2, '/therapist/account-info/password')}>
         <ListItemIcon>
           <Lock size={18} />
         </ListItemIcon>

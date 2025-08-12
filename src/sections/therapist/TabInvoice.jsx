@@ -34,48 +34,6 @@ const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = { PaperProps: { style: { maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP } } };
 
-const skills = [
-  'Adobe XD',
-  'After Effect',
-  'Angular',
-  'Animation',
-  'ASP.Net',
-  'Bootstrap',
-  'C#',
-  'CC',
-  'Corel Draw',
-  'CSS',
-  'DIV',
-  'Dreamweaver',
-  'Figma',
-  'Graphics',
-  'HTML',
-  'Illustrator',
-  'J2Ee',
-  'Java',
-  'Javascript',
-  'JQuery',
-  'Logo Design',
-  'Material UI',
-  'Motion',
-  'MVC',
-  'MySQL',
-  'NodeJS',
-  'npm',
-  'Photoshop',
-  'PHP',
-  'React',
-  'Redux',
-  'Reduxjs & tooltit',
-  'SASS',
-  'SCSS',
-  'SQL Server',
-  'SVG',
-  'UI/UX',
-  'User Interface Designing',
-  'Wordpress'
-];
-
 // ==============================|| USER PROFILE - PERSONAL ||============================== //
 
 export default function TabPersonal() {
@@ -94,49 +52,21 @@ export default function TabPersonal() {
     <MainCard content={false} title="Personal Information" sx={{ '& .MuiInputLabel-root': { fontSize: '0.875rem' } }}>
       <Formik
         initialValues={{
-          rumuz: 'Stebin',
+          firstname: 'Stebin',
           lastname: 'Ben',
           email: 'stebin.ben@gmail.com',
-          dob: new Date('03-10-1993'),
-          countryCode: '+91',
-          contact: 9652364852,
-          designation: 'Full Stack Developer',
-          address: '3801 Chalk Butte Rd, Cut Bank, MT 59427, United States',
-          address1: '301 Chalk Butte Rd, Cut Bank, NY 96572, New York',
-          country: 'US',
-          state: 'California',
-          skill: [
-            'Adobe XD',
-            'Angular',
-            'Corel Draw',
-            'Figma',
-            'HTML',
-            'Illustrator',
-            'Javascript',
-            'Logo Design',
-            'Material UI',
-            'NodeJS',
-            'npm',
-            'Photoshop',
-            'React',
-            'Reduxjs & tooltit',
-            'SASS'
-          ],
-          note: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.`,
+          iban: '1234-1234-1234-1234',
+          paytrId: 'id_2312312',
+
           submit: null
         }}
         validationSchema={Yup.object().shape({
           firstname: Yup.string().max(255).required('First Name is required.'),
           lastname: Yup.string().max(255).required('Last Name is required.'),
           email: Yup.string().email('Invalid email address.').max(255).required('Email is required.'),
-          dob: Yup.date().max(maxDate, 'Age should be 18+ years.').required('Date of birth is requird.'),
-          contact: Yup.number()
-            .test('len', 'Contact should be exactly 10 digit', (val) => val?.toString().length === 10)
-            .required('Phone number is required'),
-          designation: Yup.string().required('Designation is required'),
+
           address: Yup.string().min(50, 'Address to short.').required('Address is required'),
-          country: Yup.string().required('Country is required'),
-          state: Yup.string().required('State is required'),
+
           note: Yup.string().min(150, 'Not shoulde be more then 150 char.')
         })}
         onSubmit={(values, { setErrors, setStatus, setSubmitting }) => {
@@ -162,57 +92,102 @@ export default function TabPersonal() {
               <Grid container spacing={3}>
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <Stack sx={{ gap: 1 }}>
-                    <InputLabel htmlFor="personal-first-name">Rumuz</InputLabel>
+                    <InputLabel htmlFor="personal-first-name">Isim</InputLabel>
                     <TextField
                       fullWidth
                       id="personal-first-name"
-                      value={values.rumuz}
-                      name="rumuz"
+                      value={values.firstname}
+                      name="firstname"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      placeholder="First Name"
+                      placeholder="Isim"
                       autoFocus
                     />
                   </Stack>
-                  {touched.rumuz && errors.rumuz && (
+                  {touched.firstname && errors.firstname && (
                     <FormHelperText error id="personal-first-name-helper">
-                      {errors.rumuz}
+                      {errors.firstname}
                     </FormHelperText>
                   )}
                 </Grid>
-
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <Stack sx={{ gap: 1 }}>
-                    <InputLabel htmlFor="personal-phone">Telefon</InputLabel>
-                    <Stack direction="row" sx={{ gap: 2, justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Select value={values.countryCode} name="countryCode" onBlur={handleBlur} onChange={handleChange}>
-                        <MenuItem value="+91">+91</MenuItem>
-                        <MenuItem value="1-671">1-671</MenuItem>
-                        <MenuItem value="+36">+36</MenuItem>
-                        <MenuItem value="(225)">(255)</MenuItem>
-                        <MenuItem value="+39">+39</MenuItem>
-                        <MenuItem value="1-876">1-876</MenuItem>
-                        <MenuItem value="+7">+7</MenuItem>
-                        <MenuItem value="(254)">(254)</MenuItem>
-                        <MenuItem value="(373)">(373)</MenuItem>
-                        <MenuItem value="1-664">1-664</MenuItem>
-                        <MenuItem value="+95">+95</MenuItem>
-                        <MenuItem value="(264)">(264)</MenuItem>
-                      </Select>
-                      <TextField
-                        fullWidth
-                        id="personal-contact"
-                        value={values.contact}
-                        name="contact"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        placeholder="Contact Number"
-                      />
-                    </Stack>
+                    <InputLabel htmlFor="personal-first-name">Soyisim</InputLabel>
+                    <TextField
+                      fullWidth
+                      id="personal-last-name"
+                      value={values.lastname}
+                      name="lastname"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      placeholder="Soyisim"
+                      autoFocus
+                    />
                   </Stack>
-                  {touched.contact && errors.contact && (
-                    <FormHelperText error id="personal-contact-helper">
-                      {errors.contact}
+                  {touched.lastname && errors.lastname && (
+                    <FormHelperText error id="personal-first-name-helper">
+                      {errors.lastname}
+                    </FormHelperText>
+                  )}
+                </Grid>
+              </Grid>
+            </Box>
+            <CardHeader title="Ödeme Bilgileri" />
+            <Divider />
+            <Box sx={{ p: 2.5 }}>
+              <Grid container spacing={3}>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Stack sx={{ gap: 1 }}>
+                    <InputLabel htmlFor="personal-addrees1">IBAN</InputLabel>
+                    <TextField
+                      multiline
+                      fullWidth
+                      id="personal-addrees1"
+                      value={values.iban}
+                      name="iban"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      placeholder="iban"
+                    />
+                  </Stack>
+                  {touched.iban && errors.iban && (
+                    <FormHelperText error id="personal-iban-helper">
+                      {errors.iban}
+                    </FormHelperText>
+                  )}
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Stack sx={{ gap: 1 }}>
+                    <InputLabel htmlFor="paytrId">Paytr ID</InputLabel>
+                    <TextField
+                      multiline
+                      fullWidth
+                      id="paytrId"
+                      value={values.paytrId}
+                      name="paytr"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      placeholder="Address 02"
+                    />
+                  </Stack>
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Stack sx={{ gap: 1 }}>
+                    <InputLabel htmlFor="personal-first-name">E-Posta</InputLabel>
+                    <TextField
+                      fullWidth
+                      id="personal-last-name"
+                      value={values.email}
+                      name="email"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      placeholder="E-Posta Adresi"
+                      autoFocus
+                    />
+                  </Stack>
+                  {touched.email && errors.email && (
+                    <FormHelperText error id="personal-email-helper">
+                      {errors.email}
                     </FormHelperText>
                   )}
                 </Grid>

@@ -21,12 +21,19 @@ import DebouncedInput from 'components/third-party/react-table/DebouncedInput';
 // project-imports
 import LinearWithLabel from 'components/@extended/LinearWithLabel';
 import MainCard from 'components/MainCard';
-import { CSVExport, Filter, HeaderSort, SelectColumnSorting } from 'components/third-party/react-table';
+import { CSVExport, Filter, HeaderSort, SelectColumnSorting, TablePagination } from 'components/third-party/react-table';
 import makeData from 'data/react-table';
-import { getCoreRowModel, getSortedRowModel, flexRender, useReactTable, getFilteredRowModel } from '@tanstack/react-table';
+import {
+  getCoreRowModel,
+  getSortedRowModel,
+  flexRender,
+  useReactTable,
+  getFilteredRowModel,
+  getPaginationRowModel
+} from '@tanstack/react-table';
 import { fontSize, Grid } from '@mui/system';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { TextField, useTheme } from '@mui/material';
+import { Divider, TextField, useTheme } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 // ==============================|| REACT TABLE ||============================== //
@@ -135,6 +142,7 @@ function ReactTable({ columns, data, title }) {
     onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
+    getPaginationRowModel: getPaginationRowModel(),
     // filtre fonksiyonlarını tanımlamak istersen:
     globalFilterFn: fuzzyFilter, // veya 'includesString' gibi basit
     filterFns: {
@@ -179,37 +187,6 @@ function ReactTable({ columns, data, title }) {
         </Stack>
       }
     >
-      <Stack sx={{ p: 2 }}>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '10px 20px' }}>
-            {headerGroup.headers.map(
-              (header) =>
-                header.column.getCanFilter() && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'start',
-                      fontSize: 12,
-                      fontWeight: 600,
-                      color: 'secondary'
-                    }}
-                  >
-                    <label style={{ color: theme.palette.secondary['300'] }} htmlFor="">
-                      {header.column.columnDef.header}
-                    </label>
-                    {header.column.columnDef.filterFn === 'between' ? (
-                      <DateRangeFilter column={header.column} />
-                    ) : (
-                      <Filter column={header.column} table={table} />
-                    )}
-                  </div>
-                )
-            )}
-          </div>
-        ))}
-      </Stack>
-
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -258,6 +235,20 @@ function ReactTable({ columns, data, title }) {
           </TableBody>
         </Table>
       </TableContainer>
+      <>
+        <Divider />
+        <Box sx={{ p: 2 }}>
+          <TablePagination
+            {...{
+              setPageSize: table.setPageSize,
+              setPageIndex: table.setPageIndex,
+              getState: table.getState,
+              getPageCount: table.getPageCount,
+              initialPageSize: 10
+            }}
+          />
+        </Box>
+      </>
     </MainCard>
   );
 }
@@ -265,7 +256,7 @@ function ReactTable({ columns, data, title }) {
 // ==============================|| REACT TABLE - SORTING ||============================== //
 
 export default function SortingTable() {
-  const data = makeData(10);
+  const data = makeData(26);
 
   const columns = useMemo(
     () => [
@@ -322,6 +313,13 @@ export default function SortingTable() {
           });
           return lira.format(info.getValue());
         }
+      },
+      {
+        header: 'Durum',
+        accessorKey: 'status',
+        enableColumnFilter: true,
+        // eğer özel filterFn istersen:
+        filterFn: 'fuzzy'
       }
     ],
     []

@@ -1,8 +1,9 @@
-// project-imports
-import SamplePagePage from 'views/other/SamplePage';
+import { redirect } from 'next/navigation';
+import React from 'react';
 
-// ==============================|| SAMPLE PAGE ||============================== //
+const page = () => {
+  redirect('/therapist/account-info/personal');
+  return <div></div>;
+};
 
-export default function SamplePage() {
-  return <SamplePagePage />;
-}
+export default page;

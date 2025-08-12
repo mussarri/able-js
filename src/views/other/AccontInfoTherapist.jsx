@@ -12,19 +12,19 @@ import Grid from '@mui/material/Grid';
 // project-imports
 import { GRID_COMMON_SPACING } from 'config';
 
-import ProfileCard from 'sections/user/ProfileCard';
-import ProfileTabs from 'sections/user/ProfileTabs';
-import TabPassword from 'sections/user/TabPassword';
-import TabSettings from 'sections/user/TabSettings';
-import TabPayment from 'sections/user/TabPayment';
+import ProfileCard from 'sections/therapist/ProfileCard';
+import ProfileTabs from 'sections/therapist/ProfileTabs';
+import TabPassword from 'sections/therapist/TabPassword';
+import TabSettings from 'sections/therapist/TabSettings';
+import TabPayment from 'sections/therapist/TabPayment';
 
 import { handlerActiveItem, useGetMenuMaster } from 'api/menu';
 import { Button, Fab, Modal } from '@mui/material';
 import { Add } from '@wandersonalwes/iconsax-react';
 import { alignItems, Box } from '@mui/system';
 import Typography from 'themes/typography';
-import TabInvoice from 'sections/user/TabInvoice';
-import TabPersonal from 'sections/user/TabPersonal';
+import TabInvoice from 'sections/therapist/TabInvoice';
+import TabPersonal from 'sections/therapist/TabPersonal';
 
 // ==============================|| PROFILE - USER ||============================== //
 

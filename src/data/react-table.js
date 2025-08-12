@@ -87,7 +87,8 @@ function newRecord(index) {
     purchasedAt: date,
     seansAt: date2,
     time: 30,
-    price: 1000
+    price: 1000,
+    status: 'Tamamlandı'
   };
 }
 // ===========================|| TABLE - USERS ||=========================== //
