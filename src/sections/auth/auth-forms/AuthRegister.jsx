@@ -39,6 +39,7 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 import { Eye, EyeSlash, Flag, Flag2, Whatsapp } from '@wandersonalwes/iconsax-react';
 import { Autocomplete, CardMedia, Checkbox, FormControlLabel, MenuItem, Select, TextField } from '@mui/material';
 import { FlagCircleRounded } from '@mui/icons-material';
+import { useTheme } from '@mui/material/styles';
 
 const Auth0 = '/assets/images/icons/auth0.svg';
 const Cognito = '/assets/images/icons/aws-cognito.svg';
@@ -59,6 +60,7 @@ export default function AuthRegister({ providers, csrfToken }) {
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
+  const theme = useTheme();
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
