@@ -1,6 +1,4 @@
 import PropTypes from 'prop-types';
-// project-imports
-import GuestGuard from 'utils/route-guard/GuestGuard';
 
 // ==============================|| AUTH LAYOUT ||============================== //
 
