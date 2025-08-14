@@ -2,7 +2,6 @@ import { useState } from 'react';
 
 // next
 import { useRouter } from 'next/navigation';
-import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 
 // material-ui
@@ -19,7 +18,6 @@ import Box from '@mui/material/Box';
 // project-imports
 import { useGetMenuMaster } from 'api/menu';
 import Avatar from 'components/@extended/Avatar';
-import useUser from 'hooks/useUser';
 
 // assets
 import { ArrowRight2 } from '@wandersonalwes/iconsax-react';
@@ -42,26 +40,12 @@ const ExpandMore = styled(IconButton, {
 
 export default function UserList() {
   const router = useRouter();
-  const user = useUser();
+  const user = {};
 
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
-  const { data: session } = useSession();
-  const provider = session?.provider;
-
   const handleLogout = () => {
-    switch (provider) {
-      case 'auth0':
-        signOut({ callbackUrl: `${process.env.NEXTAUTH_URL}/api/auth/logout/auth0` });
-        break;
-      case 'cognito':
-        signOut({ callbackUrl: `${process.env.NEXTAUTH_URL}/api/auth/logout/cognito` });
-        break;
-      default:
-        signOut({ redirect: false });
-    }
-
     router.push('/login');
   };
 

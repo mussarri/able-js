@@ -6,7 +6,6 @@ import { useState } from 'react';
 // next
 import Link from 'next/link';
 import Image from 'next/legacy/image';
-import { useSession, signIn } from 'next-auth/react';
 
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Button from '@mui/material/Button';
@@ -25,18 +24,21 @@ import Box from '@mui/material/Box';
 
 // third-party
 import * as Yup from 'yup';
-import { Formik, FieldArray, Field } from 'formik';
+import { Formik, FieldArray, Field, Form } from 'formik';
 
 // project-imports
 import IconButton from 'components/@extended/IconButton';
 import AnimateButton from 'components/@extended/AnimateButton';
 import FirebaseSocial from './FirebaseSocial';
-import { fetcher } from 'utils/axios';
 import { APP_DEFAULT_PATH } from 'config';
 
 // assets
 import { Eye, EyeSlash } from '@wandersonalwes/iconsax-react';
 import { preload } from 'swr';
+import { useAuth } from 'contexts/AuthContext';
+import { Autocomplete, TextField } from '@mui/material';
+import countries from 'utils/countries';
+import { useRouter } from 'next/navigation';
 
 const Auth0 = '/assets/images/icons/auth0.svg';
 const Cognito = '/assets/images/icons/aws-cognito.svg';
@@ -48,7 +50,6 @@ export default function AuthLogin({ providers, csrfToken }) {
   const downSM = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
   const [checked, setChecked] = useState(false);
-  const { data: session } = useSession();
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -57,65 +58,146 @@ export default function AuthLogin({ providers, csrfToken }) {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  const router = useRouter();
+
+  // const { login } = useAuth();
 
   return (
     <>
       <Formik
         initialValues={{
-          email: 'info@phoenixcoded.co',
-          password: '123456',
+          gsm: '5392359733',
+          country: '+90',
+          password: 'Kg31728581$',
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+          gsm: Yup.string().max(14).required('Telefon is required'),
+          country: Yup.string().max(5).required('Ulke kodu is required'),
           password: Yup.string()
             .required('Password is required')
             .test('no-leading-trailing-whitespace', 'Password can not start or end with spaces', (value) => value === value.trim())
-            .max(10, 'Password must be less than 10 characters')
+            .min(8, 'Password must be more than 10 characters')
         })}
-        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+        onSubmit={async (values, { setSubmitting, setFieldError }) => {
+          const form = {
+            phoneNumber: values.country.slice(1) + values.gsm,
+            password: values.password
+          };
+
           try {
-            const trimmedEmail = values.email.trim();
-            const result = await signIn('login', { redirect: false, email: trimmedEmail, password: values.password });
-            if (result?.error) {
-              setStatus({ success: false });
-              setErrors({ submit: result.error });
+            const res = await fetch(process.env.NEXT_PUBLIC_LOCAL_API_URL + '/api/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(form)
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+              console.log('hata');
             } else {
-              setStatus({ success: true });
-              setSubmitting(false);
-              preload('api/menu/dashboard', fetcher); // load menu on login success
+              router.push('/buy-session');
             }
           } catch (err) {
-            setStatus({ success: false });
-            setErrors({ submit: err.message });
+            console.error('Login hatası:', err);
+          } finally {
             setSubmitting(false);
           }
         }}
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-          <form noValidate onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit}>
             <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
             <Grid container spacing={3}>
               <Grid size={12}>
+                {/* {values.country !== '+90' && (
+                    <Typography fontSize={13} sx={{ mb: 5 }} color={'textSecondary'}>
+                      Türkiye üzerinden yapılacak üyeliklerin onayı Whatsapp üzerinden yapılmaktadır.Lütfen aşağıya Whatsapp numaranızı
+                      yazınız.
+                    </Typography>
+                  )} */}
                 <Stack sx={{ gap: 1 }}>
-                  <InputLabel htmlFor="email-login">E-posta Adresi </InputLabel>
-                  <OutlinedInput
-                    id="email-login"
-                    type="email"
-                    value={values.email}
-                    name="email"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Enter email address"
-                    fullWidth
-                    error={Boolean(touched.email && errors.email)}
-                  />
+                  <Stack direction="row" sx={{ gap: 2, justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Stack sx={{ gap: 0 }}>
+                      <Autocomplete
+                        id="country"
+                        fullWidth
+                        disableClearable
+                        onBlur={handleBlur}
+                        value={countries.find((item) => item.phone === values.country) || null}
+                        onChange={(_, newValue) => {
+                          // Backend'e göndereceğin değer: telefon kodu
+
+                          setFieldValue('country', newValue ? newValue.phone : '');
+                        }}
+                        options={countries}
+                        autoHighlight
+                        isOptionEqualToValue={(option, value) => option.code === value?.code}
+                        getOptionLabel={(option) => `${option.phone}`}
+                        renderOption={(props, option) => (
+                          <Box key={option.code} component="li" sx={{ '& > img': { mr: 1, flexShrink: 0 } }} {...props}>
+                            {option.code && (
+                              <CardMedia
+                                component="img"
+                                loading="lazy"
+                                sx={{ width: 20 }}
+                                src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                                srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                                alt="country"
+                              />
+                            )}
+                            {option.code && `${option.phone}`}
+                          </Box>
+                        )}
+                        renderInput={(params) => {
+                          return (
+                            <TextField
+                              {...params}
+                              placeholder="Ülke kodu seçiniz"
+                              name="country"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              helperText={touched.country && errors.country ? 'errors.country' : ''}
+                              error={Boolean(touched.country && errors.country)}
+                              slotProps={{
+                                htmlInput: {
+                                  ...params.inputProps,
+                                  autoComplete: 'Ülke kodu seçiniz' // disable autocomplete and autofill
+                                }
+                              }}
+                            />
+                          );
+                        }}
+                      />
+                    </Stack>
+                    {values.country === '+90' ? (
+                      <OutlinedInput
+                        type="text"
+                        fullWidth
+                        error={Boolean(touched.gsm && errors.gsm)}
+                        id="gsm"
+                        value={values.gsm}
+                        name="gsm"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        placeholder={'54433322211'}
+                      />
+                    ) : (
+                      <OutlinedInput
+                        type="text"
+                        fullWidth
+                        error={Boolean(touched.gsm && errors.gsm)}
+                        id="gsm"
+                        value={values.gsm}
+                        name="gsm"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        placeholder={'+01-54433322211'}
+                      />
+                    )}
+                  </Stack>
                 </Stack>
-                {touched.email && errors.email && (
-                  <FormHelperText error id="standard-weight-helper-text-email-login">
-                    {errors.email}
-                  </FormHelperText>
-                )}
               </Grid>
               <Grid size={12}>
                 <Stack sx={{ gap: 1 }}>
@@ -166,7 +248,7 @@ export default function AuthLogin({ providers, csrfToken }) {
                     }
                     label={<Typography variant="h6">Oturumu açık tut</Typography>}
                   />
-                  <Links variant="h6" component={Link} href={session ? '/auth/forgot-password' : '/forgot-password'} color="text.primary">
+                  <Links variant="h6" component={Link} href={'/forgot-password'} color="text.primary">
                     Şifremi Unuttum?
                   </Links>
                 </Stack>
@@ -184,7 +266,7 @@ export default function AuthLogin({ providers, csrfToken }) {
                 </AnimateButton>
               </Grid>
             </Grid>
-          </form>
+          </Form>
         )}
       </Formik>
 

@@ -13,7 +13,6 @@ import Loader from 'components/Loader';
 // ==============================|| AUTH GUARD ||============================== //
 
 export default function AuthGuard({ children }) {
-  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
@@ -28,9 +27,7 @@ export default function AuthGuard({ children }) {
     fetchData();
 
     // eslint-disable-next-line
-  }, [session]);
-
-  if (status == 'loading' || !session?.user) return <Loader />;
+  }, []);
 
   return <>{children}</>;
 }

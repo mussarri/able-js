@@ -3,7 +3,6 @@ import { useRef, useState } from 'react';
 
 // next
 import { useRouter } from 'next/navigation';
-import { signOut, useSession } from 'next-auth/react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -27,8 +26,6 @@ import Avatar from 'components/@extended/Avatar';
 import IconButton from 'components/@extended/IconButton';
 import Transitions from 'components/@extended/Transitions';
 import MainCard from 'components/MainCard';
-
-import useUser from 'hooks/useUser';
 
 // assets
 const avatar1 = '/assets/images/users/avatar-6.png';
@@ -71,23 +68,9 @@ const tabStyle = {
 export default function ProfilePage() {
   const theme = useTheme();
   const router = useRouter();
-  const user = useUser();
-
-  const { data: session } = useSession();
-  const provider = session?.provider;
+  const user = {};
 
   const handleLogout = () => {
-    switch (provider) {
-      case 'auth0':
-        signOut({ callbackUrl: `${process.env.NEXTAUTH_URL}/api/auth/logout/auth0` });
-        break;
-      case 'cognito':
-        signOut({ callbackUrl: `${process.env.NEXTAUTH_URL}/api/auth/logout/cognito` });
-        break;
-      default:
-        signOut({ redirect: false });
-    }
-
     router.push('/login');
   };
 

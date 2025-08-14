@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 
 // next
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 
 // project-imports
 import Loader from 'components/Loader';
@@ -13,7 +12,6 @@ import Loader from 'components/Loader';
 // ==============================|| GUEST GUARD ||============================== //
 
 export default function GuestGuard({ children }) {
-  const { data: session, status } = useSession();
   const router = useRouter();
   useEffect(() => {
     const fetchData = async () => {

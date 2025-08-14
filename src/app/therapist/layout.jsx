@@ -7,9 +7,9 @@ import TherapistAuthGuard from 'utils/route-guard/TherapistGuard';
 
 export default function Layout({ children }) {
   return (
-    <TherapistAuthGuard>
-      <TherapistLayout>{children}</TherapistLayout>
-    </TherapistAuthGuard>
+    // <TherapistAuthGuard>
+    <TherapistLayout>{children}</TherapistLayout>
+    // </TherapistAuthGuard>
   );
 }
 

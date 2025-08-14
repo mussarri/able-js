@@ -7,9 +7,9 @@ import AdminAuthGuard from 'utils/route-guard/AdminGuard';
 
 export default function Layout({ children }) {
   return (
-    <AdminAuthGuard>
-      <AdminLayout>{children}</AdminLayout>
-    </AdminAuthGuard>
+    // <AdminAuthGuard>
+    <AdminLayout>{children}</AdminLayout>
+    // </AdminAuthGuard>
   );
 }
 

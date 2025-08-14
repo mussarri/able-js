@@ -2,7 +2,6 @@
 import PropTypes from 'prop-types';
 
 // next
-import { SessionProvider } from 'next-auth/react';
 
 // project-imports
 import ThemeCustomization from 'themes';
@@ -20,10 +19,12 @@ export default function ProviderWrapper({ children }) {
       <ThemeCustomization>
         <RTLLayout>
           <ScrollTop>
-            <SessionProvider refetchInterval={0}>
-              <Snackbar />
-              {children}
-            </SessionProvider>
+            {/* <AuthProvider> */}
+            {/* <SessionProvider refetchInterval={0}> */}
+            <Snackbar />
+            {children}
+            {/* </SessionProvider> */}
+            {/* </AuthProvider> */}
           </ScrollTop>
         </RTLLayout>
       </ThemeCustomization>

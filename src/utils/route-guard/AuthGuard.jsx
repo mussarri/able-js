@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 
 // next
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 
 // project-imports
 import Loader from 'components/Loader';
@@ -13,7 +12,6 @@ import Loader from 'components/Loader';
 // ==============================|| AUTH GUARD ||============================== //
 
 export default function AuthGuard({ children }) {
-  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
@@ -29,8 +27,6 @@ export default function AuthGuard({ children }) {
 
     // eslint-disable-next-line
   }, [session]);
-
-  if (status == 'loading' || !session?.user) return <Loader />;
 
   return <>{children}</>;
 }

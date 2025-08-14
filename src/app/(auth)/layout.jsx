@@ -5,7 +5,7 @@ import GuestGuard from 'utils/route-guard/GuestGuard';
 // ==============================|| AUTH LAYOUT ||============================== //
 
 export default function Layout({ children }) {
-  return <GuestGuard>{children}</GuestGuard>;
+  return <>{children}</>;
 }
 
 Layout.propTypes = { children: PropTypes.node };
