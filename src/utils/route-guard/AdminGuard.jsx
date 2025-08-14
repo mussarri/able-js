@@ -10,18 +10,19 @@ import { useSession } from 'next-auth/react';
 // project-imports
 import Loader from 'components/Loader';
 
-// ==============================|| GUEST GUARD ||============================== //
+// ==============================|| AUTH GUARD ||============================== //
 
-export default function GuestGuard({ children }) {
+export default function AuthGuard({ children }) {
   const { data: session, status } = useSession();
   const router = useRouter();
+
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch('/api/auth/protected');
       const json = await res?.json();
-      if (json?.protected) {
-        // if therapist router.push('/therapist/my-sessions');
-        router.push('/buy-session');
+      //check is therapist route
+      if (!json?.protected) {
+        router.push('/login');
       }
     };
     fetchData();
@@ -29,9 +30,9 @@ export default function GuestGuard({ children }) {
     // eslint-disable-next-line
   }, [session]);
 
-  // if (status === 'loading' || session?.user) return <Loader />;
+  if (status == 'loading' || !session?.user) return <Loader />;
 
   return <>{children}</>;
 }
 
-GuestGuard.propTypes = { children: PropTypes.any };
+AuthGuard.propTypes = { children: PropTypes.any };

@@ -1,8 +1,8 @@
 // project-imports
-import List from 'views/other/TherapistList';
+import BuySession from 'views/other/BuySession';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
 export default function SamplePage() {
-  return <List />;
+  return <BuySession />;
 }

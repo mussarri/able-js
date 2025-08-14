@@ -1,8 +1,8 @@
 // project-imports
-import List from 'views/other/TherapistList';
+import Table from 'views/table/AdminActiveUsers';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
 export default function SamplePage() {
-  return <List />;
+  return <Table />;
 }

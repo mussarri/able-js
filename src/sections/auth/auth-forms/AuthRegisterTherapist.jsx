@@ -82,6 +82,8 @@ export default function AuthRegister({ providers, csrfToken }) {
       <Formik
         initialValues={{
           rumuz: '',
+          firstname: '',
+          lastname: '',
           gsm: '',
           password: '',
           country: '+90',
@@ -93,6 +95,8 @@ export default function AuthRegister({ providers, csrfToken }) {
         }}
         validationSchema={Yup.object().shape({
           rumuz: Yup.string().max(255).required('Rumuz zorunludur'),
+          firstname: Yup.string().max(255).required('Isim zorunludur'),
+          lastname: Yup.string().max(255).required('Soyisim zorunludur'),
           gsm: Yup.string().max(255).required('Gsm zorunludur'),
           country: Yup.string().max(255).required('Ulke kodu zorunludur'),
           otp: Yup.string().max(6).required('Doğrulama kod zorunludur'),
@@ -132,7 +136,7 @@ export default function AuthRegister({ providers, csrfToken }) {
                   <Grid size={12}>
                     {values.country !== '+90' && (
                       <Typography fontSize={13} sx={{ mb: 5 }} color={'textSecondary'}>
-                        Türkiye dışından yapılacak üyeliklerin onayı Whatsapp üzerinden yapılmaktadır.Lütfen aşağıya Whatsapp numaranızı
+                        Türkiye üzerinden yapılacak üyeliklerin onayı Whatsapp üzerinden yapılmaktadır.Lütfen aşağıya Whatsapp numaranızı
                         yazınız.
                       </Typography>
                     )}
@@ -294,19 +298,34 @@ export default function AuthRegister({ providers, csrfToken }) {
                 {step === 2 && (
                   <Grid size={12}>
                     <Stack sx={{ gap: 1 }}>
-                      <InputLabel htmlFor="rumuz-signup">Rumuz*</InputLabel>
+                      <InputLabel htmlFor="firstname-signup">Isim*</InputLabel>
                       <OutlinedInput
-                        id="rumuz-signup"
+                        id="firstname-signup"
                         type="text"
-                        value={values.rumuz}
-                        name="rumuz"
+                        value={values.firstname}
+                        name="firstname"
                         onBlur={handleBlur}
                         onChange={handleChange}
                         placeholder="Bir takma ad"
                         fullWidth
-                        error={Boolean(touched.rumuz && errors.rumuz)}
+                        error={Boolean(touched.firstname && errors.firstname)}
                       />
-                      {touched.rumuz && errors.rumuz && <FormHelperText error>{errors.rumuz}</FormHelperText>}
+                      {touched.firstname && errors.firstname && <FormHelperText error>{errors.firstname}</FormHelperText>}
+                    </Stack>
+                    <Stack sx={{ gap: 1 }}>
+                      <InputLabel htmlFor="lastname-signup">Soyisim*</InputLabel>
+                      <OutlinedInput
+                        id="lastname-signup"
+                        type="text"
+                        value={values.lastname}
+                        name="lastname"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        placeholder="Bir takma ad"
+                        fullWidth
+                        error={Boolean(touched.lastname && errors.lastname)}
+                      />
+                      {touched.lastname && errors.lastname && <FormHelperText error>{errors.lastname}</FormHelperText>}
                     </Stack>
                     <Stack sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                       <Button
@@ -314,7 +333,7 @@ export default function AuthRegister({ providers, csrfToken }) {
                         variant="contained"
                         sx={{ mt: 2, ml: 'auto' }}
                         onClick={() => setStep(3)}
-                        disabled={!values.rumuz || Boolean(errors.rumuz)}
+                        disabled={!values.firstname || Boolean(errors.firstname) || !values.lastname || Boolean(errors.lastname)}
                       >
                         İleri
                       </Button>

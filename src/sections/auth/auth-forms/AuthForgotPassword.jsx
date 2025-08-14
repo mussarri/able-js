@@ -21,6 +21,8 @@ import { openSnackbar } from 'api/snackbar';
 import AnimateButton from 'components/@extended/AnimateButton';
 import useScriptRef from 'hooks/useScriptRef';
 import useUser from 'hooks/useUser';
+import { Autocomplete, Box, CardMedia, TextField } from '@mui/material';
+import countries from 'utils/countries';
 
 // ============================|| FIREBASE - FORGOT PASSWORD ||============================ //
 
@@ -32,11 +34,13 @@ export default function AuthForgotPassword() {
   return (
     <Formik
       initialValues={{
-        email: '',
+        gsm: '',
+        country: '+90',
         submit: null
       }}
       validationSchema={Yup.object().shape({
-        email: Yup.string().email('Must be a valid email').max(255).required('Email is required')
+        gsm: Yup.string().max(15).required('Phone number is required'),
+        country: Yup.string().max(5).required('Country gereklidir.')
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
@@ -46,7 +50,6 @@ export default function AuthForgotPassword() {
             open: true,
             message: 'Check mail for reset password link',
             variant: 'alert',
-
             alert: {
               color: 'success'
             }
@@ -67,38 +70,97 @@ export default function AuthForgotPassword() {
         <form noValidate onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid size={12}>
-              <Stack sx={{ gap: 1 }}>
-                <InputLabel htmlFor="email-forgot">Email Address</InputLabel>
-                <OutlinedInput
-                  fullWidth
-                  error={Boolean(touched.email && errors.email)}
-                  id="email-forgot"
-                  type="email"
-                  value={values.email}
-                  name="email"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  placeholder="Enter email address"
-                />
-              </Stack>
-              {touched.email && errors.email && (
-                <FormHelperText error id="helper-text-email-forgot">
-                  {errors.email}
-                </FormHelperText>
+              {values.country !== '+90' && (
+                <Typography fontSize={13} sx={{ mb: 5 }} color={'textSecondary'}>
+                  Türkiye dışından yapılacak üyeliklerin onayı Whatsapp üzerinden yapılmaktadır.Lütfen aşağıya Whatsapp numaranızı yazınız.
+                </Typography>
               )}
+              <Stack sx={{ gap: 1 }}>
+                <Stack direction="row" sx={{ gap: 2, justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Stack sx={{ gap: 0 }}>
+                    <Autocomplete
+                      id="country"
+                      fullWidth
+                      disableClearable
+                      onBlur={handleBlur}
+                      value={countries.find((item) => item.phone === values.country) || null}
+                      onChange={(_, newValue) => {
+                        // Backend'e göndereceğin değer: telefon kodu
+                        setFieldValue('country', newValue ? newValue.phone : '');
+                      }}
+                      options={countries}
+                      autoHighlight
+                      isOptionEqualToValue={(option, value) => option.code === value?.code}
+                      getOptionLabel={(option) => `${option.phone}`}
+                      renderOption={(props, option) => (
+                        <Box key={option.code} component="li" sx={{ '& > img': { mr: 1, flexShrink: 0 } }} {...props}>
+                          {option.code && (
+                            <CardMedia
+                              component="img"
+                              loading="lazy"
+                              sx={{ width: 20 }}
+                              src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                              srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                              alt="country"
+                            />
+                          )}
+                          {option.code && `${option.phone}`}
+                        </Box>
+                      )}
+                      renderInput={(params) => {
+                        return (
+                          <TextField
+                            {...params}
+                            placeholder="Ülke kodu seçiniz"
+                            name="country"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            helperText={touched.country && errors.country ? errors.country : ''}
+                            error={Boolean(touched.country && errors.country)}
+                            slotProps={{
+                              htmlInput: {
+                                ...params.inputProps,
+                                autoComplete: 'Ülke kodu seçiniz' // disable autocomplete and autofill
+                              }
+                            }}
+                          />
+                        );
+                      }}
+                    />
+                  </Stack>
+                  {values.country === '+90' ? (
+                    <OutlinedInput
+                      type="text"
+                      fullWidth
+                      error={Boolean(touched.gsm && errors.gsm)}
+                      id="gsm"
+                      value={values.gsm}
+                      name="gsm"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      placeholder={'54433322211'}
+                    />
+                  ) : (
+                    <OutlinedInput
+                      type="text"
+                      fullWidth
+                      error={Boolean(touched.gsm && errors.gsm)}
+                      id="gsm"
+                      value={values.gsm}
+                      name="gsm"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      placeholder={'+01-54433322211'}
+                    />
+                  )}
+                </Stack>
+              </Stack>
             </Grid>
-            {errors.submit && (
-              <Grid size={12}>
-                <FormHelperText error>{errors.submit}</FormHelperText>
-              </Grid>
-            )}
-            <Grid sx={{ mb: -2 }} size={12}>
-              <Typography variant="caption">Do not forgot to check SPAM box.</Typography>
-            </Grid>
-            <Grid size={12}>
+
+            <Grid size={12} sx={{ marginTop: '10px', display: 'flex', justifyContent: 'flex-end' }}>
               <AnimateButton>
                 <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                  Send Password Reset Email
+                  Send Password Reset
                 </Button>
               </AnimateButton>
             </Grid>

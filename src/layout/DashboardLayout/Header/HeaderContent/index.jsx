@@ -36,6 +36,9 @@ export default function HeaderContent() {
       {!downLG && <Box sx={{ width: 1, mr: 1 }} />}
       {downLG && <Box sx={{ width: 1, ml: 1 }} />}
 
+      <Link href={'/admin/'} style={{ marginRight: '20px' }}>
+        Admin
+      </Link>
       <Link href={'/therapist/'}>Uzman</Link>
       <DarkMode />
       <Notification />

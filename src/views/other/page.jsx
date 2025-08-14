@@ -1,8 +1,8 @@
 // project-imports
-import List from 'views/other/TherapistList';
+import Calendar from 'views/other/Calendar';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
 export default function SamplePage() {
-  return <List />;
+  return <Calendar />;
 }
