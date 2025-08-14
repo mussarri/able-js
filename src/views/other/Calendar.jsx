@@ -9,23 +9,10 @@ import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import listPlugin from '@fullcalendar/list';
-import FullCalendar from '@fullcalendar/react';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import timelinePlugin from '@fullcalendar/timeline';
-
-// project-imports
-import { useGetEvents, updateEvent } from 'api/calender';
-import { PopupTransition } from 'components/@extended/Transitions';
-import AddEventForm from 'sections/calendar/AddEventForm';
-import CalendarStyled from 'sections/calendar/CalendarStyled';
-import Toolbar from 'sections/calendar/Toolbar';
+ 
 
 // assets
 import { Add } from '@wandersonalwes/iconsax-react';
-import allLocales from '@fullcalendar/core/locales-all';
 import times from 'utils/times';
 import Button from '@mui/material/Button';
 import { fontWeight, minWidth } from '@mui/system';
