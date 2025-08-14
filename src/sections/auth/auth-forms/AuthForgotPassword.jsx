@@ -20,7 +20,6 @@ import * as Yup from 'yup';
 import { openSnackbar } from 'api/snackbar';
 import AnimateButton from 'components/@extended/AnimateButton';
 import useScriptRef from 'hooks/useScriptRef';
-import useUser from 'hooks/useUser';
 import { Autocomplete, Box, CardMedia, TextField } from '@mui/material';
 import countries from 'utils/countries';
 
@@ -29,7 +28,6 @@ import countries from 'utils/countries';
 export default function AuthForgotPassword() {
   const scriptedRef = useScriptRef();
   const router = useRouter();
-  const user = useUser();
 
   return (
     <Formik
