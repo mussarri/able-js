@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import Image from 'next/legacy/image';
 import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
 
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Button from '@mui/material/Button';
@@ -108,22 +107,7 @@ export default function AuthRegister({ providers, csrfToken }) {
             .equals([Yup.ref('password'), null], 'Şifreler eşleşmelidir')
             .required('Şifre tekrarı zorunludur')
         })}
-        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          signIn('register', {
-            redirect: false,
-            rumuz: values.rumuz,
-            password: values.password,
-            gsm: values.gsm,
-            country: values.country
-          }).then((res) => {
-            if (res?.error) {
-              setErrors({ submit: res.error });
-              setSubmitting(false);
-            } else if (res?.url) {
-              router.push(res?.url);
-            }
-          });
-        }}
+        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {}}
       >
         {({ errors, handleBlur, setFieldValue, handleChange, handleSubmit, isSubmitting, touched, values }) => {
           console.log(values);
