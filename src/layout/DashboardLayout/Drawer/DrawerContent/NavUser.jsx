@@ -57,7 +57,7 @@ export default function UserList() {
   };
 
   const handleLogout = async () => {
-    await fetch(process.env.NEXT_PUBLIC_LOCAL_API_URL + '/api/logout', { method: 'POST' });
+    await fetch('/api/logout', { method: 'POST' });
     router.push('/login'); // login sayfasına yönlendir
   };
 

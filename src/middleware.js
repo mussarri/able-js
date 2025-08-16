@@ -42,8 +42,6 @@ export async function middleware(req) {
 }
 
 export const config = {
-  matcher: [
-    // '/nopage'
-    '/((?!_next/static|_next/image|favicon.ico).*)' // tüm sayfaları kapsa
-  ]
+  // '/nopage'
+  matcher: ['/((?!api|_next/static|favicon.ico).*)'] // api rotalarını exclude et
 };

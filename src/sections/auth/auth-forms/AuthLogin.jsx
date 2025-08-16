@@ -86,13 +86,13 @@ export default function AuthLogin({ providers, csrfToken }) {
           };
 
           try {
-            const res = await fetch(process.env.NEXT_PUBLIC_LOCAL_API_URL + '/api/auth/login', {
+            const res = await fetch('/api/auth/login', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(form)
             });
 
-            const data = await res.json();
+            console.log(res);
 
             if (!res.ok) {
               console.log('hata');
@@ -107,12 +107,7 @@ export default function AuthLogin({ providers, csrfToken }) {
         }}
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-          <Form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit(e);
-            }}
-          >
+          <Form onSubmit={handleSubmit}>
             <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
             <Grid container spacing={3}>
               <Grid size={12}>
