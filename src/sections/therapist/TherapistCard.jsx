@@ -29,9 +29,11 @@ const TherapistCard = ({ therapist }) => {
         />
       </div>
       <div style={{ padding: '20px 20px 10px', textAlign: 'left' }}>
-        <div style={{ fontSize: 16, fontWeight: 'semibold', color: theme.palette.text.main }}>Uzman Adi</div>
+        <div style={{ fontSize: 16, fontWeight: 'semibold', color: theme.palette.text.main }}>
+          {therapist?.firstName + ' ' + therapist?.lastName}
+        </div>
         <p style={{ fontSize: 12, color: theme.palette.secondary.main }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque non libero dignissim.
+          {therapist?.title || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque non libero dignissim.'}
         </p>
         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
           <div
@@ -111,7 +113,7 @@ const TherapistCard = ({ therapist }) => {
           value="now"
           aria-label="web"
           onClick={() => {
-            router.push('/buy-session/ahmet?type=now');
+            router.push('/user/buy-session/' + therapist?.expertId + '?type=now');
           }}
         >
           Şimdi Görüş
@@ -121,7 +123,7 @@ const TherapistCard = ({ therapist }) => {
           value="appointment"
           aria-label="android"
           onClick={() => {
-            router.push('/buy-session/ahmet');
+            router.push('/user/buy-session/' + therapist?.expertId);
           }}
         >
           Randevu Al

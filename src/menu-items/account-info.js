@@ -13,7 +13,7 @@ const icons = {
 const buySession = {
   title: 'Hesap Bilgileri',
   type: 'group',
-  url: '/account-info',
+  url: '/user/account-info',
   icon: icons.buySession
 };
 

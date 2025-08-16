@@ -1,8 +1,0 @@
-// project-imports
-import List from 'views/other/TherapistList';
-
-// ==============================|| SAMPLE PAGE ||============================== //
-
-export default function SamplePage() {
-  return <List />;
-}

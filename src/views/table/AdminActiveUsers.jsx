@@ -260,9 +260,7 @@ function ReactTable({ columns, data, title }) {
 
 // ==============================|| REACT TABLE - SORTING ||============================== //
 
-export default function SortingTable() {
-  const data = makeDataOtp(26);
-
+export default function SortingTable({ users }) {
   const columns = useMemo(
     () => [
       {
@@ -274,45 +272,29 @@ export default function SortingTable() {
       },
       {
         header: 'Rumuz',
-        accessorKey: 'rumuz',
+        accessorKey: 'userName',
         enableColumnFilter: true,
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy'
       },
-      {
-        header: 'Ad',
-        accessorKey: 'firstname',
-        enableColumnFilter: true,
-        // eğer özel filterFn istersen:
-        filterFn: 'fuzzy'
-      },
-      {
-        header: 'Soyad',
-        accessorKey: 'lastname',
-        enableColumnFilter: true,
-        // eğer özel filterFn istersen:
-        filterFn: 'fuzzy'
-      },
+
       {
         header: 'Rol',
-        accessorKey: 'role',
+        accessorKey: 'userRole',
         enableColumnFilter: false,
         // eğer özel filterFn istersen:
-        filterFn: 'fuzzy',
-        cell: (info) => {
-          return info === 'patient' ? 'Hasta' : 'Uzman';
-        }
+        filterFn: 'fuzzy'
       },
       {
         header: 'Telefon',
-        accessorKey: 'phone',
+        accessorKey: 'phoneNumber',
         enableColumnFilter: false,
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy'
       },
       {
         header: 'Kayit Tarihi',
-        accessorKey: 'createdAt',
+        accessorKey: 'created',
         filterFn: 'between',
         cell: (info) => {
           const d = new Date(info.getValue());
@@ -321,7 +303,7 @@ export default function SortingTable() {
       },
       {
         header: 'Kayit Seviyesi',
-        accessorKey: '',
+        accessorKey: 'boardStatus',
         enableColumnFilter: false,
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy'
@@ -330,7 +312,7 @@ export default function SortingTable() {
     []
   );
 
-  return <ReactTable {...{ data, columns }} title="Seans Geçmişi" />;
+  return <ReactTable {...{ data: users?.items || [], columns }} title="Seans Geçmişi" />;
 }
 
 ReactTable.propTypes = { columns: PropTypes.array, data: PropTypes.array };

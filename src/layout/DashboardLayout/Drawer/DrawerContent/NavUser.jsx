@@ -45,10 +45,6 @@ export default function UserList() {
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
-  const handleLogout = () => {
-    router.push('/login');
-  };
-
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -58,6 +54,11 @@ export default function UserList() {
   const handleClose = () => {
     router.push('/account-info');
     setAnchorEl(null);
+  };
+
+  const handleLogout = async () => {
+    await fetch(process.env.NEXT_PUBLIC_LOCAL_API_URL + '/api/logout', { method: 'POST' });
+    router.push('/login'); // login sayfasına yönlendir
   };
 
   return (

@@ -6,7 +6,10 @@ export async function middleware(req) {
   console.log('middleware');
 
   // Login/Register hariç her sayfa auth istiyor
-  const isPublicPath = req.nextUrl.pathname.startsWith('/login') || req.nextUrl.pathname.startsWith('/register');
+  const isPublicPath =
+    req.nextUrl.pathname.startsWith('/login') ||
+    req.nextUrl.pathname.startsWith('/register') ||
+    req.nextUrl.pathname.startsWith('/register-therapist');
 
   if (!token && !isPublicPath) {
     return NextResponse.redirect(new URL('/login', req.url));
@@ -14,22 +17,21 @@ export async function middleware(req) {
 
   if (token) {
     try {
-      // Burada sadece decode yapıyoruz (secret istemiyorsan jwt.decode kullan)
-      const decoded = jwt.decode(token);
-
       // Role endpoint'inden doğrulama (opsiyonel)
       const meRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const me = await meRes.json();
 
-      // Role bazlı koruma
-      if (req.nextUrl.pathname.startsWith('/therapist') && me.role !== 'therapist') {
-        return NextResponse.redirect(new URL('/maintenance/401', req.url));
+      if (req.nextUrl.pathname.startsWith('/user') && me.data.role !== 3) {
+        return NextResponse.redirect(new URL('/error?type=unauthorized', req.url));
       }
-      if (req.nextUrl.pathname.startsWith('/admin') && me.role !== 'admin') {
-        return NextResponse.redirect(new URL('/maintenance/401', req.url));
+      if (req.nextUrl.pathname.startsWith('/therapist') && me.data.role !== 2) {
+        return NextResponse.redirect(new URL('/error?type=unauthorized', req.url));
       }
+      // if (req.nextUrl.pathname.startsWith('/admin') && me.data.role !== 1) {
+      //   return NextResponse.redirect(new URL('/error?type=unauthorized', req.url));
+      // }
     } catch (err) {
       console.error('Auth error:', err);
       return NextResponse.redirect(new URL('/login', req.url));
@@ -41,7 +43,7 @@ export async function middleware(req) {
 
 export const config = {
   matcher: [
-    '/nopage'
-    // '/((?!_next/static|_next/image|favicon.ico).*)' // tüm sayfaları kapsa
+    // '/nopage'
+    '/((?!_next/static|_next/image|favicon.ico).*)' // tüm sayfaları kapsa
   ]
 };

@@ -105,8 +105,19 @@ export default function AuthRegister({ providers, csrfToken }) {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {}}
       >
-        {({ errors, handleBlur, setFieldValue, handleChange, handleSubmit, isSubmitting, touched, values }) => {
-          console.log(values);
+        {({
+          errors,
+          handleBlur,
+          setFieldValue,
+          setSubmitting,
+          setFieldError,
+          handleChange,
+          handleSubmit,
+          validateField,
+          isSubmitting,
+          touched,
+          values
+        }) => {
           const selected = countries.find((c) => c.phone === values.country) || null;
           return (
             <form noValidate onSubmit={handleSubmit}>
@@ -200,13 +211,35 @@ export default function AuthRegister({ providers, csrfToken }) {
                         )}
                       </Stack>
                       <Stack direction="row" spacing={2} sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-                        <Button variant="outlined" onClick={() => setStep(0)}>
-                          Geri
-                        </Button>
+                        <Button variant="outlined">Geri</Button>
                         <Button
                           variant="contained"
-                          onClick={() => setStep(1)}
-                          disabled={!values.gsm || Boolean(errors.gsm) || !values.country || Boolean(errors.country)}
+                          onClick={async () => {
+                            try {
+                              setSubmitting(true);
+                              const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/auth/client-register`, {
+                                cache: 'no-store', // her seferinde güncel veri çekmek için,
+                                method: 'POST',
+                                headers: {
+                                  'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                  phoneNumber: values.country.slice(1) + values.gsm,
+                                  kvkkAccepted: true,
+                                  communicationAccepted: true
+                                })
+                              });
+                              if (res.ok) {
+                                setStep(1);
+                              }
+                            } catch (err) {
+                              setFieldError('gsm', err);
+                              console.log(err);
+                            } finally {
+                              setSubmitting(false);
+                            }
+                          }}
+                          disabled={isSubmitting || !values.gsm || Boolean(errors.gsm) || !values.country || Boolean(errors.country)}
                         >
                           İleri
                         </Button>
@@ -255,8 +288,32 @@ export default function AuthRegister({ providers, csrfToken }) {
 
                     <Grid size={12}>
                       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
-                        <Typography>Did not receive the email? Check your spam filter, or</Typography>
-                        <Typography variant="body1" sx={{ minWidth: 87, textDecoration: 'none', cursor: 'pointer' }} color="primary">
+                        <Typography>Did not receive the code? Check your spam filter, or</Typography>
+                        <Typography
+                          onClick={async () => {
+                            try {
+                              setSubmitting(true);
+                              const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/auth/resend-otp`, {
+                                cache: 'no-store', // her seferinde güncel veri çekmek için,
+                                method: 'POST',
+                                headers: {
+                                  'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                  phoneNumber: values.country.slice(1) + values.gsm
+                                })
+                              });
+                            } catch (err) {
+                              setFieldError('otp', err);
+                              console.log(err);
+                            } finally {
+                              setSubmitting(false);
+                            }
+                          }}
+                          variant="body1"
+                          sx={{ minWidth: 87, textDecoration: 'none', cursor: 'pointer' }}
+                          color="primary"
+                        >
                           Resend code
                         </Typography>
                       </Stack>
@@ -266,8 +323,31 @@ export default function AuthRegister({ providers, csrfToken }) {
                         type="button"
                         variant="contained"
                         sx={{ mt: 2, ml: 'auto' }}
-                        onClick={() => setStep(2)}
-                        disabled={!values.otp || Boolean(errors.otp)}
+                        onClick={async () => {
+                          try {
+                            setSubmitting(true);
+                            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/auth/verify-otp`, {
+                              cache: 'no-store', // her seferinde güncel veri çekmek için,
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json'
+                              },
+                              body: JSON.stringify({
+                                phoneNumber: values.country.slice(1) + values.gsm,
+                                otp: values.otp
+                              })
+                            });
+                            if (res.ok) {
+                              setStep(2);
+                            }
+                          } catch (err) {
+                            setFieldError('otp', err);
+                            console.log(err);
+                          } finally {
+                            setSubmitting(false);
+                          }
+                        }}
+                        disabled={isSubmitting || !values.otp || Boolean(errors.otp)}
                       >
                         İleri
                       </Button>
@@ -297,7 +377,32 @@ export default function AuthRegister({ providers, csrfToken }) {
                         type="button"
                         variant="contained"
                         sx={{ mt: 2, ml: 'auto' }}
-                        onClick={() => setStep(3)}
+                        onClick={async () => {
+                          try {
+                            setSubmitting(true);
+                            const checkusename = await fetch(
+                              `${process.env.NEXT_PUBLIC_API_URL}api/auth/check-username?username=${values.rumuz}`,
+                              {
+                                cache: 'no-store', // her seferinde güncel veri çekmek için,
+                                headers: {
+                                  'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                  phoneNumber: values.country.slice(1) + values.gsm,
+                                  otp: values.otp
+                                })
+                              }
+                            );
+                            if (checkusename.ok) {
+                              setStep(3);
+                            }
+                          } catch (err) {
+                            setFieldError('otp', err);
+                            console.log(err);
+                          } finally {
+                            setSubmitting(false);
+                          }
+                        }}
                         disabled={!values.rumuz || Boolean(errors.rumuz)}
                       >
                         İleri

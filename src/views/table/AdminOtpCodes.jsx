@@ -258,7 +258,7 @@ function ReactTable({ columns, data, title }) {
 
 // ==============================|| REACT TABLE - SORTING ||============================== //
 
-export default function SortingTable() {
+export default function SortingTable({ otpCodes }) {
   const data = makeDataOtp(26);
 
   const columns = useMemo(
@@ -336,7 +336,7 @@ export default function SortingTable() {
     []
   );
 
-  return <ReactTable {...{ data, columns }} title="Seans Geçmişi" />;
+  return <ReactTable {...{ data: otpCodes?.items || [], columns }} title="Seans Geçmişi" />;
 }
 
 ReactTable.propTypes = { columns: PropTypes.array, data: PropTypes.array };

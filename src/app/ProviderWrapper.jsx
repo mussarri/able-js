@@ -20,10 +20,8 @@ export default function ProviderWrapper({ children }) {
         <RTLLayout>
           <ScrollTop>
             {/* <AuthProvider> */}
-            {/* <SessionProvider refetchInterval={0}> */}
             <Snackbar />
             {children}
-            {/* </SessionProvider> */}
             {/* </AuthProvider> */}
           </ScrollTop>
         </RTLLayout>

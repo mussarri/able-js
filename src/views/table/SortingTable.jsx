@@ -1,7 +1,7 @@
 'use client';
 import PropTypes from 'prop-types';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 // material-ui
 import Chip from '@mui/material/Chip';
@@ -35,6 +35,7 @@ import { fontSize, Grid } from '@mui/system';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { Divider, TextField, useTheme } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 // ==============================|| REACT TABLE ||============================== //
 
@@ -187,6 +188,9 @@ function ReactTable({ columns, data, title }) {
         </Stack>
       }
     >
+      {/* <Stack sx={{ gap: 1, maxWidth: '500px', padding: '10px' }}>
+              <Select fullWidth value={''} onChange={() => {}} placeholder="Ara.." />
+            </Stack> */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -255,8 +259,24 @@ function ReactTable({ columns, data, title }) {
 
 // ==============================|| REACT TABLE - SORTING ||============================== //
 
-export default function SortingTable() {
+export default function SortingTable({ list }) {
   const data = makeData(26);
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const filter = searchParams.get('filter');
+
+  const createQueryString = useCallback(
+    (name, value) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
 
   const columns = useMemo(
     () => [
@@ -267,42 +287,28 @@ export default function SortingTable() {
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy'
       },
+
       {
-        header: 'Satin Alma Tarihi',
-        accessorKey: 'purchasedAt',
-        filterFn: 'between',
-        cell: (info) => {
-          const d = new Date(info.getValue());
-          return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('tr-TR');
-        }
-      },
-      {
-        header: 'Görüşme Tarihi',
-        accessorKey: 'seansAt',
+        header: 'Baslangic',
+        accessorKey: 'startTime',
         type: 'date',
         filterFn: 'between',
         cell: (info) => {
           const d = new Date(info.getValue());
-          return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('tr-TR');
+          return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('tr-TR') + '-' + d.toLocaleTimeString('tr-TR');
         }
       },
       {
-        header: 'Görüşme Süresi',
-        accessorKey: 'time',
-        meta: { className: 'cell-center' },
+        header: 'Sonlanma',
+        accessorKey: 'endTime',
+        type: 'date',
+        filterFn: 'between',
         cell: (info) => {
-          const convertSeconds = (seconds) => {
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            if (hours > 0) {
-              return `${hours} saat : ${minutes} dakika`;
-            } else {
-              return `${minutes} dakika`;
-            }
-          };
-          return convertSeconds(info.getValue() * 60);
+          const d = new Date(info.getValue());
+          return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('tr-TR') + '-' + d.toLocaleTimeString('tr-TR');
         }
       },
+
       {
         header: 'Fiyat',
         accessorKey: 'price',
@@ -325,7 +331,7 @@ export default function SortingTable() {
     []
   );
 
-  return <ReactTable {...{ data, columns }} title="Seans Geçmişi" />;
+  return <ReactTable {...{ data: list, columns }} title="Seans Geçmişi" />;
 }
 
 ReactTable.propTypes = { columns: PropTypes.array, data: PropTypes.array };

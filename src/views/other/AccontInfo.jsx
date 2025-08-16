@@ -28,7 +28,7 @@ import TabPersonal from 'sections/user/TabPersonal';
 
 // ==============================|| PROFILE - USER ||============================== //
 
-export default function UserProfile({ tab }) {
+export default function UserProfile({ tab, user }) {
   const inputRef = useRef(null);
   const pathname = usePathname();
   const { menuMaster } = useGetMenuMaster();
@@ -51,7 +51,7 @@ export default function UserProfile({ tab }) {
         <ProfileTabs focusInput={focusInput} />
       </Grid>
       <Grid size={{ xs: 12, md: 9 }}>
-        {tab === 'personal' && <TabPersonal />}
+        {tab === 'personal' && <TabPersonal user={user} />}
         {tab === 'invoice' && <TabInvoice />}
         {tab === 'password' && <TabPassword />}
         {/* {tab === 'settings' && <TabSettings />} */}

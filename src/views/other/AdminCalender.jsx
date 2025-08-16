@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 // material-ui
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -8,13 +8,14 @@ import SpeedDial from '@mui/material/SpeedDial';
 import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
- 
+
 // assets
 import { Add } from '@wandersonalwes/iconsax-react';
 import times from 'utils/times';
 import Button from '@mui/material/Button';
 import { fontWeight, minWidth } from '@mui/system';
 import { Autocomplete, Input, InputLabel, Stack, TextField } from '@mui/material';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 // ==============================|| CALENDAR - MAIN ||============================== //
 function getNext30Days() {
   const days = [];
@@ -34,11 +35,26 @@ function getNext30Days() {
   return days;
 }
 
-export default function Calendar() {
-  const days = getNext30Days();
+export default function Calendar({ experts, days, slots }) {
+  const days30 = getNext30Days();
   const theme = useTheme();
-  const [selectedDate, setSelectedDate] = useState();
+  console.log(experts);
+
   const [selectedTime, setSelectedTime] = useState();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const date = searchParams.get('date');
+  const expert = searchParams.get('expert');
+  const createQueryString = useCallback(
+    (name, value) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
 
   const style = {
     unset: {
@@ -73,42 +89,54 @@ export default function Calendar() {
           <Autocomplete
             sx={{ width: '100%' }}
             fullWidth
+            onChange={(_, newValue) => {
+              router.push(pathname + '?' + createQueryString('expert', newValue.expertId));
+            }}
             disablePortal
             id="basic-autocomplete-label"
-            options={['uzman1', 'uzman2']}
+            options={[
+              { name: 'option1', value: 'value1' },
+              { name: 'option2', value: 'value2' }
+            ]}
+            getOptionLabel={(option) => `${option.name}`}
+            isOptionEqualToValue={(option, value) => option.name === value?.name}
             renderInput={(params) => <TextField {...params} label="Uzman" />}
           />
         </Stack>
       </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          gap: 2,
-          alignItems: 'center',
-          width: '100%',
-          overflowX: 'scroll',
-          scrollbarWidth: 'none',
-          marginTop: '40px'
-        }}
-      >
-        {days.map((item, index) => (
-          <Box
-            sx={{
-              minWidth: 'max-content',
-              border: '2px solid',
-              borderRadius: '10px',
-              padding: '12px 24px',
-              cursor: 'pointer',
-              borderColor: item == selectedDate ? theme.palette.primary.main : theme.palette.secondary.light,
-              color: item == selectedDate ? theme.palette.primary.main : theme.palette.secondary.main
-            }}
-            onClick={() => setSelectedDate(item)}
-            key={index}
-          >
-            {item}
-          </Box>
-        ))}
-      </Box>
+      {false && (
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            alignItems: 'center',
+            width: '100%',
+            overflowX: 'scroll',
+            scrollbarWidth: 'none',
+            marginTop: '40px'
+          }}
+        >
+          {days30.map((item, index) => (
+            <Box
+              sx={{
+                minWidth: 'max-content',
+                border: '2px solid',
+                borderRadius: '10px',
+                padding: '12px 24px',
+                cursor: 'pointer',
+                borderColor: item == date ? theme.palette.primary.main : theme.palette.secondary.light,
+                color: item == date ? theme.palette.primary.main : theme.palette.secondary.main
+              }}
+              onClick={() => {
+                router.push(pathname + '?' + createQueryString('date', item.toISOString().split('T')[0]));
+              }}
+              key={index}
+            >
+              {item}
+            </Box>
+          ))}
+        </Box>
+      )}
 
       <Box
         sx={{

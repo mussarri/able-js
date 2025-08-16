@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 // material-ui
 import Stack from '@mui/material/Stack';
@@ -29,13 +29,13 @@ import {
 } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import { Box, maxWidth } from '@mui/system';
-import times from 'utils/times';
 import { TabList } from '@mui/lab';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 // ==============================|| DATE PICKER - BASIC ||============================== //
 
 import { School, Videocam } from '@mui/icons-material';
 import MicIcon from '@mui/icons-material/Mic';
+import { useEffect } from 'react';
 
 function countConsecutiveFreeSlots(allowedTimes, selectedTime) {
   if (!selectedTime) return 0; // seçili saat yoksa direkt 0 dön
@@ -91,31 +91,45 @@ const basicDatepickerCodeString = `<LocalizationProvider dateAdapter={AdapterDat
   </Stack>
 </LocalizationProvider>`;
 
-export default function BasicDateTimePickers() {
+export default function BasicDateTimePickers({ days, times }) {
   const theme = useTheme();
   const today = dayjs();
   const maxDate = today.add(30, 'day');
-  const allowedDates = ['2025-08-15', '2025-08-20', '2025-08-25'].map((dateStr) => dayjs(dateStr));
+  // const allowedDates = ['2025-08-15', '2025-08-20', '2025-08-25'].map((dateStr) => dayjs(dateStr));
   var currentdate = new Date();
-
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const type = searchParams.get('type');
+  const date = searchParams.get('date');
+  const createQueryString = useCallback(
+    (name, value) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
 
   // Tarihin seçilebilir olup olmadığını kontrol eden fonksiyon
   const isDateAllowed = (date) => {
-    return allowedDates.some((allowedDate) => allowedDate.isSame(date, 'day'));
+    return days
+      .map((item) => {
+        return { date: dayjs(item.date), isAvailable: item.isAvailable };
+      })
+      .some((allowedDate) => allowedDate.date.isSame(date, 'day'));
   };
+  // const isTimeAllowed = (hour, minute) => {
+  //   const timeStr = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+  //   return allowedStartTimes.includes(timeStr);
+  // };
 
-  const allowedStartTimes = ['08:00', '08:30', '09:00', '10:30', '14:00', '15:30'];
-  const isTimeAllowed = (hour, minute) => {
-    const timeStr = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-    return allowedStartTimes.includes(timeStr);
-  };
-
-  const [value, setValue] = useState(today);
+  const [day, setDay] = useState(today);
   const [time, setTime] = useState();
+
   const [duration, setDuration] = useState();
-  const availableDurations = ['30 dk', '60 dk', '90 dk', '120 dk', '150 dk'].slice(0, countConsecutiveFreeSlots(allowedStartTimes, time));
+  const availableDurations = ['30 dk', '60 dk', '90 dk', '120 dk', '150 dk'].slice(0, countConsecutiveFreeSlots(times, time));
   const [alignment, setAlignment] = useState('one');
 
   const handleAlignment = (event, newAlignment) => {
@@ -162,7 +176,7 @@ export default function BasicDateTimePickers() {
                 }
               }}
             >
-              <ToggleButton value="sesli" aria-label="first">
+              <ToggleButton value="sesli1" aria-label="first">
                 <div
                   style={{
                     display: 'flex',
@@ -190,7 +204,7 @@ export default function BasicDateTimePickers() {
                 </div>
               </ToggleButton>
 
-              <ToggleButton value="video" aria-label="second">
+              <ToggleButton value="video0" aria-label="second">
                 <div
                   style={{
                     display: 'flex',
@@ -220,10 +234,12 @@ export default function BasicDateTimePickers() {
               </InputLabel>
               <DesktopDatePicker
                 sx={{ width: '100%' }}
-                format="MM/dd/yyyy"
-                value={value}
+                format="dd/MM/yyyy"
+                value={date ? new Date(date) : day}
                 onChange={(newValue) => {
-                  setValue(newValue);
+                  setDay(newValue);
+                  const localDate = newValue.toLocaleDateString('en-CA'); // YYYY-MM-DD formatında
+                  router.push(pathname + '?' + createQueryString('date', localDate));
                 }}
                 shouldDisableDate={(date) => {
                   if (!date) return true; // null ise disable
@@ -232,26 +248,37 @@ export default function BasicDateTimePickers() {
               />
             </Stack>
           )}
-          <Stack sx={{ gap: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
-            <InputLabel sx={{ minWidth: 130 }} htmlFor="email-login">
-              Saat Seçiniz{' '}
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              sx={{ width: '100%' }}
-              value={time}
-              label="Age"
-              defaultValue={'Saat seçiniz..'}
-              onChange={(e) => setTime(e.target.value)}
-            >
-              {times.map((time, index) => (
-                <MenuItem key={time} value={time} disabled={!isTimeAllowed(time.split(':')[0], time.split(':')[1])} s>
-                  {time}
-                </MenuItem>
-              ))}
-            </Select>
-          </Stack>
+          {!!date &&
+            (times.length > 0 ? (
+              <Stack sx={{ gap: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
+                <InputLabel sx={{ minWidth: 130 }} htmlFor="email-login">
+                  Saat Seçiniz{' '}
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  sx={{ width: '100%' }}
+                  value={time}
+                  label="Age"
+                  defaultValue={'Saat seçiniz..'}
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                  }}
+                >
+                  {times.map((time, index) => (
+                    <MenuItem
+                      key={time}
+                      value={time}
+                      // disabled={!isTimeAllowed(time.split(':')[0], time.split(':')[1])}
+                    >
+                      {time.split('T')[1].slice(0, 5)}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Stack>
+            ) : (
+              <div style={{ textAlign: 'right' }}>Uygun saat bulunamadi.</div>
+            ))}
           {time && (
             <Stack sx={{ gap: 1, display: 'flex', alignItems: 'center', justifyContent: 'items-start', flexDirection: 'row' }}>
               <InputLabel sx={{ minWidth: 130 }} htmlFor="email-login">

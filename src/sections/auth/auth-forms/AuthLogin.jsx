@@ -97,7 +97,7 @@ export default function AuthLogin({ providers, csrfToken }) {
             if (!res.ok) {
               console.log('hata');
             } else {
-              router.push('/buy-session');
+              router.push('/');
             }
           } catch (err) {
             console.error('Login hatası:', err);

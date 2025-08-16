@@ -1,28 +1,27 @@
 // project-imports
+import Loader from 'components/Loader';
 import { cookies } from 'next/headers';
 import { Suspense } from 'react';
-import Table from 'views/table/AdminActiveUsers';
+import List from 'views/other/TherapistList';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
-export default function SamplePage() {
+export default function SamplePage(params) {
   return (
-    <Suspense>
-      <Table />
+    <Suspense fallback={<Loader />}>
+      <RenderPage params={params} />
     </Suspense>
   );
 }
 
-async function Render() {
+async function RenderPage({ params }) {
   const cookie = await cookies();
   const token = cookie.get('token')?.value;
 
-  const dateObject = new Date(date);
-  let users = [];
-
+  let list = [];
   if (token) {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/Admin/getActiveUsersPaged`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/Client/searchExperts`, {
         headers: {
           Authorization: `Bearer ${token}`
         },
@@ -31,11 +30,12 @@ async function Render() {
 
       if (res.ok) {
         const data = await res.json();
-        users = data.data;
+        list = data.data;
       }
     } catch (error) {
-      console.error('Session history alınamadı:', error);
+      console.error('Uzman listesi alınamadı:', error);
     }
   }
-  return <Table users={users} />;
+
+  return <List list={list} />;
 }

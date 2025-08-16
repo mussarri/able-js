@@ -34,51 +34,9 @@ const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = { PaperProps: { style: { maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP } } };
 
-const skills = [
-  'Adobe XD',
-  'After Effect',
-  'Angular',
-  'Animation',
-  'ASP.Net',
-  'Bootstrap',
-  'C#',
-  'CC',
-  'Corel Draw',
-  'CSS',
-  'DIV',
-  'Dreamweaver',
-  'Figma',
-  'Graphics',
-  'HTML',
-  'Illustrator',
-  'J2Ee',
-  'Java',
-  'Javascript',
-  'JQuery',
-  'Logo Design',
-  'Material UI',
-  'Motion',
-  'MVC',
-  'MySQL',
-  'NodeJS',
-  'npm',
-  'Photoshop',
-  'PHP',
-  'React',
-  'Redux',
-  'Reduxjs & tooltit',
-  'SASS',
-  'SCSS',
-  'SQL Server',
-  'SVG',
-  'UI/UX',
-  'User Interface Designing',
-  'Wordpress'
-];
-
 // ==============================|| USER PROFILE - PERSONAL ||============================== //
 
-export default function TabPersonal() {
+export default function TabPersonal({ user }) {
   const handleChangeDay = (event, date, setFieldValue) => {
     setFieldValue('dob', new Date(date.setDate(parseInt(event.target.value, 10))));
   };
@@ -94,35 +52,18 @@ export default function TabPersonal() {
     <MainCard content={false} title="Personal Information" sx={{ '& .MuiInputLabel-root': { fontSize: '0.875rem' } }}>
       <Formik
         initialValues={{
-          rumuz: 'Stebin',
-          lastname: 'Ben',
+          rumuz: user.userName,
+          lastname: user.lastName,
+          firstname: user.firstName,
           email: 'stebin.ben@gmail.com',
           dob: new Date('03-10-1993'),
-          countryCode: '+91',
+          countryCode: '+90',
           contact: 9652364852,
           designation: 'Full Stack Developer',
           address: '3801 Chalk Butte Rd, Cut Bank, MT 59427, United States',
           address1: '301 Chalk Butte Rd, Cut Bank, NY 96572, New York',
           country: 'US',
           state: 'California',
-          skill: [
-            'Adobe XD',
-            'Angular',
-            'Corel Draw',
-            'Figma',
-            'HTML',
-            'Illustrator',
-            'Javascript',
-            'Logo Design',
-            'Material UI',
-            'NodeJS',
-            'npm',
-            'Photoshop',
-            'React',
-            'Reduxjs & tooltit',
-            'SASS'
-          ],
-          note: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.`,
           submit: null
         }}
         validationSchema={Yup.object().shape({
@@ -133,11 +74,9 @@ export default function TabPersonal() {
           contact: Yup.number()
             .test('len', 'Contact should be exactly 10 digit', (val) => val?.toString().length === 10)
             .required('Phone number is required'),
-          designation: Yup.string().required('Designation is required'),
           address: Yup.string().min(50, 'Address to short.').required('Address is required'),
           country: Yup.string().required('Country is required'),
-          state: Yup.string().required('State is required'),
-          note: Yup.string().min(150, 'Not shoulde be more then 150 char.')
+          state: Yup.string().required('State is required')
         })}
         onSubmit={(values, { setErrors, setStatus, setSubmitting }) => {
           try {
@@ -170,7 +109,7 @@ export default function TabPersonal() {
                       name="rumuz"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      placeholder="First Name"
+                      placeholder="rumuz"
                       autoFocus
                     />
                   </Stack>

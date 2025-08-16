@@ -12,7 +12,7 @@ const icons = {
 const sessionHistory = {
   title: 'Seans Geçmişi',
   type: 'group',
-  url: '/session-history',
+  url: '/user/session-history',
   icon: icons.sessionHistory
 };
 

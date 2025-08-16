@@ -13,7 +13,7 @@ const icons = {
 const buySession = {
   title: 'Seans Satın Al',
   type: 'group',
-  url: '/buy-session',
+  url: '/user/buy-session',
   icon: icons.buySession
 };
 

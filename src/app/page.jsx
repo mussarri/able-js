@@ -1,8 +1,10 @@
 // project-imports
+import { redirect } from 'next/navigation';
 import Login from 'views/authentication/Login';
 
 // ==============================|| HOME PAGE ||============================== //
 
 export default function HomePage() {
-  return <Login />;
+  return redirect('/user/buy-session');
+  // return <Login />;
 }

@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
     const token = localStorage.getItem('token');
     if (token) {
       api
-        .get('/auth/me')
+        .get('api/Auth/me')
         .then((res) => setUser(res.data))
         .catch(() => logout());
     }
