@@ -107,7 +107,12 @@ export default function AuthLogin({ providers, csrfToken }) {
         }}
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-          <Form onSubmit={handleSubmit}>
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(e);
+            }}
+          >
             <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
             <Grid container spacing={3}>
               <Grid size={12}>
