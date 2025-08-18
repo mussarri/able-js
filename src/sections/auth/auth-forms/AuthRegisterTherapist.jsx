@@ -39,4 +39,3 @@ export default function AuthRegister() {
   );
 }
 
-AuthRegister.propTypes = { providers: PropTypes.any, csrfToken: PropTypes.any };
