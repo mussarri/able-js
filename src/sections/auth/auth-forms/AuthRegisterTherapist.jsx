@@ -23,19 +23,14 @@ export default function AuthRegister() {
   const [step, setStep] = useState(0);
 
   return (
-    <>
-      <form noValidate onSubmit={handleSubmit}>
-        <Grid container spacing={3}>
-          {step == 0 && <Step0 setStep={setStep} client={false} />}
+    <Grid container spacing={3}>
+      {step == 0 && <Step0 setStep={setStep} client={false} />}
 
-          {step == 1 && <Step1 setStep={setStep} />}
+      {step == 1 && <Step1 setStep={setStep} />}
 
-          {step === 2 && <Step2 setStep={setStep} />}
+      {step === 2 && <Step2 setStep={setStep} />}
 
-          {step === 3 && <Step3 setStep={setStep} />}
-        </Grid>
-      </form>
-    </>
+      {step === 3 && <Step3 setStep={setStep} />}
+    </Grid>
   );
 }
-
