@@ -1,23 +1,43 @@
 // project-imports
+import Loader from 'components/Loader';
 import { cookies } from 'next/headers';
+import { Suspense } from 'react';
 import Table from 'views/table/AdminOtpCodes';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
-export default function SamplePage() {
-  return <Table />;
+export default function SamplePage({ searchParams }) {
+  return (
+    <Suspense fallback={<Loader />}>
+      {' '}
+      <Render searchParams={searchParams} />
+    </Suspense>
+  );
 }
 
-async function Render() {
+async function Render({ searchParams }) {
   const cookie = await cookies();
   const token = cookie.get('token')?.value;
 
-  const dateObject = new Date(date);
   let otpCodes = [];
+
+  const params = new URLSearchParams();
+
+  if (searchParams.search) {
+    params.append('search', searchParams.search);
+  }
+
+  if (searchParams.page) {
+    params.append('page', searchParams.page);
+  }
+
+  if (searchParams.type) {
+    params.append('type', searchParams.type);
+  }
 
   if (token) {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/Admin/getOtpListPaged`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/Admin/getOtpListPaged?${params.toString()}`, {
         headers: {
           Authorization: `Bearer ${token}`
         },

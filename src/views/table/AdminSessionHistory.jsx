@@ -258,41 +258,30 @@ function ReactTable({ columns, data, title }) {
 
 // ==============================|| REACT TABLE - SORTING ||============================== //
 
-export default function SortingTable() {
+export default function SortingTable({ sessions }) {
   const data = makeData(26);
 
   const columns = useMemo(
     () => [
       {
         header: 'Uzman',
-        accessorKey: 'therapist',
+        accessorKey: '',
         enableColumnFilter: true,
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy'
       },
       {
         header: 'Hasta',
-        accessorKey: 'patient',
+        accessorKey: '',
         enableColumnFilter: true,
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy'
       },
       {
         header: 'Satin Alma Tarihi',
-        accessorKey: 'purchasedAt',
+        accessorKey: 'dateCreated',
         enableColumnFilter: false,
         filterFn: 'between',
-        cell: (info) => {
-          const d = new Date(info.getValue());
-          return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('tr-TR');
-        }
-      },
-      {
-        header: 'Görüşme Tarihi',
-        accessorKey: 'seansAt',
-        type: 'date',
-        filterFn: 'between',
-        enableColumnFilter: false,
         cell: (info) => {
           const d = new Date(info.getValue());
           return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('tr-TR');
@@ -300,20 +289,12 @@ export default function SortingTable() {
       },
       {
         header: 'Görüşme Süresi',
-        accessorKey: 'time',
+        accessorKey: 'startTime',
         enableColumnFilter: false,
         meta: { className: 'cell-center' },
         cell: (info) => {
-          const convertSeconds = (seconds) => {
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            if (hours > 0) {
-              return `${hours} saat : ${minutes} dakika`;
-            } else {
-              return `${minutes} dakika`;
-            }
-          };
-          return convertSeconds(info.getValue() * 60);
+          const d = new Date(info.getValue());
+          return d.toISOString().split('T')[0] + ' ' + d.toISOString().split('T')[1].slice(0, 5);
         }
       },
       {
@@ -338,7 +319,7 @@ export default function SortingTable() {
     []
   );
 
-  return <ReactTable {...{ data, columns }} title="Seans Geçmişi" />;
+  return <ReactTable {...{ data: sessions, columns }} title="Seans Geçmişi" />;
 }
 
 ReactTable.propTypes = { columns: PropTypes.array, data: PropTypes.array };

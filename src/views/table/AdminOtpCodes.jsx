@@ -1,7 +1,7 @@
 'use client';
 import PropTypes from 'prop-types';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 // material-ui
 import Chip from '@mui/material/Chip';
@@ -35,6 +35,10 @@ import { fontSize, Grid } from '@mui/system';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { Divider, OutlinedInput, TextField, useTheme } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { useEffect } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useDebounce } from 'use-debounce';
+import UpdateOtp from 'components/UpdateOtp';
 
 // ==============================|| REACT TABLE ||============================== //
 
@@ -131,6 +135,26 @@ function ReactTable({ columns, data, title }) {
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const theme = useTheme();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const [text, setText] = useState('');
+  const [value] = useDebounce(text, 1000);
+
+  const createQueryString = useCallback(
+    (name, value) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
+  useEffect(() => {
+    router.push(pathname + '?' + createQueryString('search', value));
+  }, [value]);
 
   const table = useReactTable({
     data,
@@ -188,7 +212,14 @@ function ReactTable({ columns, data, title }) {
       }
     >
       <Stack sx={{ gap: 1, maxWidth: '500px', padding: '10px' }}>
-        <OutlinedInput fullWidth value={''} onChange={() => {}} placeholder="Ara.." />
+        <OutlinedInput
+          fullWidth
+          value={text}
+          onChange={(e) => {
+            setText(e.target.value);
+          }}
+          placeholder="Ara.."
+        />
       </Stack>
       <TableContainer component={Paper}>
         <Table>
@@ -264,70 +295,62 @@ export default function SortingTable({ otpCodes }) {
   const columns = useMemo(
     () => [
       {
-        header: 'id',
-        accessorKey: 'id',
-        enableColumnFilter: false,
-        // eğer özel filterFn istersen:
-        filterFn: 'fuzzy'
-      },
-      {
-        header: 'Rumuz',
-        accessorKey: 'rumuz',
+        header: 'User Id',
+        accessorKey: 'userId',
         enableColumnFilter: true,
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy'
       },
       {
-        header: 'Ad',
-        accessorKey: 'firstname',
+        header: 'Isim',
+        accessorKey: 'userName',
         enableColumnFilter: true,
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy'
       },
-      {
-        header: 'Soyad',
-        accessorKey: 'lastname',
-        enableColumnFilter: true,
-        // eğer özel filterFn istersen:
-        filterFn: 'fuzzy'
-      },
+
       {
         header: 'Rol',
-        accessorKey: 'role',
+        accessorKey: 'userRole',
         enableColumnFilter: false,
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy',
         cell: (info) => {
-          return info === 'patient' ? 'Hasta' : 'Uzman';
+          return info.getValue() === 1 ? 'Admin' : info.getValue() === 2 ? 'Uzman' : 'Kullanici';
         }
       },
       {
         header: 'Telefon',
-        accessorKey: 'phone',
+        accessorKey: 'phoneNumber',
         enableColumnFilter: false,
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy'
       },
       {
-        header: 'Kayit Tarihi',
-        accessorKey: 'createdAt',
+        header: 'Son Kullanma Tarihi',
+        accessorKey: 'expirationTime',
         filterFn: 'between',
         enableColumnFilter: false,
         cell: (info) => {
           const d = new Date(info.getValue());
-          return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('tr-TR');
+          //button update son kullanma tarihi
+          //<UpdateExpiration />
+          return (
+            <UpdateOtp
+              text={isNaN(d.getTime()) ? '-' : d.toLocaleDateString('tr-TR') + ' - ' + d.toLocaleTimeString('tr-TR')}
+              otpId={info.row.original.otpId}
+              code={info.row.original.otpCode}
+            />
+          );
         }
       },
       {
         header: 'OTP',
-        accessorKey: 'otp',
-        enableColumnFilter: false,
-        // eğer özel filterFn istersen:
-        filterFn: 'fuzzy'
+        accessorKey: 'otpCode'
       },
       {
         header: 'Neden',
-        accessorKey: 'cause',
+        accessorKey: 'purpose',
         enableColumnFilter: false,
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy'

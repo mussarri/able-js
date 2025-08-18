@@ -16,6 +16,9 @@ import Button from '@mui/material/Button';
 import { fontWeight, minWidth } from '@mui/system';
 import { Autocomplete, Input, InputLabel, Stack, TextField } from '@mui/material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import Selecto from 'react-selecto';
+import CreateSlotsAdmin from 'components/CreateSlotsAdmin';
+import AdminDeleteSlot from 'components/AdminDeleteSlot';
 // ==============================|| CALENDAR - MAIN ||============================== //
 function getNext30Days() {
   const days = [];
@@ -29,16 +32,15 @@ function getNext30Days() {
     const monthName = date.toLocaleString('tr-TR', { month: 'long' });
     const formatted = `${day} ${monthName.charAt(0).toUpperCase() + monthName.slice(1)}`;
 
-    days.push(formatted);
+    days.push(date);
   }
 
   return days;
 }
 
-export default function Calendar({ experts, days, slots }) {
-  const days30 = getNext30Days();
+export default function Calendar({ experts, slots }) {
+  const days = getNext30Days();
   const theme = useTheme();
-  console.log(experts);
 
   const [selectedTime, setSelectedTime] = useState();
   const router = useRouter();
@@ -46,6 +48,8 @@ export default function Calendar({ experts, days, slots }) {
   const searchParams = useSearchParams();
   const date = searchParams.get('date');
   const expert = searchParams.get('expert');
+  const [selected, setSelected] = useState([]);
+
   const createQueryString = useCallback(
     (name, value) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -94,17 +98,15 @@ export default function Calendar({ experts, days, slots }) {
             }}
             disablePortal
             id="basic-autocomplete-label"
-            options={[
-              { name: 'option1', value: 'value1' },
-              { name: 'option2', value: 'value2' }
-            ]}
+            options={experts}
             getOptionLabel={(option) => `${option.name}`}
+            value={experts?.find((i) => i?.expertId == expert)}
             isOptionEqualToValue={(option, value) => option.name === value?.name}
             renderInput={(params) => <TextField {...params} label="Uzman" />}
           />
         </Stack>
       </Box>
-      {false && (
+      {expert && (
         <Box
           sx={{
             display: 'flex',
@@ -116,84 +118,117 @@ export default function Calendar({ experts, days, slots }) {
             marginTop: '40px'
           }}
         >
-          {days30.map((item, index) => (
-            <Box
-              sx={{
-                minWidth: 'max-content',
-                border: '2px solid',
-                borderRadius: '10px',
-                padding: '12px 24px',
-                cursor: 'pointer',
-                borderColor: item == date ? theme.palette.primary.main : theme.palette.secondary.light,
-                color: item == date ? theme.palette.primary.main : theme.palette.secondary.main
-              }}
-              onClick={() => {
-                router.push(pathname + '?' + createQueryString('date', item.toISOString().split('T')[0]));
-              }}
-              key={index}
-            >
-              {item}
-            </Box>
-          ))}
+          {days.map((item, index) => {
+            const day = item.getDate();
+            const monthName = item.toLocaleString('tr-TR', { month: 'long' });
+            const formatted = `${day} ${monthName.charAt(0).toUpperCase() + monthName.slice(1)}`;
+            return (
+              <Box
+                sx={{
+                  minWidth: 'max-content',
+                  border: '2px solid',
+                  borderRadius: '10px',
+                  padding: '12px 24px',
+                  cursor: 'pointer',
+                  borderColor: item.toISOString().split('T')[0] == date ? theme.palette.primary.main : theme.palette.secondary.light,
+                  color: item.toISOString().split('T')[0] == date ? theme.palette.primary.main : theme.palette.secondary.main
+                }}
+                onClick={() => {
+                  router.push(pathname + '?' + createQueryString('date', item.toISOString().split('T')[0]));
+                }}
+                key={index}
+              >
+                {formatted}
+              </Box>
+            );
+          })}
         </Box>
       )}
 
-      <Box
-        sx={{
-          width: '100%',
-          maxWidth: '1050px',
-          margin: '50px auto 20px',
-          display: 'grid',
-          gap: 1,
-          gridTemplateColumns: 'repeat(8, minmax(100px, 1fr))'
-        }}
-      >
-        {times.map((item, index) => {
-          const sx =
-            Math.random() > 0.66
-              ? {
-                  border: '1px solid',
-                  textAlign: 'center',
-                  borderRadius: '10px',
-                  padding: '8px 12px',
-                  cursor: 'pointer',
-                  ...style.unset
-                }
-              : Math.random() > 0.33
+      {slots?.length > 0 && (
+        <div className="grid">
+          <Box
+            sx={{
+              width: '100%',
+              maxWidth: '1050px',
+              margin: '100px auto 20px',
+              display: 'grid',
+              gap: 1,
+              gridTemplateColumns: 'repeat(8, minmax(100px, 1fr))'
+            }}
+            className={'grid'}
+          >
+            {/* status 1 == full
+              status 2 == unset
+              status 3 == disabled
+              status 0 == available */}
+
+            {slots.map((item, index) => {
+              const sx = selected.includes(item.startTime)
                 ? {
                     border: '1px solid',
                     textAlign: 'center',
                     borderRadius: '10px',
                     padding: '8px 12px',
                     cursor: 'pointer',
-                    ...style.available
+                    borderColor: theme.palette.primary.main,
+                    color: theme.palette.primary.main
                   }
-                : {
-                    border: '1px solid',
-                    textAlign: 'center',
-                    borderRadius: '10px',
-                    padding: '8px 12px',
-                    cursor: 'pointer',
-                    ...style.full
-                  };
-          return (
-            <Box sx={sx} onClick={() => setSelectedTime(item)} key={index}>
-              <span style={{ minWidth: 140 }}> {times[index] + '-' + (times[index + 1] ? times[index + 1] : times[0])}</span>
-            </Box>
+                : item.status == 2
+                  ? {
+                      border: '1px solid',
+                      textAlign: 'center',
+                      borderRadius: '10px',
+                      padding: '8px 12px',
+                      cursor: 'pointer',
+                      ...style.unset
+                    }
+                  : item.status == 0
+                    ? {
+                        border: '1px solid',
+                        textAlign: 'center',
+                        borderRadius: '10px',
+                        padding: '8px 12px',
+                        cursor: 'pointer',
+                        ...style.available
+                      }
+                    : {
+                        border: '1px solid',
+                        textAlign: 'center',
+                        borderRadius: '10px',
+                        padding: '8px 12px',
+                        cursor: 'pointer',
+                        ...style.full
+                      };
+
+              return (
+                <Box className={item.status == 2 ? 'div' : ''} sx={sx} key={index} id={item.startTime} status={item.status}>
+                  {item.status == 2 && item.startTime.split('T')[1].slice(0, 5)}
+                  {/* {item.status == 2 && <ExpertCreateSlot slot={item} /> */}
+                  {item.status == 0 && <AdminDeleteSlot slot={item} expert={experts.find((i) => i.expertId == item.expertId)} />}
+                </Box>
+              );
+            })}
+          </Box>
+          {<CreateSlotsAdmin expertId={expert} slots={selected} setSelected={setSelected} />}
+        </div>
+      )}
+      <Selecto
+        selectableTargets={['.grid .div']}
+        hitRate={0} // kutunun biraz üstünden geçse bile seçer
+        selectByClick={true}
+        selectFromInside={false}
+        continueSelect={true}
+        toggleContinueSelect={'shift'} // shift basılıyken ekleme/çıkarma
+        onSelectEnd={(e) => {
+          setSelected(
+            e.selected
+              .filter((el) => el.nodeName !== 'FORM')
+              .filter((el) => el.attributes?.status?.value == 2)
+              .map((el) => el.id)
           );
-        })}
-      </Box>
-      <Box
-        sx={{
-          textAlign: 'right',
-          margin: '0px 0',
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'flex-end'
         }}
-      >
-        <Button>Kaydet</Button>
-      </Box>
+      />
     </div>
   );
 }

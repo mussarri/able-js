@@ -1,7 +1,7 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
 const page = () => {
-  redirect('/therapist/calendar');
+  return redirect('/user/buy-sessions');
 };
 
 export default page;

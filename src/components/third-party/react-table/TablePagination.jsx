@@ -1,7 +1,7 @@
 'use client';
 import PropTypes from 'prop-types';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 // material-ui
 import FormControl from '@mui/material/FormControl';
@@ -12,12 +12,26 @@ import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 // ==============================|| TABLE PAGINATION ||============================== //
 
 export default function TablePagination({ getPageCount, setPageIndex, setPageSize, getState, initialPageSize }) {
   const [open, setOpen] = useState(false);
   let options = [10, 25, 50, 100];
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const createQueryString = useCallback(
+    (name, value) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
 
   if (initialPageSize) {
     options = [...options, initialPageSize]
@@ -39,11 +53,8 @@ export default function TablePagination({ getPageCount, setPageIndex, setPageSiz
   };
 
   const handleChangePagination = (event, value) => {
+    router.push(pathname + '?' + createQueryString('page', value));
     setPageIndex(value - 1);
-  };
-
-  const handleChange = (event) => {
-    setPageSize(Number(event.target.value));
   };
 
   return (

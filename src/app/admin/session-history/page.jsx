@@ -4,20 +4,24 @@ import Table from 'views/table/AdminSessionHistory';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
-export default function SamplePage() {
-  return <Table />;
+export default function SamplePage({ searchParams }) {
+  return <Render searchParams={searchParams} />;
 }
 
-async function Render() {
+async function Render({ searchParams }) {
   const cookie = await cookies();
   const token = cookie.get('token')?.value;
 
-  const dateObject = new Date(date);
   let sessions = [];
+  const params = new URLSearchParams();
+
+  if (searchParams.filter) {
+    params.append('filter', searchParams.filter);
+  }
 
   if (token) {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/Admin/getOtpListPaged`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/Appointment/getClientAppointments?${params.toString()}`, {
         headers: {
           Authorization: `Bearer ${token}`
         },
@@ -32,5 +36,5 @@ async function Render() {
       console.error('Otp kodlari alınamadı:', error);
     }
   }
-  return <Table sessions={[]} />;
+  return <Table sessions={sessions} />;
 }

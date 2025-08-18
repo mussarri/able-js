@@ -2,16 +2,13 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 export async function POST(req) {
- 
-
   try {
-    const { phoneNumber, password } = await req.json();
-
+    const { password, phoneNumber } = await req.json();
     // 1. Backend API’ye istek at
-    const res = await fetch(`${process.env.API_URL}api/Auth/login`, {
+    const res = await fetch(`${process.env.API_URL}api/Auth/login-with-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phoneNumber, password })
+      body: JSON.stringify({ password, phoneNumber })
     });
 
     if (!res.ok) {
@@ -20,29 +17,11 @@ export async function POST(req) {
 
     const data = await res.json();
     // Beklenen response örneği: { token: 'jwt...', role: 'admin' }
-    const { data: token } = data;
-
-    const me = await fetch(`${process.env.API_URL}api/Auth/me`, {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${token}` }
-    });
-
-    if (!me.ok) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
-    }
-
-    const { firstName, lastName, userName, boardLevel, url, gender, role } = await me.json();
 
     // 2. Token + role cookie yaz
     const cookie = await cookies();
-    cookie.set('token', token, {
+    cookie.set('token', data.data.token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      path: '/'
-    });
-    cookie.set('role', role, {
-      httpOnly: false, // role client-side kullanılabilir
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       path: '/'

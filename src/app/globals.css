@@ -42,3 +42,7 @@ button.btn {
   outline: none;
   cursor: pointer;
 }
+
+.expertSlotInfo > .slotTime {
+  margin: 0 !important;
+}

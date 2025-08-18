@@ -15,7 +15,6 @@ import times from 'utils/times';
 import Button from '@mui/material/Button';
 import { fontWeight, minWidth } from '@mui/system';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import ExpertCreateSlot from 'components/ExpertCreateSlot';
 import ExpertDeleteSlot from 'components/ExpertDeleteSlot';
 import Selecto from 'react-selecto';
 import CreateSlots from 'components/CreateSlots';
@@ -48,6 +47,7 @@ export default function Calendar({ slots }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const date = searchParams.get('date');
+
   const createQueryString = useCallback(
     (name, value) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -74,8 +74,9 @@ export default function Calendar({ slots }) {
       fontWeight: 500
     },
     full: {
-      borderColor: theme.palette.error.light,
-      color: theme.palette.error.main,
+      borderColor: theme.palette.error.dark,
+      backgroundColor: theme.palette.error.light,
+      color: theme.palette.error.contrastText,
       fontWeight: 500
     }
   };
@@ -165,7 +166,7 @@ export default function Calendar({ slots }) {
 
             return (
               <Box className={item.status == 2 ? 'div' : ''} sx={sx} key={index} id={item.start} status={item.status}>
-                {item.status == 2 && item.start.split('T')[1].slice(0, 5)}
+                {item.status != 0 && item.start.split('T')[1].slice(0, 5)}
                 {/* {item.status == 2 && <ExpertCreateSlot slot={item} /> */}
                 {item.status == 0 && <ExpertDeleteSlot slot={item} />}
               </Box>

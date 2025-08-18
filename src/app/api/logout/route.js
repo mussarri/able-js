@@ -1,10 +1,15 @@
+import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 export async function POST() {
-  const logout = await fetch(process.env.API_URL + 'api/auth/logout', { method: 'POST' });
-  console.log(logout);
+  const cookie = await cookies();
+  const token = cookie.get('token')?.value;
+  const logout = await fetch(process.env.API_URL + 'api/Auth/logout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+  });
 
-  if (logout?.data?.success != true) {
+  if (!logout.ok) {
     return NextResponse.json({ message: 'Çıkış yapılamadı' });
   }
   const response = NextResponse.json({ message: 'Çıkış yapıldı' });

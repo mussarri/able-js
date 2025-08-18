@@ -260,7 +260,19 @@ function ReactTable({ columns, data, title }) {
 
 // ==============================|| REACT TABLE - SORTING ||============================== //
 
+export function phoneNumberFormatView(phoneNumberString) {
+  let cleaned = ('' + phoneNumberString).replace(/\D/g, '');
+  let match = cleaned.match(/^(90|)?(\d{3})(\d{3})(\d{2})(\d{2})$/);
+  if (match) {
+    let intlCode = match[1] ? '90 ' : '';
+    return [match[2], ' ', match[3], ' ', match[4], ' ', match[5]].join('');
+  }
+  return null;
+}
+
 export default function SortingTable({ users }) {
+  console.log(users);
+
   const columns = useMemo(
     () => [
       {
@@ -271,7 +283,7 @@ export default function SortingTable({ users }) {
         filterFn: 'fuzzy'
       },
       {
-        header: 'Rumuz',
+        header: 'İsim',
         accessorKey: 'userName',
         enableColumnFilter: true,
         // eğer özel filterFn istersen:
@@ -290,7 +302,10 @@ export default function SortingTable({ users }) {
         accessorKey: 'phoneNumber',
         enableColumnFilter: false,
         // eğer özel filterFn istersen:
-        filterFn: 'fuzzy'
+        filterFn: 'fuzzy',
+        cell: (info) => {
+          return phoneNumberFormatView(info.getValue());
+        }
       },
       {
         header: 'Kayit Tarihi',

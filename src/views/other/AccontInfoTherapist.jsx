@@ -28,13 +28,15 @@ import TabPersonal from 'sections/therapist/TabPersonal';
 
 // ==============================|| PROFILE - USER ||============================== //
 
-export default function UserProfile({ tab }) {
+export default function UserProfile({ tab, info }) {
   const inputRef = useRef(null);
   const pathname = usePathname();
   const { menuMaster } = useGetMenuMaster();
 
   // uzman hesap bilgileri iban, paytrid,
   // adres mail kullanici
+
+  console.log(info);
 
   const focusInput = () => {
     inputRef.current?.focus();
@@ -52,7 +54,7 @@ export default function UserProfile({ tab }) {
       </Grid>
       <Grid size={{ xs: 12, md: 9 }}>
         {tab === 'personal' && <TabPersonal />}
-        {tab === 'invoice' && <TabInvoice />}
+        {tab === 'invoice' && <TabInvoice info={info} />}
         {tab === 'password' && <TabPassword />}
         {/* {tab === 'settings' && <TabSettings />} */}
       </Grid>

@@ -23,15 +23,15 @@ export async function middleware(req) {
       });
       const me = await meRes.json();
 
-      // if (req.nextUrl.pathname.startsWith('/user') && me.data.role !== 3) {
-      //   return NextResponse.redirect(new URL('/error?type=unauthorized', req.url));
-      // }
-      // if (req.nextUrl.pathname.startsWith('/therapist') && me.data.role !== 2) {
-      //   return NextResponse.redirect(new URL('/error?type=unauthorized', req.url));
-      // }
-      // if (req.nextUrl.pathname.startsWith('/admin') && me.data.role !== 1) {
-      //   return NextResponse.redirect(new URL('/error?type=unauthorized', req.url));
-      // }
+      if (req.nextUrl.pathname.startsWith('/user') && me.data.role !== 3) {
+        return NextResponse.redirect(new URL('/error?type=unauthorized', req.url));
+      }
+      if (req.nextUrl.pathname.startsWith('/therapist') && me.data.role !== 2) {
+        return NextResponse.redirect(new URL('/error?type=unauthorized', req.url));
+      }
+      if (req.nextUrl.pathname.startsWith('/admin') && me.data.role !== 1) {
+        return NextResponse.redirect(new URL('/error?type=unauthorized', req.url));
+      }
     } catch (err) {
       console.error('Auth error:', err);
       return NextResponse.redirect(new URL('/login', req.url));

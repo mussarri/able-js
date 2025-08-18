@@ -1,7 +1,7 @@
 // project-imports
 import { cookies } from 'next/headers';
 import { Suspense } from 'react';
-import Table from 'views/table/SortingTable';
+import Table from 'views/table/ExpertSessionHistory';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 

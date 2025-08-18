@@ -260,8 +260,6 @@ function ReactTable({ columns, data, title }) {
 // ==============================|| REACT TABLE - SORTING ||============================== //
 
 export default function SortingTable({ list }) {
-  const data = makeData(26);
-
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -333,5 +331,3 @@ export default function SortingTable({ list }) {
 
   return <ReactTable {...{ data: list, columns }} title="Seans Geçmişi" />;
 }
-
-ReactTable.propTypes = { columns: PropTypes.array, data: PropTypes.array };
