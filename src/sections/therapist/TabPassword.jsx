@@ -1,4 +1,4 @@
-import { useActionState, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 
 // material-ui
 import FormHelperText from '@mui/material/FormHelperText';
@@ -81,17 +81,9 @@ export default function TabPassword() {
     event.preventDefault();
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('currentPassword', values.currentPassword);
-    formData.append('newPassword', values.newPassword);
-    formAction(formData);
-  };
-
   return (
     <MainCard title="Change Password">
-      <form action={formAction} noValidate onSubmit={handleSubmit}>
+      <form action={formAction} noValidate>
         <Grid container spacing={3}>
           <Grid container spacing={3} size={{ xs: 12, sm: 6 }}>
             <Grid size={12}>

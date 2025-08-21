@@ -39,7 +39,7 @@ const MenuProps = { PaperProps: { style: { maxHeight: ITEM_HEIGHT * 4.5 + ITEM_P
 export default function TabPersonal({ user }) {
   const [values, setValues] = useState({
     rumuz: user.userName,
-    contact: user.phoneNumber
+    contact: user.phone
   });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
@@ -53,7 +53,7 @@ export default function TabPersonal({ user }) {
   const handleSubmit = () => {};
 
   return (
-    <MainCard content={false} title="Personal Information" sx={{ '& .MuiInputLabel-root': { fontSize: '0.875rem' } }}>
+    <MainCard content={false} title="Kişisel Bilgiler" sx={{ '& .MuiInputLabel-root': { fontSize: '0.875rem' } }}>
       <form noValidate onSubmit={handleSubmit}>
         <Box sx={{ p: 2.5 }}>
           <Grid container spacing={3}>

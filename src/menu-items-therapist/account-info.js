@@ -14,7 +14,7 @@ const sessionHistory = {
   title: 'Hesap Bilgileri',
   type: 'group',
   url: '/therapist/account-info',
-  icon: icons.sessionHistory
+  icon: icons.buySession
 };
 
 export default sessionHistory;

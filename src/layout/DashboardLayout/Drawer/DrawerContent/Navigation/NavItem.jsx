@@ -52,8 +52,6 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
 
   // active menu item on page load
   useEffect(() => {
-    console.log(item.url.split('/')[1] === pathname.split('/')[1]);
-
     if (pathname === item.url || item.url.split('/')[1] === pathname.split('/')[1]) handlerActiveItem(item.id);
     // eslint-disable-next-line
   }, [pathname]);

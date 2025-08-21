@@ -11,7 +11,7 @@ export default async function Page({ params }) {
 
   return (
     <Suspense fallback={<Loader />}>
-      <Render tab={tab} />;
+      <Render tab={tab} />
     </Suspense>
   );
 }

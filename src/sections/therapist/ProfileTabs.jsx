@@ -104,7 +104,7 @@ export default function ProfileTabs({ focusInput, info }) {
                 cursor: 'pointer'
               }}
             >
-              <Avatar alt="Avatar 1" src={info.personalInfo.url} sx={{ width: 124, height: 124, border: '1px dashed' }} />
+              <Avatar alt="Avatar 1" src={info?.personalInfo?.url} sx={{ width: 124, height: 124, border: '1px dashed' }} />
               <Box
                 sx={(theme) => ({
                   position: 'absolute',
@@ -135,7 +135,7 @@ export default function ProfileTabs({ focusInput, info }) {
               onChange={(e) => setSelectedImage(e.target.files?.[0])}
             />
             <Stack sx={{ gap: 0.5, alignItems: 'center' }}>
-              <Typography variant="h5">Rumuz</Typography>
+              <Typography variant="h5">{info?.personalInfo?.firstName + ' ' + info?.personalInfo?.lastName}</Typography>
             </Stack>
           </Stack>
         </Grid>

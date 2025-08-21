@@ -50,6 +50,8 @@ export default function ProfileTabs({ focusInput, user }) {
     setAnchorEl(null);
   };
 
+  console.log(user);
+
   return (
     <MainCard>
       <Grid container spacing={6}>
@@ -135,7 +137,7 @@ export default function ProfileTabs({ focusInput, user }) {
               onChange={(e) => setSelectedImage(e.target.files?.[0])}
             />
             <Stack sx={{ gap: 0.5, alignItems: 'center' }}>
-              <Typography variant="h5">Rumuz</Typography>
+              <Typography variant="h5">{user?.userName}</Typography>
             </Stack>
           </Stack>
         </Grid>
