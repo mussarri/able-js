@@ -30,6 +30,7 @@ import { Add } from '@wandersonalwes/iconsax-react';
 import { first } from 'lodash-es';
 import { startTransition, useActionState, useEffect, useState } from 'react';
 import { updateExpertBilling } from 'actions';
+import { toast } from 'react-toastify';
 
 // styles & constant
 const ITEM_HEIGHT = 48;
@@ -57,11 +58,11 @@ export default function TabInvoice({ info }) {
   const [state, formAction, isPending] = useActionState(updateExpertBilling, null);
 
   useEffect(() => {
-    if (state?.error) {
-      openSnackbar({ severity: 'error', message: state?.message });
-    }
     if (state?.success) {
-      openSnackbar({ severity: 'success', message: state?.message });
+      toast.success(state?.message);
+    }
+    if (state?.error) {
+      toast.error(state?.message);
     }
   }, [state]);
 

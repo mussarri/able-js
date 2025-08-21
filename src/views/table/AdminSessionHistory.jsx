@@ -255,13 +255,13 @@ function ReactTable({ columns, data, title }) {
 // ==============================|| REACT TABLE - SORTING ||============================== //
 
 export default function SortingTable({ sessions }) {
-  const data = makeData(26);
+  console.log(sessions);
 
   const columns = useMemo(
     () => [
       {
         header: 'Uzman',
-        accessorKey: '',
+        accessorKey: 'userName',
         enableColumnFilter: true,
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy'

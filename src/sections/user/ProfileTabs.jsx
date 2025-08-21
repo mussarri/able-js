@@ -29,7 +29,7 @@ const avatarImage = '/assets/images/users';
 
 // ==============================|| USER PROFILE - TABS ||============================== //
 
-export default function ProfileTabs({ focusInput }) {
+export default function ProfileTabs({ focusInput, user }) {
   const [selectedImage, setSelectedImage] = useState(undefined);
   const [avatar, setAvatar] = useState(`${avatarImage}/default.png`);
 
@@ -104,7 +104,7 @@ export default function ProfileTabs({ focusInput }) {
                 cursor: 'pointer'
               }}
             >
-              <Avatar alt="Avatar 1" src={avatar} sx={{ width: 124, height: 124, border: '1px dashed' }} />
+              <Avatar alt="Avatar 1" src={user.url} sx={{ width: 124, height: 124, border: '1px dashed' }} />
               <Box
                 sx={(theme) => ({
                   position: 'absolute',

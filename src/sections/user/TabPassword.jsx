@@ -1,4 +1,4 @@
-import { useActionState, useEffect, useState } from 'react';
+import { startTransition, useActionState, useEffect, useState } from 'react';
 
 // material-ui
 import FormHelperText from '@mui/material/FormHelperText';
@@ -22,6 +22,7 @@ import { clientChangePassword } from 'actions';
 import { useRouter } from 'next/navigation';
 import PasswordCriters from 'components/PasswordCriters';
 import ChangePasswordButton from 'components/ChangePasswordButton';
+import { toast } from 'react-toastify';
 
 // ==============================|| USER PROFILE - PASSWORD CHANGE ||============================== //
 
@@ -30,8 +31,9 @@ export default function TabPassword() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [state, formAction, isPending] = useActionState(clientChangePassword, null);
+
   const [values, setValues] = useState({
-    old: '',
+    currentPassword: '',
     newPassword: '',
     confirm: ''
   });
@@ -39,10 +41,10 @@ export default function TabPassword() {
 
   useEffect(() => {
     if (state?.success) {
-      router.push('/user/account-info');
+      toast.success(state?.message);
     }
     if (state?.error) {
-      router.push('/error?type=password');
+      toast.error(state?.message);
     }
   }, [state]);
 
@@ -80,15 +82,17 @@ export default function TabPassword() {
     event.preventDefault();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     const formData = new FormData();
     formData.append('currentPassword', values.old);
     formData.append('newPassword', values.newPassword);
+    startTransition(() => formAction(formData));
   };
 
   return (
-    <MainCard title="Change Password">
-      <form noValidate onSubmit={handleSubmit}>
+    <MainCard title="Parola Güncelle">
+      <form action={formAction} noValidate>
         <Grid container spacing={3}>
           <Grid container spacing={3} size={{ xs: 12, sm: 6 }}>
             <Grid size={12}>
@@ -98,8 +102,8 @@ export default function TabPassword() {
                   placeholder="Mevcut Parola"
                   id="password-old"
                   type={showOldPassword ? 'text' : 'password'}
-                  value={values.old}
-                  name="old"
+                  value={values.currentPassword}
+                  name="currentPassword"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   endAdornment={
@@ -119,9 +123,9 @@ export default function TabPassword() {
                   autoComplete="password-old"
                 />
               </Stack>
-              {touched.old && errors.old && (
-                <FormHelperText error id="password-old-helper">
-                  {errors.old}
+              {touched.currentPassword && errors.currentPassword && (
+                <FormHelperText error id="password-currentPassword-helper">
+                  {errors.currentPassword}
                 </FormHelperText>
               )}
             </Grid>
@@ -197,8 +201,8 @@ export default function TabPassword() {
           <PasswordCriters password={values.newPassword} />
           <ChangePasswordButton
             errors={errors}
-            isSubmitting={isSubmitting}
-            currentPassword={values.old}
+            isSubmitting={isPending}
+            currentPassword={values.currentPassword}
             newPassword={values.newPassword}
             confirmPassword={values.confirm}
           />

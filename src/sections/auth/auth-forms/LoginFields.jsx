@@ -126,6 +126,7 @@ export function Step0({ setStep, values, setValues }) {
               name="gsm"
               onBlur={handleBlur}
               onChange={handleChange}
+              onFocus={() => setFieldError('gsm', '')}
               placeholder={'54433322211'}
             />
           ) : (
@@ -138,10 +139,12 @@ export function Step0({ setStep, values, setValues }) {
               name="gsm"
               onBlur={handleBlur}
               onChange={handleChange}
+              onFocus={() => setFieldError('gsm', '')}
               placeholder={'+01-54433322211'}
             />
           )}
         </Stack>
+        {touched?.gsm && errors?.gsm && <FormHelperText error>{errors?.gsm}</FormHelperText>}
 
         <Stack direction="row" spacing={2} sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
           <Button
@@ -159,17 +162,23 @@ export function Step0({ setStep, values, setValues }) {
                     phoneNumber: values.country.slice(1) + values.gsm
                   })
                 });
+
+                const data = await res.json();
+
                 if (res.ok) {
                   setStep(1);
+                } else {
+                  throw new Error(data.error);
                 }
               } catch (err) {
-                setFieldError('gsm', err);
                 console.log(err);
+                setFieldError('gsm', err.message || 'Bilinmeyen bir hata');
+                toast.error(err.message || 'Bilinmeyen bir hata');
               } finally {
                 setSubmitting(false);
               }
             }}
-            disabled={isSubmitting || !values.gsm || Boolean(errors.gsm) || !values.country || Boolean(errors.country)}
+            disabled={isSubmitting || !values.gsm || !values.country}
           >
             İleri
           </Button>
@@ -224,6 +233,7 @@ export function Step1({ setStep, values, setValues }) {
           onBlur={handleBlur}
           onChange={handleChange}
           placeholder="******"
+          onFocus={() => setFieldError('password', '')}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
@@ -250,7 +260,7 @@ export function Step1({ setStep, values, setValues }) {
         <AnimateButton>
           <Button
             disableElevation
-            disabled={!values.password || Boolean(errors.password) || isSubmitting}
+            disabled={!values.password || isSubmitting}
             fullWidth
             size="large"
             type="button"
@@ -277,13 +287,13 @@ export function Step1({ setStep, values, setValues }) {
                   router.refresh();
                   router.push('/');
                 } else {
-                  router.refresh();
-                  toast.error('Giriş başarısız!');
-                  setStep(0);
+                  const data = await enterPassword.json();
+                  throw new Error(data.error);
                 }
               } catch (err) {
-                setFieldError('password', err);
                 console.log(err);
+                setFieldError('password', err.message);
+              } finally {
                 setSubmitting(false);
               }
             }}

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 
 import './globals.css';
 
+import { ToastContainer } from 'react-toastify';
 // project-imports
 import ProviderWrapper from './ProviderWrapper';
 
@@ -15,6 +16,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+        <ToastContainer />
         <ProviderWrapper>{children}</ProviderWrapper>
       </body>
     </html>

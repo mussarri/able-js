@@ -31,6 +31,8 @@ export default function UserProfile({ tab, user }) {
   const pathname = usePathname();
   const { menuMaster } = useGetMenuMaster();
 
+  console.log(user);
+
   // uzman hesap bilgileri iban, paytrid,
   // adres mail kullanici
 
@@ -46,7 +48,7 @@ export default function UserProfile({ tab, user }) {
   return (
     <Grid container spacing={3}>
       <Grid size={{ xs: 12, md: 3 }}>
-        <ProfileTabs focusInput={focusInput} />
+        <ProfileTabs focusInput={focusInput} user={user} />
       </Grid>
       <Grid size={{ xs: 12, md: 9 }}>
         {tab === 'personal' && <TabPersonal user={user} />}

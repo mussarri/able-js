@@ -32,6 +32,7 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 import { Eye, EyeSlash, Flag, Flag2, Whatsapp } from '@wandersonalwes/iconsax-react';
 import { Autocomplete, CardMedia, Checkbox, FormControlLabel, MenuItem, Select, TextField, useTheme } from '@mui/material';
 import { FlagCircleRounded } from '@mui/icons-material';
+import { toast } from 'react-toastify';
 
 export function Step0({ setStep }) {
   const theme = useTheme();
@@ -137,6 +138,7 @@ export function Step0({ setStep }) {
               name="gsm"
               onBlur={handleBlur}
               onChange={handleChange}
+              onFocus={() => setFieldError('gsm', '')}
               placeholder={'54433322211'}
             />
           ) : (
@@ -149,6 +151,7 @@ export function Step0({ setStep }) {
               name="gsm"
               onBlur={handleBlur}
               onChange={handleChange}
+              onFocus={() => setFieldError('gsm', '')}
               placeholder={'+01-54433322211'}
             />
           )}
@@ -231,9 +234,13 @@ export function Step0({ setStep }) {
                 });
                 if (res.ok) {
                   setStep(1);
+                } else {
+                  const data = await res.json();
+                  throw new Error(data.error);
                 }
               } catch (err) {
-                setFieldError('gsm', err);
+                toast.error(err.message);
+                setFieldError('gsm', err.message);
                 console.log(err);
               } finally {
                 setSubmitting(false);
@@ -340,7 +347,15 @@ export function Step1({ setStep }) {
                     purpose: 1
                   })
                 });
+
+                if (res.ok) {
+                  toast.success('Yeni kod gönderildi.');
+                } else {
+                  const data = await res.json();
+                  throw new Error(data.error);
+                }
               } catch (err) {
+                toast.error(err.message);
                 setFieldError('otp', err);
                 console.log(err);
               } finally {
@@ -390,9 +405,10 @@ export function Step1({ setStep }) {
                 setStep(2);
               } else {
                 const data = await res.json();
-                setFieldError('otp', data.error);
+                throw new Error(data.error);
               }
             } catch (err) {
+              toast.error(err.message);
               setFieldError('otp', err);
               console.log(err);
             } finally {
@@ -497,8 +513,12 @@ export function Step2({ setStep }) {
                 });
                 if (setPassword.ok) {
                   setStep(3);
+                } else {
+                  const data = await setPassword.json();
+                  throw new Error(data.error);
                 }
               } catch (err) {
+                toast.error(err.message);
                 setFieldError('password', err);
                 console.log(err);
               } finally {
@@ -570,6 +590,11 @@ export function Step3({ setStep }) {
                   'Content-Type': 'application/json'
                 }
               });
+              if (!checkusename.ok) {
+                const data = await checkusename.json();
+                throw new Error(data.error);
+              }
+
               if (checkusename.ok) {
                 const setUser = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/auth/set-user-info`, {
                   method: 'POST',
@@ -587,10 +612,14 @@ export function Step3({ setStep }) {
 
                 if (setUser.ok) {
                   setStep(3);
+                } else {
+                  const data = await setUser.json();
+                  throw new Error(data.error);
                 }
               }
             } catch (err) {
               setFieldError('otp', err);
+              toast.error(err.message);
               console.log(err);
             } finally {
               setSubmitting(false);
