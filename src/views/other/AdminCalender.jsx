@@ -67,13 +67,20 @@ export default function Calendar({ experts, slots }) {
     },
     available: {
       borderColor: theme.palette.success.main,
-      color: theme.palette.success.dark,
-      background: theme.palette.success.lighter,
+      color: theme.palette.primary.contrastText,
+      background: theme.palette.success.light,
+      fontWeight: 500
+    },
+    disabled: {
+      borderColor: theme.palette.secondary.light,
+      color: theme.palette.secondary.light,
+      // background: theme.palette.secondary.light,
       fontWeight: 500
     },
     full: {
-      borderColor: theme.palette.error.light,
-      color: theme.palette.error.main,
+      borderColor: theme.palette.error.dark,
+      backgroundColor: theme.palette.error.light,
+      color: theme.palette.error.contrastText,
       fontWeight: 500
     }
   };
@@ -164,7 +171,7 @@ export default function Calendar({ experts, slots }) {
               status 0 == available */}
 
             {slots.map((item, index) => {
-              const sx = selected.includes(item.startTime)
+              const sx = selected.includes(item.start)
                 ? {
                     border: '1px solid',
                     textAlign: 'center',
@@ -192,18 +199,25 @@ export default function Calendar({ experts, slots }) {
                         cursor: 'pointer',
                         ...style.available
                       }
-                    : {
-                        border: '1px solid',
-                        textAlign: 'center',
-                        borderRadius: '10px',
-                        padding: '8px 12px',
-                        cursor: 'pointer',
-                        ...style.full
-                      };
+                    : item.status == 3
+                      ? {
+                          border: '1px solid',
+                          textAlign: 'center',
+                          borderRadius: '10px',
+                          padding: '8px 12px',
+                          ...style.disabled
+                        }
+                      : {
+                          border: '1px solid',
+                          textAlign: 'center',
+                          borderRadius: '10px',
+                          padding: '8px 12px',
+                          ...style.full
+                        };
 
               return (
                 <Box className={item.status == 2 ? 'div' : ''} sx={sx} key={index} id={item.startTime} status={item.status}>
-                  {item.status == 2 && item.startTime.split('T')[1].slice(0, 5)}
+                  {item.status != 0 && item.startTime.split('T')[1].slice(0, 5)}
                   {/* {item.status == 2 && <ExpertCreateSlot slot={item} /> */}
                   {item.status == 0 && <AdminDeleteSlot slot={item} expert={experts.find((i) => i.expertId == item.expertId)} />}
                 </Box>
