@@ -12,7 +12,7 @@ export default async function Page({ params }) {
   let user = null;
   if (token) {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/auth/me`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/Client/personalInformation`, {
         headers: {
           Authorization: `Bearer ${token}`
         },

@@ -14,6 +14,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'flagcdn.com',
         pathname: '**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'sknhyt171.blob.core.windows.net'
       }
     ]
   },

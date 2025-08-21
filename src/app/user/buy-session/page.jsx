@@ -6,22 +6,22 @@ import List from 'views/other/TherapistList';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
-export default function SamplePage(params) {
+export default async function SamplePage({ params, searchParams }) {
   return (
     <Suspense fallback={<Loader />}>
-      <RenderPage params={params} />
+      <RenderPage searchParams={await searchParams} />
     </Suspense>
   );
 }
 
-async function RenderPage({ params }) {
+async function RenderPage({ searchParams }) {
   const cookie = await cookies();
   const token = cookie.get('token')?.value;
 
   let list = [];
   if (token) {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/Client/searchExperts`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/Client/searchExperts?searchTerm=` + searchParams?.search, {
         headers: {
           Authorization: `Bearer ${token}`
         },

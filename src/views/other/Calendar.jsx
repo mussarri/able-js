@@ -73,6 +73,12 @@ export default function Calendar({ slots }) {
       background: theme.palette.success.light,
       fontWeight: 500
     },
+    disabled: {
+      borderColor: theme.palette.secondary.light,
+      color: theme.palette.secondary.light,
+      // background: theme.palette.secondary.light,
+      fontWeight: 500
+    },
     full: {
       borderColor: theme.palette.error.dark,
       backgroundColor: theme.palette.error.light,
@@ -155,14 +161,21 @@ export default function Calendar({ slots }) {
                       cursor: 'pointer',
                       ...style.available
                     }
-                  : {
-                      border: '1px solid',
-                      textAlign: 'center',
-                      borderRadius: '10px',
-                      padding: '8px 12px',
-                      cursor: 'pointer',
-                      ...style.full
-                    };
+                  : item.status == 3
+                    ? {
+                        border: '1px solid',
+                        textAlign: 'center',
+                        borderRadius: '10px',
+                        padding: '8px 12px',
+                        ...style.disabled
+                      }
+                    : {
+                        border: '1px solid',
+                        textAlign: 'center',
+                        borderRadius: '10px',
+                        padding: '8px 12px',
+                        ...style.full
+                      };
 
             return (
               <Box className={item.status == 2 ? 'div' : ''} sx={sx} key={index} id={item.start} status={item.status}>

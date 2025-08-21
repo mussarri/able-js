@@ -1,29 +1,42 @@
 // project-imports
+import Loader from 'components/Loader';
 import { cookies } from 'next/headers';
 import { Suspense } from 'react';
-import Table from 'views/table/ExpertSessionHistory';
+import Table from 'views/table/UserSessionHistory';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
-export default function SamplePage({ searchParams }) {
-  const filter = searchParams.filter;
-
+export default async function SamplePage({ searchParams }) {
   return (
-    <Suspense>
-      <Render />
+    <Suspense fallback={<Loader />}>
+      <Render searchParams={await searchParams} />
     </Suspense>
   );
 }
 
-async function Render({ filter }) {
+async function Render({ searchParams }) {
   const cookie = await cookies();
   const token = cookie.get('token')?.value;
 
   let list = [];
 
+  const params = new URLSearchParams();
+
+  if (searchParams.filter) {
+    params.append('filter', searchParams.filter || 0);
+  }
+
+  if (searchParams.page) {
+    params.append('page', searchParams.page || 1);
+  }
+
+  if (searchParams.pageSize) {
+    params.append('pageSize', searchParams.pageSize || 10);
+  }
+
   if (token) {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/Client/getAppointments`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/Client/getAppointments?${params.toString()}`, {
         headers: {
           Authorization: `Bearer ${token}`
         },

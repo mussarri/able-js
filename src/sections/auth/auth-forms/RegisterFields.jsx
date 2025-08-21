@@ -23,7 +23,6 @@ import countries from 'utils/countries';
 import OtpInput from 'react-otp-input';
 // third-party
 import * as Yup from 'yup';
-import { Formik } from 'formik';
 
 // project-imports
 import AnimateButton from 'components/@extended/AnimateButton';

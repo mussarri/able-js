@@ -14,9 +14,6 @@ import { GRID_COMMON_SPACING } from 'config';
 
 import ProfileCard from 'sections/therapist/ProfileCard';
 import ProfileTabs from 'sections/therapist/ProfileTabs';
-import TabPassword from 'sections/therapist/TabPassword';
-import TabSettings from 'sections/therapist/TabSettings';
-import TabPayment from 'sections/therapist/TabPayment';
 
 import { handlerActiveItem, useGetMenuMaster } from 'api/menu';
 import { Button, Fab, Modal } from '@mui/material';
@@ -25,6 +22,8 @@ import { alignItems, Box } from '@mui/system';
 import Typography from 'themes/typography';
 import TabInvoice from 'sections/therapist/TabInvoice';
 import TabPersonal from 'sections/therapist/TabPersonal';
+import TabPassword from 'sections/therapist/TabPassword';
+import TabSettings from 'sections/therapist/TabSettings';
 
 // ==============================|| PROFILE - USER ||============================== //
 
@@ -35,8 +34,6 @@ export default function UserProfile({ tab, info }) {
 
   // uzman hesap bilgileri iban, paytrid,
   // adres mail kullanici
-
-  console.log(info);
 
   const focusInput = () => {
     inputRef.current?.focus();
@@ -50,10 +47,10 @@ export default function UserProfile({ tab, info }) {
   return (
     <Grid container spacing={3}>
       <Grid size={{ xs: 12, md: 3 }}>
-        <ProfileTabs focusInput={focusInput} />
+        <ProfileTabs focusInput={focusInput} info={info} />
       </Grid>
       <Grid size={{ xs: 12, md: 9 }}>
-        {tab === 'personal' && <TabPersonal />}
+        {tab === 'personal' && <TabPersonal info={info} />}
         {tab === 'invoice' && <TabInvoice info={info} />}
         {tab === 'password' && <TabPassword />}
         {/* {tab === 'settings' && <TabSettings />} */}

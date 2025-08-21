@@ -101,9 +101,6 @@ export default function UserList() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
-        <MenuItem component={Link} href="#!" onClick={handleClose}>
-          Hesap Bilgileri
-        </MenuItem>
         <MenuItem onClick={handleLogout}>Çıkış Yap</MenuItem>
       </Menu>
     </Box>

@@ -14,7 +14,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import DebouncedInput from 'components/Search';
+import DebouncedInput from 'components/third-party/react-table/DebouncedInput';
 
 // third-party
 
@@ -22,7 +22,7 @@ import DebouncedInput from 'components/Search';
 import LinearWithLabel from 'components/@extended/LinearWithLabel';
 import MainCard from 'components/MainCard';
 import { CSVExport, Filter, HeaderSort, SelectColumnSorting, TablePagination } from 'components/third-party/react-table';
-import { makeDataOtp } from 'data/react-table-admin';
+import makeData from 'data/react-table';
 import {
   getCoreRowModel,
   getSortedRowModel,
@@ -33,12 +33,9 @@ import {
 } from '@tanstack/react-table';
 import { fontSize, Grid } from '@mui/system';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { Divider, OutlinedInput, TextField, useTheme } from '@mui/material';
+import { Divider, TextField, useTheme } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useDebounce } from 'use-debounce';
-import UpdateOtp from 'components/UpdateOtp';
 
 // ==============================|| REACT TABLE ||============================== //
 
@@ -191,7 +188,9 @@ function ReactTable({ columns, data, title }) {
         </Stack>
       }
     >
-      <Search />
+      {/* <Stack sx={{ gap: 1, maxWidth: '500px', padding: '10px' }}>
+              <Select fullWidth value={''} onChange={() => {}} placeholder="Ara.." />
+            </Stack> */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -245,7 +244,7 @@ function ReactTable({ columns, data, title }) {
         <Box sx={{ p: 2 }}>
           <TablePagination
             {...{
-              pageCount: data.totalCount
+              pageCount: data.totalPages
             }}
           />
         </Box>
@@ -256,20 +255,11 @@ function ReactTable({ columns, data, title }) {
 
 // ==============================|| REACT TABLE - SORTING ||============================== //
 
-export default function SortingTable({ otpCodes }) {
-  const data = makeDataOtp(26);
-
+export default function SortingTable({ list }) {
   const columns = useMemo(
     () => [
       {
-        header: 'User Id',
-        accessorKey: 'userId',
-        enableColumnFilter: true,
-        // eğer özel filterFn istersen:
-        filterFn: 'fuzzy'
-      },
-      {
-        header: 'Isim',
+        header: 'Uzman',
         accessorKey: 'userName',
         enableColumnFilter: true,
         // eğer özel filterFn istersen:
@@ -277,48 +267,41 @@ export default function SortingTable({ otpCodes }) {
       },
 
       {
-        header: 'Rol',
-        accessorKey: 'userRole',
-        enableColumnFilter: false,
-        // eğer özel filterFn istersen:
-        filterFn: 'fuzzy',
-        cell: (info) => {
-          return info.getValue() === 1 ? 'Admin' : info.getValue() === 2 ? 'Uzman' : 'Kullanici';
-        }
-      },
-      {
-        header: 'Telefon',
-        accessorKey: 'phoneNumber',
-        enableColumnFilter: false,
-        // eğer özel filterFn istersen:
-        filterFn: 'fuzzy'
-      },
-      {
-        header: 'Son Kullanma Tarihi',
-        accessorKey: 'expirationTime',
+        header: 'Baslangic',
+        accessorKey: 'startTime',
+        type: 'date',
         filterFn: 'between',
-        enableColumnFilter: false,
         cell: (info) => {
           const d = new Date(info.getValue());
-          //button update son kullanma tarihi
-          //<UpdateExpiration />
-          return (
-            <UpdateOtp
-              text={isNaN(d.getTime()) ? '-' : d.toLocaleDateString('tr-TR') + ' - ' + d.toLocaleTimeString('tr-TR')}
-              otpId={info.row.original.otpId}
-              code={info.row.original.otpCode}
-            />
-          );
+          return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('tr-TR') + '-' + d.toLocaleTimeString('tr-TR');
         }
       },
       {
-        header: 'OTP',
-        accessorKey: 'otpCode'
+        header: 'Sonlanma',
+        accessorKey: 'endTime',
+        type: 'date',
+        filterFn: 'between',
+        cell: (info) => {
+          const d = new Date(info.getValue());
+          return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('tr-TR') + '-' + d.toLocaleTimeString('tr-TR');
+        }
+      },
+
+      {
+        header: 'Fiyat',
+        accessorKey: 'price',
+        cell: (info) => {
+          let lira = new Intl.NumberFormat('tr-TR', {
+            style: 'currency',
+            currency: 'TRY'
+          });
+          return lira.format(info.getValue());
+        }
       },
       {
-        header: 'Neden',
-        accessorKey: 'purpose',
-        enableColumnFilter: false,
+        header: 'Durum',
+        accessorKey: 'status',
+        enableColumnFilter: true,
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy'
       }
@@ -326,7 +309,5 @@ export default function SortingTable({ otpCodes }) {
     []
   );
 
-  return <ReactTable {...{ data: otpCodes || [], columns }} title="Seans Geçmişi" />;
+  return <ReactTable {...{ data: list, columns }} title="Seans Geçmişi" />;
 }
-
-ReactTable.propTypes = { columns: PropTypes.array, data: PropTypes.array };

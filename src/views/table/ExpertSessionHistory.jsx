@@ -134,7 +134,7 @@ function ReactTable({ columns, data, title }) {
   const theme = useTheme();
 
   const table = useReactTable({
-    data,
+    data: data.items,
     columns,
     state: { columnFilters, sorting },
     getFilteredRowModel: getFilteredRowModel(),
@@ -244,11 +244,7 @@ function ReactTable({ columns, data, title }) {
         <Box sx={{ p: 2 }}>
           <TablePagination
             {...{
-              setPageSize: table.setPageSize,
-              setPageIndex: table.setPageIndex,
-              getState: table.getState,
-              getPageCount: table.getPageCount,
-              initialPageSize: 10
+              pageCount: data.totalPages
             }}
           />
         </Box>
@@ -279,8 +275,8 @@ export default function SortingTable({ list }) {
   const columns = useMemo(
     () => [
       {
-        header: 'Uzman',
-        accessorKey: 'therapist',
+        header: 'Hasta',
+        accessorKey: 'userName',
         enableColumnFilter: true,
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy'

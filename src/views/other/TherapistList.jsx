@@ -1,16 +1,15 @@
 import { Grid, InputLabel, OutlinedInput, Stack } from '@mui/material';
 import React from 'react';
 import TherapistCard from 'sections/therapist/TherapistCard';
+import TherapistListSearch from '../../components/Search';
 
 const TherapistList = ({ list }) => {
   return (
     <div>
-      <Stack sx={{ gap: 1 }}>
-        <OutlinedInput id="email-login" type="email" value={''} name="email" placeholder="Uzman ara" fullWidth />
-      </Stack>
+      <TherapistListSearch />
       <Grid container spacing={3} sx={{ marginTop: 5, overflow: 'hidden' }}>
         {list.map((therapist) => (
-          <TherapistCard therapist={therapist} />
+          <TherapistCard key={therapist.expertId} therapist={therapist} />
         ))}
       </Grid>
     </div>

@@ -36,7 +36,6 @@ export default function Success({ title }) {
   };
   const message = setMessage();
 
-  console.log(setMessage());
 
   return (
     <Grid container direction="column" spacing={3} sx={{ alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>

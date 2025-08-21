@@ -1,5 +1,6 @@
 'use server';
 
+import { parse } from 'date-fns';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
@@ -130,11 +131,13 @@ export const deleteSlotsAdmin = async (prev, formData) => {
 export const updateExpertBilling = async (prev, formData) => {
   const cookie = await cookies();
   const token = cookie.get('token')?.value;
+
   const payTrSubMerchantKey = formData.get('payTrSubMerchantKey').toString();
   const iban = formData.get('iban').toString();
-  const taxNumber = formData.get('expertId').toString();
   const companyTitle = formData.get('companyTitle').toString();
   const contactPhone = formData.get('contactPhone').toString();
+  const taxNumber = formData.get('taxNumber').toString();
+  console.log(formData);
 
   try {
     const res = await fetch(`${process.env.API_URL}api/expert/billing`, {
@@ -151,7 +154,7 @@ export const updateExpertBilling = async (prev, formData) => {
 
     if (res.status !== 200) throw new Error('Slotlar silinirken hata olustu.');
     revalidatePath('/admin/calendar');
-    revalidatePath('/therapist/calendar');
+    revalidatePath('/therapist/account-info');
     return {
       message: 'Slotlar başarıyla silindi.',
       success: true
@@ -167,12 +170,11 @@ export const updateExpertBilling = async (prev, formData) => {
 export const updateOtp = async (prev, formData) => {
   const cookie = await cookies();
   const token = cookie.get('token')?.value;
- 
+
   try {
     const res = await fetch(`${process.env.API_URL}api/admin/updateOtp?otpId=${formData.get('otpId')}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-       
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
     });
 
     if (res.status !== 200) throw new Error('Slotlar silinirken hata olustu.');
@@ -184,6 +186,174 @@ export const updateOtp = async (prev, formData) => {
   } catch (error) {
     return {
       message: 'Slotlar silinirken hata olustu.',
+      error: true
+    };
+  }
+};
+
+export const expertChangePassword = async (prev, formData) => {
+  const cookie = await cookies();
+  const token = cookie.get('token')?.value;
+
+  const currentPassword = formData.get('currentPassword').toString();
+  const newPassword = formData.get('newPassword').toString();
+
+  try {
+    const res = await fetch(`${process.env.API_URL}api/expert/changePassword=${formData.get('otpId')}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        currentPassword,
+        newPassword
+      })
+    });
+
+    if (res.status !== 200) throw new Error('Slotlar silinirken hata olustu.');
+    revalidatePath('/therapist/account-info');
+    return {
+      message: 'Slotlar başarıyla silindi.',
+      success: true
+    };
+  } catch (error) {
+    return {
+      message: 'Slotlar silinirken hata olustu.',
+      error: true
+    };
+  }
+};
+
+export const clientChangePassword = async (prev, formData) => {
+  const cookie = await cookies();
+  const token = cookie.get('token')?.value;
+
+  const currentPassword = formData.get('currentPassword').toString();
+  const newPassword = formData.get('newPassword').toString();
+
+  try {
+    const res = await fetch(`${process.env.API_URL}api/client/changePassword`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        currentPassword,
+        newPassword
+      })
+    });
+
+    if (res.status !== 200) throw new Error('Parola guncellenirken hata olustu');
+    revalidatePath('/user/account-info');
+    return {
+      message: 'Parola guncellendi.',
+      success: true
+    };
+  } catch (error) {
+    return {
+      message: 'Parola guncellenirken hata olustu.',
+      error: true
+    };
+  }
+};
+
+export const createAppointmentDrafts = async (prev, formData) => {
+  const cookie = await cookies();
+  const token = cookie.get('token')?.value;
+
+  const startTime = formData.get('startTime').toString();
+  const duration = formData.get('duration');
+  const status = formData.get('status');
+  const expertId = formData.get('expertId');
+
+  try {
+    const res = await fetch(`${process.env.API_URL}/api/Client/createAppointmentDrafts?expertId=${expertId}&status=${status}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        startTime,
+        duration: parseInt(duration)
+      })
+    });
+
+    if (res.status !== 200) throw new Error('Randevu olusturulken hata olustu.');
+
+    revalidatePath('/admin');
+    revalidatePath('/expert');
+    revalidatePath('/user/buy-session');
+    revalidatePath('/user/session-history');
+    return {
+      message: 'Randevu başarıyla olusturuldu.',
+      success: true
+    };
+  } catch (error) {
+    return {
+      message: 'Randevu olusturulurken hata olustu.',
+      error: true
+    };
+  }
+};
+
+export const cancelAppoinmentAsyn = async (prev, formData) => {
+  const cookie = await cookies();
+  const token = cookie.get('token')?.value;
+  const appointmentId = formData.get('appointmentId').toString();
+
+  try {
+    const res = await fetch(process.env.API_URL + '/api/Client/cancelAppoinmentAsync?appointmentId=' + appointmentId, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (res.status !== 200) throw new Error('Randevu iptal edilirken hata olustu.');
+    revalidatePath('/admin');
+    revalidatePath('/expert');
+    revalidatePath('/user/buy-session');
+    revalidatePath('/user/session-history');
+    return {
+      message: 'Randevu başarıyla iptal edildi.',
+      success: true
+    };
+  } catch (error) {
+    return {
+      message: 'Randevu iptal edilirken hata olustu.',
+      error: true
+    };
+  }
+};
+
+export const bookImmediate = async (prev, formData) => {
+  const cookie = await cookies();
+  const token = cookie.get('token')?.value;
+  const expertId = formData.get('expertId').toString();
+  const desiredDurationMinutes = formData.get('duration').toString();
+  const status = formData.get('status').toString();
+
+  const params = new URLSearchParams({
+    expertId,
+    desiredDurationMinutes,
+    status
+  });
+
+  try {
+    const res = await fetch(process.env.API_URL + `api/Client/bookImmediate?${params.toString()}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (res.status !== 200) throw new Error('Simdi gorus randevusu alinirken hata olustu.');
+    revalidatePath('/admin');
+    revalidatePath('/expert');
+    revalidatePath('/user/buy-session');
+    revalidatePath('/user/session-history');
+    return {
+      message: 'Simdi gorus randevusu alindi.',
+      success: true
+    };
+  } catch (error) {
+    return {
+      message: 'Simdi gorus randevusu alinirken hata olustu.',
       error: true
     };
   }

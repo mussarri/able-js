@@ -1,5 +1,7 @@
+import Loader from 'components/Loader';
 import { cookies } from 'next/headers';
 import PropTypes from 'prop-types';
+import { Suspense } from 'react';
 import TherapistInfo from 'views/other/AccontInfoTherapist';
 
 // Multiple versions of this page will be statically generated
@@ -7,7 +9,11 @@ import TherapistInfo from 'views/other/AccontInfoTherapist';
 export default async function Page({ params }) {
   const { tab } = await params;
 
-  return <Render tab={tab} />;
+  return (
+    <Suspense fallback={<Loader />}>
+      <Render tab={tab} />;
+    </Suspense>
+  );
 }
 
 async function Render({ tab }) {
@@ -15,6 +21,16 @@ async function Render({ tab }) {
   const token = cookie.get('token')?.value;
 
   let info = {};
+
+  const personalRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/Expert/personalInformation`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    cache: 'no-store'
+  });
+
+  const personalData = await personalRes.json();
+  info = { personalInfo: personalData.data };
 
   if (tab == 'invoice' && token) {
     try {
@@ -38,7 +54,7 @@ async function Render({ tab }) {
       }
 
       const [billingData, payInfoData] = await Promise.all([res.json(), res2.json()]);
-      info = { billing: billingData.data, payInfo: payInfoData.data };
+      info = { ...info, billing: billingData.data, payInfo: payInfoData.data };
     } catch (error) {
       console.error('Session history alınamadı:', error);
     }

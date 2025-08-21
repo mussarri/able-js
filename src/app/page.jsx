@@ -27,8 +27,8 @@ export default async function HomePage() {
       console.error('Kullanıcı bilgisi alınamadı:', error);
     }
   }
-  console.log(user);
 
+  if (!user) return redirect('/login');
   if (user.role == 1) return redirect('/admin/calendar');
   if (user.role == 2) return redirect('/therapist/calendar');
   if (user.role == 3) return redirect('/user/buy-session');

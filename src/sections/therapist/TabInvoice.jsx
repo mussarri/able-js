@@ -28,7 +28,7 @@ import countries from 'data/countries';
 // assets
 import { Add } from '@wandersonalwes/iconsax-react';
 import { first } from 'lodash-es';
-import { useActionState, useEffect, useState } from 'react';
+import { startTransition, useActionState, useEffect, useState } from 'react';
 import { updateExpertBilling } from 'actions';
 
 // styles & constant
@@ -39,16 +39,17 @@ const MenuProps = { PaperProps: { style: { maxHeight: ITEM_HEIGHT * 4.5 + ITEM_P
 // ==============================|| USER PROFILE - PERSONAL ||============================== //
 
 export default function TabInvoice({ info }) {
+  const { billing, payInfo, personalInfo } = info;
   const [values, setValues] = useState({
-    firstname: '',
-    lastname: '',
-    phone: '',
-    iban: '',
-    tax: '',
-    company_title: '',
-    balance: '',
-    comission: '',
-    paytrId: ''
+    firstname: personalInfo.firstName,
+    lastname: personalInfo.lastName,
+    phone: billing.contactPhone,
+    iban: billing.iban,
+    tax: billing.taxNumber,
+    company_title: billing.companyTitle,
+    balance: payInfo.balance,
+    commissionRate: payInfo.commissionRate,
+    paytrId: billing.payTrSubMerchantKey
   });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
@@ -62,7 +63,7 @@ export default function TabInvoice({ info }) {
     if (state?.success) {
       openSnackbar({ severity: 'success', message: state?.message });
     }
-  }, []);
+  }, [state]);
 
   const setFieldValue = (name, value) => {
     setValues({ ...values, [name]: value });
@@ -238,7 +239,15 @@ export default function TabInvoice({ info }) {
           <Grid size={{ xs: 12, sm: 6 }}>
             <Stack sx={{ gap: 1 }}>
               <InputLabel htmlFor="commission">Komisyon</InputLabel>
-              <TextField multiline fullWidth id="commission" value={values.comission} readOnly name="paytr" placeholder="Komisyon" />
+              <TextField
+                multiline
+                fullWidth
+                id="commissionRate"
+                value={values.commissionRate}
+                readOnly
+                name="paytr"
+                placeholder="Komisyon"
+              />
             </Stack>
           </Grid>
         </Grid>

@@ -9,11 +9,6 @@ import Grid from '@mui/material/Grid';
 // third-party
 import * as Yup from 'yup';
 
-// project-imports
-import IconButton from 'components/@extended/IconButton';
-import AnimateButton from 'components/@extended/AnimateButton';
-import { APP_DEFAULT_PATH } from 'config';
-
 // assets
 import { Step0, Step1, Step2, Step3 } from './RegisterFields';
 

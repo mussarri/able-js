@@ -1,13 +1,18 @@
 // project-imports
 import { cookies } from 'next/headers';
 import Table from 'views/table/AdminSessionHistory';
+import { Suspense } from 'react';
+import Loader from 'components/Loader';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
-export default function SamplePage({ searchParams }) {
-  return <Render searchParams={searchParams} />;
+export default async function SamplePage({ searchParams }) {
+  return (
+    <Suspense fallback={<Loader />}>
+      <Render searchParams={await searchParams} />
+    </Suspense>
+  );
 }
-
 async function Render({ searchParams }) {
   const cookie = await cookies();
   const token = cookie.get('token')?.value;
@@ -36,5 +41,6 @@ async function Render({ searchParams }) {
       console.error('Otp kodlari alınamadı:', error);
     }
   }
+
   return <Table sessions={sessions} />;
 }

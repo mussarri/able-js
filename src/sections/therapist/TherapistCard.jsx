@@ -1,5 +1,5 @@
 'use client';
-import { Button, CardContent, CardMedia, Divider, Grid, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Box, Button, CardContent, CardMedia, Divider, Grid, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import Image from 'next/image';
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
@@ -13,14 +13,15 @@ const TherapistCard = ({ therapist }) => {
   const theme = useTheme();
   const { mode } = useConfig();
   const router = useRouter();
+
   return (
     <Grid
       size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
       sx={{ border: '1px solid', borderColor: theme.palette.secondary.light, borderRadius: '20px', overflow: 'hidden' }}
     >
-      <div style={{ width: '100%', borderBottom: '1px solid', borderColor: theme.palette.secondary.light }}>
+      <div style={{ width: '100%' }}>
         <Image
-          src={'/assets/images/profile-picture.jpeg'}
+          src={therapist?.profilePictureUrl || '/assets/images/profile-picture.jpeg'}
           alt={''}
           width={350}
           height={350}
@@ -35,7 +36,7 @@ const TherapistCard = ({ therapist }) => {
         <p style={{ fontSize: 12, color: theme.palette.secondary.main }}>
           {therapist?.title || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque non libero dignissim.'}
         </p>
-        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '20px' }}>
           <div
             style={{
               fontSize: 11,
@@ -49,7 +50,8 @@ const TherapistCard = ({ therapist }) => {
           >
             <MicIcon sx={{ fontSize: 22 }} />
             <div>
-              <span style={{ fontSize: 16, fontWeight: 'semibold', color: theme.palette.text.primary }}>600₺</span> <br />
+              <span style={{ fontSize: 16, fontWeight: 'semibold', color: theme.palette.text.primary }}>{therapist?.soundPrice}₺</span>{' '}
+              <br />
               Sesli 30dk{' '}
             </div>
           </div>
@@ -66,69 +68,54 @@ const TherapistCard = ({ therapist }) => {
           >
             <Videocam sx={{ fontSize: 22 }} />
             <div>
-              <span style={{ fontSize: 16, fontWeight: 'semibold', color: theme.palette.text.primary }}>600₺</span> <br />
+              <span style={{ fontSize: 16, fontWeight: 'semibold', color: theme.palette.text.primary }}>{therapist?.videoPrice}₺</span>{' '}
+              <br />
               Görüntülü 30dk{' '}
             </div>
           </div>
         </div>
       </div>
 
-      <ToggleButtonGroup
-        fullWidth
-        color="primary"
-        exclusive
-        aria-label="text alignment"
-        size="small"
+      <Box
         sx={{
-          p: 1,
-
-          '& .MuiToggleButton-root': {
-            borderRadius: 0,
-            color: 'primary.light',
-            p: 0.75,
-
-            '&:not(.Mui-selected)': {
-              borderTopColor: 'transparent',
-
-              borderBottomColor: 'transparent'
-            },
-
-            '&:first-of-type': {
-              borderLeftColor: 'transparent'
-            },
-
-            '&:last-of-type': {
-              borderRightColor: 'transparent'
-            },
-
-            '&:hover': {
-              bgcolor: 'transparent',
-
-              color: 'primary.main'
-            }
-          }
+          display: 'flex',
+          alignItems: 'center',
+          marginTop: '15px'
         }}
       >
-        <ToggleButton
-          value="now"
-          aria-label="web"
-          onClick={() => {
-            router.push('/user/buy-session/' + therapist?.expertId + '?type=now');
-          }}
-        >
-          Şimdi Görüş
-        </ToggleButton>
+        {therapist?.isAvailableRightNow && (
+          <Button
+            fullWidth
+            sx={{
+              borderRadius: 0,
+              borderTopRightRadius: 0,
+              height: '50px'
+            }}
+            color="success"
+            variant="contained"
+            onClick={() => {
+              router.push('/user/buy-session/now/' + therapist?.expertId);
+            }}
+          >
+            Şimdi Görüş
+          </Button>
+        )}
 
-        <ToggleButton
-          value="appointment"
-          aria-label="android"
+        <Button
+          fullWidth
+          sx={{
+            borderRadius: 0,
+            borderTopRightRadius: 0,
+            height: '50px'
+          }}
+          variant="contained"
           onClick={() => {
             router.push('/user/buy-session/' + therapist?.expertId);
           }}
         >
           Randevu Al
-        </ToggleButton>
-      </ToggleButtonGroup>
+        </Button>
+      </Box>
 
       {/* <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'center' }}>
         <Link style={{ width: '100%' }} href={'/buy-session/ahmet?type=now'}>

@@ -16,12 +16,12 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 // ==============================|| TABLE PAGINATION ||============================== //
 
-export default function TablePagination({ getPageCount, setPageIndex, setPageSize, getState, initialPageSize }) {
+export default function TablePagination({ pageCount }) {
   const [open, setOpen] = useState(false);
-  let options = [10, 25, 50, 100];
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const page = searchParams.get('page');
 
   const createQueryString = useCallback(
     (name, value) => {
@@ -33,16 +33,11 @@ export default function TablePagination({ getPageCount, setPageIndex, setPageSiz
     [searchParams]
   );
 
-  if (initialPageSize) {
-    options = [...options, initialPageSize]
-      .filter((item, index) => [...options, initialPageSize].indexOf(item) === index)
-      .sort(function (a, b) {
-        return a - b;
-      });
-  }
+  useEffect(() => {
+    router.push(pathname + '?' + createQueryString('page', 1));
+  }, []);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => setPageSize(initialPageSize || 10), []);
 
   const handleClose = () => {
     setOpen(false);
@@ -54,7 +49,6 @@ export default function TablePagination({ getPageCount, setPageIndex, setPageSiz
 
   const handleChangePagination = (event, value) => {
     router.push(pathname + '?' + createQueryString('page', value));
-    setPageIndex(value - 1);
   };
 
   return (
@@ -62,8 +56,8 @@ export default function TablePagination({ getPageCount, setPageIndex, setPageSiz
       <Grid sx={{ mt: { xs: 2, sm: 0 } }}>
         <Pagination
           sx={{ '& .MuiPaginationItem-root': { my: 0.5 } }}
-          count={getPageCount()}
-          page={getState().pagination.pageIndex + 1}
+          count={pageCount}
+          page={parseInt(page)}
           onChange={handleChangePagination}
           color="primary"
           variant="combined"

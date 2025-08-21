@@ -1,14 +1,15 @@
 // project-imports
+import Loader from 'components/Loader';
 import { cookies } from 'next/headers';
 import { Suspense } from 'react';
 import Calendar from 'views/other/AdminCalender';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
-export default function SamplePage({ searchParams }) {
+export default async function SamplePage({ searchParams }) {
   return (
-    <Suspense>
-      <Render searchParams={searchParams} />
+    <Suspense fallback={<Loader />}>
+      <Render searchParams={await searchParams} />
     </Suspense>
   );
 }

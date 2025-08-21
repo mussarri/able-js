@@ -27,6 +27,8 @@ export default function Error500Page({ title, text }) {
     switch (title) {
       case 'payment':
         return 'Ödeme gerçekleşmedi.';
+      case 'appointment':
+        return 'Randevu alınırken hata oluştu.';
       default:
         return 'Bir hata oluştu.';
     }

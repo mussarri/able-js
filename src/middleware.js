@@ -3,8 +3,6 @@ import jwt from 'jsonwebtoken';
 
 export async function middleware(req) {
   const token = req.cookies.get('token')?.value;
-  console.log('middleware');
-
   // Login/Register hariç her sayfa auth istiyor
   const isPublicPath =
     req.nextUrl.pathname.startsWith('/login') ||

@@ -33,7 +33,7 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 // assets
 import { Eye, EyeSlash, Flag, Flag2, Whatsapp } from '@wandersonalwes/iconsax-react';
 import { Autocomplete, CardMedia, Checkbox, FormControlLabel, MenuItem, Select, TextField, useTheme } from '@mui/material';
-import { FlagCircleRounded } from '@mui/icons-material';
+import { FlagCircleRounded, Visibility, VisibilityOff } from '@mui/icons-material';
 
 export function Step0({ setStep, values, setValues }) {
   const theme = useTheme();
@@ -202,21 +202,43 @@ export function Step1({ setStep, values, setValues }) {
     setFieldTouched(event.target.name, true);
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   return (
     <Grid size={12}>
       <Stack sx={{ gap: 1 }}>
         <InputLabel htmlFor="password-signup">Parola</InputLabel>
+
         <OutlinedInput
           fullWidth
           error={Boolean(touched.password && errors.password)}
           id="password-signup"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           value={values.password}
           name="password"
           onBlur={handleBlur}
           onChange={handleChange}
           placeholder="******"
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+                size="large"
+                color="secondary"
+              >
+                {showPassword ? <Eye /> : <EyeSlash />}
+              </IconButton>
+            </InputAdornment>
+          }
         />
+
         {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
       </Stack>
 

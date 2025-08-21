@@ -15,8 +15,6 @@ import { GRID_COMMON_SPACING } from 'config';
 import ProfileCard from 'sections/user/ProfileCard';
 import ProfileTabs from 'sections/user/ProfileTabs';
 import TabPassword from 'sections/user/TabPassword';
-import TabSettings from 'sections/user/TabSettings';
-import TabPayment from 'sections/user/TabPayment';
 
 import { handlerActiveItem, useGetMenuMaster } from 'api/menu';
 import { Button, Fab, Modal } from '@mui/material';
@@ -52,9 +50,8 @@ export default function UserProfile({ tab, user }) {
       </Grid>
       <Grid size={{ xs: 12, md: 9 }}>
         {tab === 'personal' && <TabPersonal user={user} />}
-        {tab === 'invoice' && <TabInvoice />}
+        {tab === 'invoice' && <TabInvoice user={user} />}
         {tab === 'password' && <TabPassword />}
-        {/* {tab === 'settings' && <TabSettings />} */}
       </Grid>
     </Grid>
   );

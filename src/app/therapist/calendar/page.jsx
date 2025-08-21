@@ -6,8 +6,8 @@ import Calendar from 'views/other/Calendar';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
-export default function SamplePage({ searchParams }) {
-  const date = searchParams.date;
+export default async function SamplePage({ searchParams }) {
+  const date = (await searchParams).date;
 
   return (
     <Suspense fallback={<Loader />}>

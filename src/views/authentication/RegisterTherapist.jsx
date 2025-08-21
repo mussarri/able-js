@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 
 // project-imports
 import AuthWrapper from 'sections/auth/AuthWrapper';
-import FirebaseRegister from 'sections/auth/auth-forms/AuthRegisterTherapist';
+import RegisterTherapistSection from 'sections/auth/auth-forms/AuthRegisterTherapist';
 
 // ================================|| REGISTER ||================================ //
 
@@ -25,7 +25,7 @@ export default function Register() {
           </Stack>
         </Grid>
         <Grid size={12}>
-          <FirebaseRegister />
+          <RegisterTherapistSection />
         </Grid>
       </Grid>
     </AuthWrapper>

@@ -243,11 +243,7 @@ function ReactTable({ columns, data, title }) {
         <Box sx={{ p: 2 }}>
           <TablePagination
             {...{
-              setPageSize: table.setPageSize,
-              setPageIndex: table.setPageIndex,
-              getState: table.getState,
-              getPageCount: table.getPageCount,
-              initialPageSize: 10
+              pageCount: data.totalCount
             }}
           />
         </Box>

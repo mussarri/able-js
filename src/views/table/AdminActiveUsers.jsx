@@ -134,7 +134,7 @@ function ReactTable({ columns, data, title }) {
   const theme = useTheme();
 
   const table = useReactTable({
-    data,
+    data: data?.items,
     columns,
     state: { columnFilters, sorting },
     getFilteredRowModel: getFilteredRowModel(),
@@ -245,11 +245,7 @@ function ReactTable({ columns, data, title }) {
         <Box sx={{ p: 2 }}>
           <TablePagination
             {...{
-              setPageSize: table.setPageSize,
-              setPageIndex: table.setPageIndex,
-              getState: table.getState,
-              getPageCount: table.getPageCount,
-              initialPageSize: 10
+              pageCount: data.totalCount
             }}
           />
         </Box>
@@ -271,8 +267,6 @@ export function phoneNumberFormatView(phoneNumberString) {
 }
 
 export default function SortingTable({ users }) {
-  console.log(users);
-
   const columns = useMemo(
     () => [
       {
@@ -327,7 +321,7 @@ export default function SortingTable({ users }) {
     []
   );
 
-  return <ReactTable {...{ data: users?.items || [], columns }} title="Seans Geçmişi" />;
+  return <ReactTable {...{ data: users || [], columns }} title="Seans Geçmişi" />;
 }
 
 ReactTable.propTypes = { columns: PropTypes.array, data: PropTypes.array };

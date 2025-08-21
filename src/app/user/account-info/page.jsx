@@ -4,7 +4,6 @@ import React from 'react';
 
 const page = async () => {
   redirect('/user/account-info/personal');
-  return <div></div>;
 };
 
 export default page;

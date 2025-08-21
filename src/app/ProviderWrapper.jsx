@@ -19,10 +19,8 @@ export default function ProviderWrapper({ children }) {
       <ThemeCustomization>
         <RTLLayout>
           <ScrollTop>
-            {/* <AuthProvider> */}
             <Snackbar />
             {children}
-            {/* </AuthProvider> */}
           </ScrollTop>
         </RTLLayout>
       </ThemeCustomization>

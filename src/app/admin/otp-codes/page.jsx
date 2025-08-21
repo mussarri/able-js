@@ -6,11 +6,10 @@ import Table from 'views/table/AdminOtpCodes';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
-export default function SamplePage({ searchParams }) {
+export default async function SamplePage({ searchParams }) {
   return (
     <Suspense fallback={<Loader />}>
-      {' '}
-      <Render searchParams={searchParams} />
+      <Render searchParams={await searchParams} />
     </Suspense>
   );
 }

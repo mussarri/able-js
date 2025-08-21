@@ -35,35 +35,7 @@ import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigat
 import { School, Videocam } from '@mui/icons-material';
 import MicIcon from '@mui/icons-material/Mic';
 import { useEffect } from 'react';
-import { createAppointmentDrafts } from 'actions';
-
-function countConsecutiveFreeSlots(allowedTimes, selectedTime) {
-  if (!selectedTime) return 0; // seçili saat yoksa direkt 0 dön
-
-  const parseTime = (timeStr) => {
-    if (!timeStr || typeof timeStr !== 'string') return null; // geçersiz saatleri yok say
-    const [h, m] = timeStr.split(':').map(Number);
-    return h * 60 + m; // toplam dakika
-  };
-
-  const parsedTimes = allowedTimes
-    .map(parseTime)
-    .filter((t) => t !== null) // null olanları at
-    .sort((a, b) => a - b);
-
-  const start = parseTime(selectedTime);
-  if (start === null) return 0;
-
-  let count = 0;
-  let currentTime = start;
-
-  while (parsedTimes.includes(currentTime)) {
-    count++;
-    currentTime += 30;
-  }
-
-  return count;
-}
+import { bookImmediat, bookImmediate } from 'actions';
 
 const basicDatepickerCodeString = `<LocalizationProvider dateAdapter={AdapterDateFns}>
   <Stack sx={{ gap: 3}}>
@@ -91,15 +63,14 @@ const basicDatepickerCodeString = `<LocalizationProvider dateAdapter={AdapterDat
   </Stack>
 </LocalizationProvider>`;
 
-export default function BasicDateTimePickers({ days, times, durations }) {
+export default function BasicDateTimePickers({ durations }) {
   const theme = useTheme();
   const today = dayjs();
-  const maxDate = today.add(30, 'day');
-  var currentdate = new Date();
+  const date = new Date();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [state, formAction, isPending] = useActionState(createAppointmentDrafts, null);
+  const [state, formAction, isPending] = useActionState(bookImmediate, null);
 
   useEffect(() => {
     if (state?.success) {
@@ -110,9 +81,6 @@ export default function BasicDateTimePickers({ days, times, durations }) {
       router.push('/error?type=appointment');
     }
   }, [state]);
-
-  const date = searchParams.get('date');
-  const time = searchParams.get('time');
 
   const params = useParams();
 
@@ -126,17 +94,6 @@ export default function BasicDateTimePickers({ days, times, durations }) {
     [searchParams]
   );
 
-  // Tarihin seçilebilir olup olmadığını kontrol eden fonksiyon
-  const isDateAllowed = (date) => {
-    return days
-      .map((item) => {
-        return { date: dayjs(item.date), isAvailable: item.isAvailable };
-      })
-      .some((allowedDate) => allowedDate.date.isSame(date, 'day'));
-  };
-
-  const [day, setDay] = useState(today);
-
   const [duration, setDuration] = useState();
 
   const [alignment, setAlignment] = useState('');
@@ -147,11 +104,9 @@ export default function BasicDateTimePickers({ days, times, durations }) {
 
   const handleSubmit = () => {
     const formData = new FormData();
-    formData.append('startTime', time);
     formData.append('expertId', params.name);
     formData.append('status', alignment);
     formData.append('duration', duration);
-    console.log(formData);
 
     startTransition(() => {
       formAction(formData);
@@ -254,61 +209,17 @@ export default function BasicDateTimePickers({ days, times, durations }) {
               <InputLabel sx={{ minWidth: 130 }} htmlFor="email-login">
                 Tarih Seçiniz{' '}
               </InputLabel>
-              <DesktopDatePicker
-                sx={{ width: '100%' }}
-                format="dd/MM/yyyy"
-                value={date ? new Date(date) : day}
-                onChange={(newValue) => {
-                  setDay(newValue);
-                  const localDate = newValue.toLocaleDateString('en-CA'); // YYYY-MM-DD formatında
-                  router.push(pathname + '?' + createQueryString('date', localDate));
-                }}
-                shouldDisableDate={(date) => {
-                  if (!date) return true; // null ise disable
-                  return !isDateAllowed(dayjs(date)); // listedekiler dışındakiler disable
-                }}
-              />
+              <DesktopDatePicker sx={{ width: '100%' }} format="dd/MM/yyyy" value={date} disabled />
             </Stack>
           }
-          {!!date &&
-            (times.length > 0 ? (
-              <Stack sx={{ gap: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
-                <InputLabel sx={{ minWidth: 130 }} htmlFor="email-login">
-                  Saat Seçiniz{' '}
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  sx={{ width: '100%' }}
-                  value={time}
-                  label="Age"
-                  defaultValue={'Saat seçiniz..'}
-                  onChange={(e) => {
-                    router.push(pathname + '?' + createQueryString('time', e.target.value));
-                  }}
-                >
-                  {times.map((time, index) => (
-                    <MenuItem
-                      key={time}
-                      value={time}
-                      // disabled={!isTimeAllowed(time.split(':')[0], time.split(':')[1])}
-                    >
-                      {time.split('T')[1].slice(0, 5)}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </Stack>
-            ) : (
-              <div style={{ textAlign: 'right' }}>Uygun saat bulunamadi.</div>
-            ))}
 
-          {durations && durations.length > 0 && (
+          {durations && durations?.availableDurations.length > 0 && (
             <Stack sx={{ gap: 1, display: 'flex', alignItems: 'center', justifyContent: 'items-start', flexDirection: 'row' }}>
               <InputLabel sx={{ minWidth: 130 }} htmlFor="email-login">
                 Süre Seçiniz{' '}
               </InputLabel>
               <Box sx={{ width: '100%' }}>
-                {durations.map((item, index) => (
+                {durations.availableDurations.map((item, index) => (
                   <Button
                     key={index}
                     color={duration == item ? 'primary' : 'secondary'}
@@ -330,12 +241,7 @@ export default function BasicDateTimePickers({ days, times, durations }) {
             </Typography>
           </Stack>
           <Stack sx={{ display: 'flex', justifyContent: 'flex-end', flexDirection: 'row' }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={isPending || !time || !alignment || !duration || !date}
-            >
+            <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isPending || !alignment || !duration}>
               Satin Al
             </Button>
           </Stack>
