@@ -307,7 +307,7 @@ export default function SortingTable({ users }) {
         filterFn: 'between',
         cell: (info) => {
           const d = new Date(info.getValue());
-          return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('tr-TR');
+          return isNaN(d.getTime()) ? '-' : d.toISOString().split('T')[0];
         }
       },
       {

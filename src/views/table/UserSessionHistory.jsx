@@ -256,6 +256,8 @@ function ReactTable({ columns, data, title }) {
 // ==============================|| REACT TABLE - SORTING ||============================== //
 
 export default function SortingTable({ list }) {
+  console.log(list);
+
   const columns = useMemo(
     () => [
       {
@@ -273,7 +275,7 @@ export default function SortingTable({ list }) {
         filterFn: 'between',
         cell: (info) => {
           const d = new Date(info.getValue());
-          return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('tr-TR') + '-' + d.toLocaleTimeString('tr-TR');
+          return isNaN(d.getTime()) ? '-' : d.toISOString().split('T')[0] + ' - ' + d.toISOString().split('T')[1].slice(0, 5);
         }
       },
       {
@@ -283,7 +285,7 @@ export default function SortingTable({ list }) {
         filterFn: 'between',
         cell: (info) => {
           const d = new Date(info.getValue());
-          return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('tr-TR') + '-' + d.toLocaleTimeString('tr-TR');
+          return isNaN(d.getTime()) ? '-' : d.toISOString().split('T')[0] + ' - ' + d.toISOString().split('T')[1].slice(0, 5);
         }
       },
 

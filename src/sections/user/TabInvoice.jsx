@@ -28,6 +28,7 @@ import countries from 'data/countries';
 
 // assets
 import { Add } from '@wandersonalwes/iconsax-react';
+import { useState } from 'react';
 
 // styles & constant
 const ITEM_HEIGHT = 48;
@@ -37,7 +38,7 @@ const MenuProps = { PaperProps: { style: { maxHeight: ITEM_HEIGHT * 4.5 + ITEM_P
 // ==============================|| USER PROFILE - PERSONAL ||============================== //
 
 export default function TabPersonal() {
-  const [values, setValues] = React.useState({
+  const [values, setValues] = useState({
     firstname: '',
     lastname: '',
     address: '',
@@ -64,6 +65,8 @@ export default function TabPersonal() {
   const handleBlur = (event) => {
     setFieldTouched(event.target.name, true);
   };
+
+  const handleSubmit = () => {};
 
   return (
     <MainCard content={false} title="Personal Information" sx={{ '& .MuiInputLabel-root': { fontSize: '0.875rem' } }}>

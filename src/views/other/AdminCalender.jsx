@@ -60,6 +60,8 @@ export default function Calendar({ experts, slots }) {
     [searchParams]
   );
 
+  console.log(selected);
+
   const style = {
     unset: {
       borderColor: theme.palette.secondary.light,
@@ -171,7 +173,7 @@ export default function Calendar({ experts, slots }) {
               status 0 == available */}
 
             {slots.map((item, index) => {
-              const sx = selected.includes(item.start)
+              const sx = selected.includes(item.startTime)
                 ? {
                     border: '1px solid',
                     textAlign: 'center',

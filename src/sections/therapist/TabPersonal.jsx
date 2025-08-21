@@ -39,7 +39,7 @@ const MenuProps = { PaperProps: { style: { maxHeight: ITEM_HEIGHT * 4.5 + ITEM_P
 export default function TabPersonal({ info }) {
   console.log(info);
 
-  const [values, setValues] = React.useState({
+  const [values, setValues] = useState({
     firstName: info?.firstName,
     lastName: info?.lastName,
     bio: info?.bio,

@@ -34,6 +34,7 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 import { Eye, EyeSlash, Flag, Flag2, Whatsapp } from '@wandersonalwes/iconsax-react';
 import { Autocomplete, CardMedia, Checkbox, FormControlLabel, MenuItem, Select, TextField, useTheme } from '@mui/material';
 import { FlagCircleRounded, Visibility, VisibilityOff } from '@mui/icons-material';
+import { toast } from 'react-toastify';
 
 export function Step0({ setStep, values, setValues }) {
   const theme = useTheme();
@@ -276,7 +277,9 @@ export function Step1({ setStep, values, setValues }) {
                   router.refresh();
                   router.push('/');
                 } else {
-                  throw new Error('Giriş başarısız!');
+                  router.refresh();
+                  toast.error('Giriş başarısız!');
+                  setStep(0);
                 }
               } catch (err) {
                 setFieldError('password', err);

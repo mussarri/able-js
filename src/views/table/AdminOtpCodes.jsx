@@ -191,7 +191,9 @@ function ReactTable({ columns, data, title }) {
         </Stack>
       }
     >
-      <Search />
+      <Stack sx={{ gap: 1, maxWidth: '500px', padding: '10px' }}>
+        <Search />
+      </Stack>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -302,9 +304,10 @@ export default function SortingTable({ otpCodes }) {
           const d = new Date(info.getValue());
           //button update son kullanma tarihi
           //<UpdateExpiration />
+
           return (
             <UpdateOtp
-              text={isNaN(d.getTime()) ? '-' : d.toLocaleDateString('tr-TR') + ' - ' + d.toLocaleTimeString('tr-TR')}
+              text={isNaN(d.getTime()) ? '-' : d.toISOString().split('T')[0] + ' - ' + d.toISOString().split('T')[1].slice(0, 5)}
               otpId={info.row.original.otpId}
               code={info.row.original.otpCode}
             />

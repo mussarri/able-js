@@ -1,7 +1,7 @@
 // project-imports
 import Loader from 'components/Loader';
-import { cookies } from 'next/headers';
 import { Suspense } from 'react';
+import { cookies } from 'next/headers';
 import Table from 'views/table/ExpertSessionHistory';
 
 // ==============================|| SAMPLE PAGE ||============================== //

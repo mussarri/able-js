@@ -27,6 +27,7 @@ import countries from 'data/countries';
 
 // assets
 import { Add } from '@wandersonalwes/iconsax-react';
+import { useState } from 'react';
 
 // styles & constant
 const ITEM_HEIGHT = 48;
@@ -49,6 +50,7 @@ export default function TabPersonal({ user }) {
       [event.target.name]: event.target.value
     });
   };
+  const handleSubmit = () => {};
 
   return (
     <MainCard content={false} title="Personal Information" sx={{ '& .MuiInputLabel-root': { fontSize: '0.875rem' } }}>
