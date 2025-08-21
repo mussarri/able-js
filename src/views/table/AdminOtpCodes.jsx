@@ -15,7 +15,7 @@ import TableRow from '@mui/material/TableRow';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import DebouncedInput from 'components/Search';
-
+import Search from 'components/Search';
 // third-party
 
 // project-imports
