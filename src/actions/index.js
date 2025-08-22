@@ -19,17 +19,18 @@ export const createMultiSlots = async (prev, formData) => {
         startTimes: slots
       })
     });
+    const data = await res.json();
 
-    if (res.status !== 200) throw new Error('Slot olusturulamadi');
+    if (res.status !== 200) throw new Error(data.message);
     revalidatePath('/admin/calendar');
     revalidatePath('/therapist/calendar');
     return {
-      message: 'Slot olusturuldu',
+      message: data.message,
       success: true
     };
   } catch (error) {
     return {
-      message: 'Slot olusturulamadi',
+      message: error.message,
       error: true
     };
   }
@@ -51,17 +52,18 @@ export const createMultiSlotsAdmin = async (prev, formData) => {
         startTimes: slots
       })
     });
+    const data = await res.json();
 
-    if (res.status !== 200) throw new Error('Slot olusturulamadi');
+    if (res.status !== 200) throw new Error(data.message);
     revalidatePath('/admin/calendar');
     revalidatePath('/therapist/calendar');
     return {
-      message: 'Slot olusturuldu',
+      message: data.message,
       success: true
     };
   } catch (error) {
     return {
-      message: 'Slot olusturulamadi',
+      message: error.message,
       error: true
     };
   }
@@ -79,16 +81,18 @@ export const deleteSlotExpert = async (prev, formData) => {
         Authorization: `Bearer ${token}`
       }
     });
-    if (res.status !== 200) throw new Error('Slot silinirken hata olustu.');
+    const data = await res.json();
+
+    if (res.status !== 200) throw new Error(data.message);
     revalidatePath('/admin/calendar');
     revalidatePath('/therapist/calendar');
     return {
-      message: 'Slot başarıyla silindi.',
+      message: data.message,
       success: true
     };
   } catch (error) {
     return {
-      message: 'Slot silinirken hata olustu.',
+      message: error.message,
       error: true
     };
   }
@@ -113,16 +117,18 @@ export const deleteSlotsAdmin = async (prev, formData) => {
         slotIds
       })
     });
-    if (res.status !== 200) throw new Error('Slotlar silinirken hata olustu.');
+    const data = await res.json();
+
+    if (res.status !== 200) throw new Error(data.message);
     revalidatePath('/admin/calendar');
     revalidatePath('/therapist/calendar');
     return {
-      message: 'Slotlar başarıyla silindi.',
+      message: data.message,
       success: true
     };
   } catch (error) {
     return {
-      message: 'Slotlar silinirken hata olustu.',
+      message: error.message,
       error: true
     };
   }
@@ -151,17 +157,18 @@ export const updateExpertBilling = async (prev, formData) => {
         contactPhone
       })
     });
+    const data = await res.json();
 
-    if (res.status !== 200) throw new Error('Slotlar silinirken hata olustu.');
+    if (res.status !== 200) throw new Error(data.message);
     revalidatePath('/admin/calendar');
     revalidatePath('/therapist/account-info');
     return {
-      message: 'Slotlar başarıyla silindi.',
+      message: data.message,
       success: true
     };
   } catch (error) {
     return {
-      message: 'Slotlar silinirken hata olustu.',
+      message: error.message,
       error: true
     };
   }
@@ -177,15 +184,17 @@ export const updateOtp = async (prev, formData) => {
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
     });
 
-    if (res.status !== 200) throw new Error('Slotlar silinirken hata olustu.');
+    const data = await res.json();
+
+    if (res.status !== 200) throw new Error(data.message);
     revalidatePath('/admin/otp-codes');
     return {
-      message: 'Slotlar başarıyla silindi.',
+      message: data.message,
       success: true
     };
   } catch (error) {
     return {
-      message: 'Slotlar silinirken hata olustu.',
+      message: error.message,
       error: true
     };
   }
@@ -207,16 +216,17 @@ export const expertChangePassword = async (prev, formData) => {
         newPassword
       })
     });
+    const data = await res.json();
 
-    if (res.status !== 200) throw new Error('Slotlar silinirken hata olustu.');
+    if (res.status !== 200) throw new Error(data.message);
     revalidatePath('/therapist/account-info');
     return {
-      message: 'Slotlar başarıyla silindi.',
+      message: data.message,
       success: true
     };
   } catch (error) {
     return {
-      message: 'Slotlar silinirken hata olustu.',
+      message: error.message,
       error: true
     };
   }
@@ -238,16 +248,17 @@ export const clientChangePassword = async (prev, formData) => {
         newPassword
       })
     });
+    const data = await res.json();
 
-    if (res.status !== 200) throw new Error('Parola guncellenirken hata olustu');
+    if (res.status !== 200) throw new Error(data.message);
     revalidatePath('/user/account-info');
     return {
-      message: 'Parola guncellendi.',
+      message: data.message,
       success: true
     };
   } catch (error) {
     return {
-      message: 'Parola guncellenirken hata olustu.',
+      message: error.message,
       error: true
     };
   }
@@ -271,20 +282,21 @@ export const createAppointmentDrafts = async (prev, formData) => {
         duration: parseInt(duration)
       })
     });
+    const data = await res.json();
 
-    if (res.status !== 200) throw new Error('Randevu olusturulken hata olustu.');
+    if (res.status !== 200) throw new Error(data.message);
 
     revalidatePath('/admin');
     revalidatePath('/expert');
     revalidatePath('/user/buy-session');
     revalidatePath('/user/session-history');
     return {
-      message: 'Randevu başarıyla olusturuldu.',
+      message: data.message,
       success: true
     };
   } catch (error) {
     return {
-      message: 'Randevu olusturulurken hata olustu.',
+      message: error.message,
       error: true
     };
   }
@@ -303,18 +315,20 @@ export const cancelAppoinmentAsyn = async (prev, formData) => {
         Authorization: `Bearer ${token}`
       }
     });
-    if (res.status !== 200) throw new Error('Randevu iptal edilirken hata olustu.');
+    const data = await res.json();
+
+    if (res.status !== 200) throw new Error(data.message);
     revalidatePath('/admin');
     revalidatePath('/expert');
     revalidatePath('/user/buy-session');
     revalidatePath('/user/session-history');
     return {
-      message: 'Randevu başarıyla iptal edildi.',
+      message: data.message,
       success: true
     };
   } catch (error) {
     return {
-      message: 'Randevu iptal edilirken hata olustu.',
+      message: error.message,
       error: true
     };
   }
@@ -341,19 +355,62 @@ export const bookImmediate = async (prev, formData) => {
         Authorization: `Bearer ${token}`
       }
     });
+    const data = await res.json();
 
-    if (res.status !== 200) throw new Error('Simdi gorus randevusu alinirken hata olustu.');
+    if (res.status !== 200) throw new Error(data.message);
     revalidatePath('/admin');
     revalidatePath('/expert');
     revalidatePath('/user/buy-session');
     revalidatePath('/user/session-history');
     return {
-      message: 'Simdi gorus randevusu alindi.',
+      message: data.message,
       success: true
     };
   } catch (error) {
     return {
-      message: 'Simdi gorus randevusu alinirken hata olustu.',
+      message: error.message,
+      error: true
+    };
+  }
+};
+
+export const clientChangeUsername = async (prev, formData) => {
+  const cookie = await cookies();
+  const token = cookie.get('token')?.value;
+  const username = formData.get('userName').toString();
+  try {
+    const checkUsername = await fetch(process.env.API_URL + `api/Auth/check-username?username=` + username, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (checkUsername.status !== 200) throw new Error(data.message);
+
+    const res = await fetch(process.env.API_URL + `api/Client/changeUserName?newUserName=` + username, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await res.json();
+
+    if (res.status !== 200) throw new Error(data.message);
+
+    revalidatePath('/user/account-info');
+
+    return {
+      message: data.message,
+      success: true
+    };
+  } catch (error) {
+    console.log(error.message);
+    return {
+      message: error.message,
       error: true
     };
   }

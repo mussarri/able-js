@@ -38,7 +38,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebounce } from 'use-debounce';
-import UpdateOtp from 'components/UpdateOtp';
+import UpdateOtp from 'components/admin/UpdateOtp';
 
 // ==============================|| REACT TABLE ||============================== //
 
@@ -247,7 +247,7 @@ function ReactTable({ columns, data, title }) {
         <Box sx={{ p: 2 }}>
           <TablePagination
             {...{
-              pageCount: data.totalCount
+              pageCount: data.totalPages
             }}
           />
         </Box>

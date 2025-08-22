@@ -15,9 +15,9 @@ import times from 'utils/times';
 import Button from '@mui/material/Button';
 import { fontWeight, minWidth } from '@mui/system';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import ExpertDeleteSlot from 'components/ExpertDeleteSlot';
+import ExpertDeleteSlot from 'components/therapist/ExpertDeleteSlot';
 import Selecto from 'react-selecto';
-import CreateSlots from 'components/CreateSlots';
+import CreateSlots from 'components/therapist/CreateSlots';
 // ==============================|| CALENDAR - MAIN ||============================== //
 function getNext30Days() {
   const days = [];

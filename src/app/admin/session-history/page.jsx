@@ -20,13 +20,24 @@ async function Render({ searchParams }) {
   let sessions = [];
   const params = new URLSearchParams();
 
-  if (searchParams.filter) {
-    params.append('filter', searchParams.filter);
+  if (searchParams?.search) {
+    params.append('searchText', searchParams?.search);
+  }
+
+  if (searchParams?.page) {
+    params.append('page', searchParams?.page);
+  }
+  if (searchParams?.pageSize) {
+    params.append('pageSize', searchParams?.page || 10);
+  }
+
+  if (searchParams?.filter) {
+    params.append('filter', searchParams?.filter);
   }
 
   if (token) {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/Appointment/getClientAppointments?${params.toString()}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/Admin/getAppoinments?${params.toString()}`, {
         headers: {
           Authorization: `Bearer ${token}`
         },
@@ -35,6 +46,8 @@ async function Render({ searchParams }) {
 
       if (res.ok) {
         const data = await res.json();
+        console.log(data);
+
         sessions = data.data;
       }
     } catch (error) {

@@ -1,9 +1,9 @@
 import React from 'react';
-import BasicPickers from 'components/BuySessionSelectNow';
+import BasicPickers from 'sections/user/BuySessionSelectNow';
 import MainCard from 'components/MainCard';
 
-const BuySession = ({ durations }) => {
-  return <BasicPickers durations={durations} />;
+const BuySession = ({ durations, prices }) => {
+  return <BasicPickers durations={durations} prices={prices} />;
 };
 
 export default BuySession;

@@ -15,7 +15,7 @@ import TableRow from '@mui/material/TableRow';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import DebouncedInput from 'components/third-party/react-table/DebouncedInput';
-
+import Search from 'components/Search';
 // third-party
 
 // project-imports
@@ -189,7 +189,7 @@ function ReactTable({ columns, data, title }) {
       }
     >
       <Stack sx={{ gap: 1, maxWidth: '500px', padding: '10px' }}>
-        <OutlinedInput fullWidth value={''} onChange={() => {}} placeholder="Ara.." />
+        <Search />
       </Stack>
 
       <TableContainer component={Paper}>
@@ -245,7 +245,7 @@ function ReactTable({ columns, data, title }) {
         <Box sx={{ p: 2 }}>
           <TablePagination
             {...{
-              pageCount: data.totalCount
+              pageCount: data.totalPages
             }}
           />
         </Box>

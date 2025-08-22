@@ -15,6 +15,7 @@ import TableRow from '@mui/material/TableRow';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import DebouncedInput from 'components/third-party/react-table/DebouncedInput';
+import Search from 'components/Search';
 
 // third-party
 
@@ -133,16 +134,14 @@ function ReactTable({ columns, data, title }) {
   const theme = useTheme();
 
   const table = useReactTable({
-    data,
+    data: data.items,
     columns,
-    state: { columnFilters, sorting },
+
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
-    onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
-    onGlobalFilterChange: setGlobalFilter,
-    getPaginationRowModel: getPaginationRowModel(),
+
     // filtre fonksiyonlarını tanımlamak istersen:
     globalFilterFn: fuzzyFilter, // veya 'includesString' gibi basit
     filterFns: {
@@ -188,7 +187,7 @@ function ReactTable({ columns, data, title }) {
       }
     >
       <Stack sx={{ gap: 1, maxWidth: '500px', padding: '10px' }}>
-        <OutlinedInput fullWidth value={''} onChange={() => {}} placeholder="Ara.." />
+        <Search />
       </Stack>
       <TableContainer component={Paper}>
         <Table>
@@ -243,7 +242,7 @@ function ReactTable({ columns, data, title }) {
         <Box sx={{ p: 2 }}>
           <TablePagination
             {...{
-              pageCount: data.totalCount
+              pageCount: data.totalPages
             }}
           />
         </Box>
@@ -255,27 +254,25 @@ function ReactTable({ columns, data, title }) {
 // ==============================|| REACT TABLE - SORTING ||============================== //
 
 export default function SortingTable({ sessions }) {
-  console.log(sessions);
-
   const columns = useMemo(
     () => [
       {
         header: 'Uzman',
-        accessorKey: 'userName',
+        accessorKey: 'expertName',
         enableColumnFilter: true,
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy'
       },
       {
         header: 'Hasta',
-        accessorKey: '',
+        accessorKey: 'clientName',
         enableColumnFilter: true,
         // eğer özel filterFn istersen:
         filterFn: 'fuzzy'
       },
       {
         header: 'Satin Alma Tarihi',
-        accessorKey: 'dateCreated',
+        accessorKey: 'createdAt',
         enableColumnFilter: false,
         filterFn: 'between',
         cell: (info) => {
@@ -289,8 +286,15 @@ export default function SortingTable({ sessions }) {
         enableColumnFilter: false,
         meta: { className: 'cell-center' },
         cell: (info) => {
-          const d = new Date(info.getValue());
-          return d.toISOString().split('T')[0] + ' ' + d.toISOString().split('T')[1].slice(0, 5);
+          const d = new Date(info.row.original.startTime);
+          const d2 = new Date(info.row.original.endTime);
+          return (
+            d.toISOString().split('T')[0] +
+            ' ' +
+            d.toISOString().split('T')[1].slice(0, 5) +
+            ' - ' +
+            d2.toISOString().split('T')[1].slice(0, 5)
+          );
         }
       },
       {
@@ -304,6 +308,12 @@ export default function SortingTable({ sessions }) {
           });
           return lira.format(info.getValue());
         }
+      },
+      {
+        header: 'Tip',
+        accessorKey: 'appointmentType',
+        enableColumnFilter: false
+        // eğer özel filterFn istersen:
       },
       {
         header: 'Durum',

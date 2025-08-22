@@ -27,6 +27,7 @@ export async function RenderPage({ exprertId, searchParams }) {
   let list = [];
   let timeList = [];
   let durations = [];
+  let prices = {};
 
   if (token) {
     try {
@@ -36,6 +37,25 @@ export async function RenderPage({ exprertId, searchParams }) {
         },
         cache: 'no-store' // her seferinde güncel veri çekmek için
       });
+
+      const resPrice = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/Client/getExpertPrice?expertId=` + exprertId, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        cache: 'no-store'
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        list = data.data.filter((item) => item.isAvailable === true);
+      }
+      console.log(resPrice);
+
+      if (resPrice.ok) {
+        const data = await resPrice.json();
+        prices = data.data;
+        console.log(data);
+      }
 
       if (searchParams?.date) {
         const resTime = await fetch(
@@ -73,14 +93,9 @@ export async function RenderPage({ exprertId, searchParams }) {
           }
         }
       }
-
-      if (res.ok) {
-        const data = await res.json();
-        list = data.data.filter((item) => item.isAvailable === true);
-      }
     } catch (error) {
       console.error('Uzman listesi alınamadı:', error);
     }
   }
-  return <BuySession days={list} timeList={timeList} durations={durations} />;
+  return <BuySession days={list} timeList={timeList} durations={durations} prices={prices} />;
 }

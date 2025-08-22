@@ -1,18 +1,21 @@
 import { Box, Button } from '@mui/material';
-import { createMultiSlotsAdmin } from 'actions';
+import { createMultiSlots } from 'actions';
 import React, { startTransition, useActionState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
-const CreateSlots = ({ slots, setSelected, expertId }) => {
-  const [state, formAction, isPending] = useActionState(createMultiSlotsAdmin, null);
+const CreateSlots = ({ slots, setSelected }) => {
+  const [state, formAction, isPending] = useActionState(createMultiSlots, null);
+
   useEffect(() => {
-    if (state?.success) {
+    if (state?.error) {
+      toast.error(state?.message);
       setSelected([]);
     }
-    if (state?.error) {
+    if (state?.success) {
+      toast.success(state?.message);
       setSelected([]);
     }
   }, [state]);
-
   return (
     <div className="div" style={{ marginTop: '10px', textAlign: 'right', width: '100%' }}>
       {state?.error && <p style={{ margin: '0px 0', color: 'red' }}>{state?.error}</p>}{' '}
@@ -28,7 +31,6 @@ const CreateSlots = ({ slots, setSelected, expertId }) => {
       >
         {' '}
         <input type="hidden" name="slots" value={JSON.stringify(slots)} />
-        <input type="hidden" name="expertId" value={expertId} />
         <Box
           sx={{
             textAlign: 'right',
@@ -38,7 +40,7 @@ const CreateSlots = ({ slots, setSelected, expertId }) => {
             justifyContent: 'flex-end'
           }}
         >
-          <Button type="submit" disabled={slots?.length < 1 || isPending} color="primary" variant="contained">
+          <Button type="submit" disabled={isPending} color="primary" variant="contained">
             Slot Oluştur
           </Button>
         </Box>

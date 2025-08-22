@@ -33,6 +33,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Typography from '@mui/material/Typography';
 import { blue } from '@mui/material/colors';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { toast } from 'react-toastify';
 
 export default function ExpertCreateSlot({ slot }) {
   const [open, setOpen] = React.useState(false);
@@ -40,9 +41,11 @@ export default function ExpertCreateSlot({ slot }) {
   const [state, formAction, isPending] = React.useActionState(createMultiSlots, null);
   React.useEffect(() => {
     if (state?.error) {
+      toast.error(state?.message);
       setOpen(false);
     }
     if (state?.success) {
+      toast.success(state?.message);
       setOpen(false);
     }
   }, [state]);

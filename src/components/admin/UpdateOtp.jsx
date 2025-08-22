@@ -16,16 +16,17 @@ import AddIcon from '@mui/icons-material/Add';
 import Typography from '@mui/material/Typography';
 import { blue } from '@mui/material/colors';
 import { DialogContent, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { toast } from 'react-toastify';
 
 function UpdateOtp({ text, otpId, code }) {
   const [open, setOpen] = React.useState(false);
   const [state, formAction, isPending] = React.useActionState(updateOtp, null);
   React.useEffect(() => {
     if (state?.error) {
-      setOpen(false);
+      toast.error(state?.message);
     }
     if (state?.success) {
-      setOpen(false);
+      toast.success(state?.message);
     }
   }, [state]);
 

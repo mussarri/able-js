@@ -17,8 +17,8 @@ import { fontWeight, minWidth } from '@mui/system';
 import { Autocomplete, Input, InputLabel, Stack, TextField } from '@mui/material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Selecto from 'react-selecto';
-import CreateSlotsAdmin from 'components/CreateSlotsAdmin';
-import AdminDeleteSlot from 'components/AdminDeleteSlot';
+import CreateSlotsAdmin from 'components/admin/CreateSlotsAdmin';
+import AdminDeleteSlot from 'components/admin/AdminDeleteSlot';
 // ==============================|| CALENDAR - MAIN ||============================== //
 function getNext30Days() {
   const days = [];

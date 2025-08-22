@@ -27,7 +27,9 @@ import countries from 'data/countries';
 
 // assets
 import { Add } from '@wandersonalwes/iconsax-react';
-import { useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
+import { clientChangeUsername } from 'actions';
+import { toast } from 'react-toastify';
 
 // styles & constant
 const ITEM_HEIGHT = 48;
@@ -38,11 +40,21 @@ const MenuProps = { PaperProps: { style: { maxHeight: ITEM_HEIGHT * 4.5 + ITEM_P
 
 export default function TabPersonal({ user }) {
   const [values, setValues] = useState({
-    rumuz: user.userName,
+    userName: user.userName,
     contact: user.phone
   });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
+
+  const [state, formAction, isPending] = useActionState(clientChangeUsername, null);
+  useEffect(() => {
+    if (state?.success) {
+      toast.success(state?.message);
+    }
+    if (state?.error) {
+      toast.error(state?.message);
+    }
+  }, [state]);
 
   const handleChange = (event) => {
     setValues({
@@ -50,11 +62,10 @@ export default function TabPersonal({ user }) {
       [event.target.name]: event.target.value
     });
   };
-  const handleSubmit = () => {};
 
   return (
     <MainCard content={false} title="Kişisel Bilgiler" sx={{ '& .MuiInputLabel-root': { fontSize: '0.875rem' } }}>
-      <form noValidate onSubmit={handleSubmit}>
+      <form noValidate action={formAction}>
         <Box sx={{ p: 2.5 }}>
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -63,20 +74,16 @@ export default function TabPersonal({ user }) {
                 <TextField
                   fullWidth
                   id="personal-first-name"
-                  value={values.rumuz}
-                  name="rumuz"
-                  placeholder="rumuz"
+                  onChange={handleChange}
+                  value={values.userName}
+                  name="userName"
+                  placeholder="userName"
                   autoFocus
-                  slotProps={{
-                    input: {
-                      readOnly: true
-                    }
-                  }}
                 />
               </Stack>
-              {touched.rumuz && errors.rumuz && (
+              {touched.userName && errors.userName && (
                 <FormHelperText error id="personal-first-name-helper">
-                  {errors.rumuz}
+                  {errors.userName}
                 </FormHelperText>
               )}
             </Grid>
@@ -106,6 +113,11 @@ export default function TabPersonal({ user }) {
               )}
             </Grid>
           </Grid>
+          <Stack sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+            <Button type="submit" variant="contained" color="primary" disabled={isPending}>
+              Kaydet
+            </Button>
+          </Stack>
         </Box>
       </form>
     </MainCard>

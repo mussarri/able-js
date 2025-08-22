@@ -37,6 +37,19 @@ export async function RenderPage({ exprertId, searchParams }) {
           cache: 'no-store' // her seferinde güncel veri çekmek için
         }
       );
+      const resPrice = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/Client/getExpertPrice?expertId=` + exprertId, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        cache: 'no-store'
+      });
+
+      if (resPrice.ok) {
+        const data = await resPrice.json();
+        prices = data.data;
+        console.log(data);
+      }
+
       if (res.ok) {
         const data = await res.json();
         durations = data.data;
@@ -45,5 +58,5 @@ export async function RenderPage({ exprertId, searchParams }) {
       console.error('Uzman listesi alınamadı:', error);
     }
   }
-  return <BuySession durations={durations} />;
+  return <BuySession durations={durations} prices={prices} />;
 }

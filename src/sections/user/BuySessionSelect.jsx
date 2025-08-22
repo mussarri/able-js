@@ -35,7 +35,35 @@ import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigat
 import { School, Videocam } from '@mui/icons-material';
 import MicIcon from '@mui/icons-material/Mic';
 import { useEffect } from 'react';
-import { bookImmediat, bookImmediate } from 'actions';
+import { createAppointmentDrafts } from 'actions';
+
+function countConsecutiveFreeSlots(allowedTimes, selectedTime) {
+  if (!selectedTime) return 0; // seçili saat yoksa direkt 0 dön
+
+  const parseTime = (timeStr) => {
+    if (!timeStr || typeof timeStr !== 'string') return null; // geçersiz saatleri yok say
+    const [h, m] = timeStr.split(':').map(Number);
+    return h * 60 + m; // toplam dakika
+  };
+
+  const parsedTimes = allowedTimes
+    .map(parseTime)
+    .filter((t) => t !== null) // null olanları at
+    .sort((a, b) => a - b);
+
+  const start = parseTime(selectedTime);
+  if (start === null) return 0;
+
+  let count = 0;
+  let currentTime = start;
+
+  while (parsedTimes.includes(currentTime)) {
+    count++;
+    currentTime += 30;
+  }
+
+  return count;
+}
 
 const basicDatepickerCodeString = `<LocalizationProvider dateAdapter={AdapterDateFns}>
   <Stack sx={{ gap: 3}}>
@@ -63,14 +91,15 @@ const basicDatepickerCodeString = `<LocalizationProvider dateAdapter={AdapterDat
   </Stack>
 </LocalizationProvider>`;
 
-export default function BasicDateTimePickers({ durations }) {
+export default function BasicDateTimePickers({ days, times, durations, prices }) {
   const theme = useTheme();
   const today = dayjs();
-  const date = new Date();
+  const maxDate = today.add(30, 'day');
+  var currentdate = new Date();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [state, formAction, isPending] = useActionState(bookImmediate, null);
+  const [state, formAction, isPending] = useActionState(createAppointmentDrafts, null);
 
   useEffect(() => {
     if (state?.success) {
@@ -81,6 +110,9 @@ export default function BasicDateTimePickers({ durations }) {
       router.push('/error?type=appointment');
     }
   }, [state]);
+
+  const date = searchParams.get('date');
+  const time = searchParams.get('time');
 
   const params = useParams();
 
@@ -94,6 +126,17 @@ export default function BasicDateTimePickers({ durations }) {
     [searchParams]
   );
 
+  // Tarihin seçilebilir olup olmadığını kontrol eden fonksiyon
+  const isDateAllowed = (date) => {
+    return days
+      .map((item) => {
+        return { date: dayjs(item.date), isAvailable: item.isAvailable };
+      })
+      .some((allowedDate) => allowedDate.date.isSame(date, 'day'));
+  };
+
+  const [day, setDay] = useState(today);
+
   const [duration, setDuration] = useState();
 
   const [alignment, setAlignment] = useState('');
@@ -104,14 +147,21 @@ export default function BasicDateTimePickers({ durations }) {
 
   const handleSubmit = () => {
     const formData = new FormData();
+    formData.append('startTime', time);
     formData.append('expertId', params.name);
     formData.append('status', alignment);
     formData.append('duration', duration);
+    console.log(formData);
 
     startTransition(() => {
       formAction(formData);
     });
   };
+
+  console.log(prices);
+
+  const price = alignment && (alignment === '0' ? prices?.videoPrice : prices?.soundPrice);
+  const totalPrice = duration && (price * duration) / 30;
 
   return (
     <MainCard sx={{ maxWidth: 700 }}>
@@ -167,7 +217,7 @@ export default function BasicDateTimePickers({ durations }) {
                     <MicIcon />{' '}
                   </div>
                   <Typography variant="h4" textAlign="center" fontWeight={'light'}>
-                    600₺
+                    {prices?.soundPrice}₺
                   </Typography>
                   <Typography
                     style={{ minWidth: 'max-content' }}
@@ -195,7 +245,7 @@ export default function BasicDateTimePickers({ durations }) {
                     <Videocam />
                   </div>
                   <Typography variant="h4" textAlign="center" fontWeight={'light'}>
-                    600₺
+                    {prices?.videoPrice}₺
                   </Typography>
                   <Typography variant="subtitle2" textAlign="center" fontWeight={'lighter'} className="text">
                     Görüntülü 30dk
@@ -209,17 +259,61 @@ export default function BasicDateTimePickers({ durations }) {
               <InputLabel sx={{ minWidth: 130 }} htmlFor="email-login">
                 Tarih Seçiniz{' '}
               </InputLabel>
-              <DesktopDatePicker sx={{ width: '100%' }} format="dd/MM/yyyy" value={date} disabled />
+              <DesktopDatePicker
+                sx={{ width: '100%' }}
+                format="dd/MM/yyyy"
+                value={date ? new Date(date) : day}
+                onChange={(newValue) => {
+                  setDay(newValue);
+                  const localDate = newValue.toLocaleDateString('en-CA'); // YYYY-MM-DD formatında
+                  router.push(pathname + '?' + createQueryString('date', localDate));
+                }}
+                shouldDisableDate={(date) => {
+                  if (!date) return true; // null ise disable
+                  return !isDateAllowed(dayjs(date)); // listedekiler dışındakiler disable
+                }}
+              />
             </Stack>
           }
+          {!!date &&
+            (times.length > 0 ? (
+              <Stack sx={{ gap: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
+                <InputLabel sx={{ minWidth: 130 }} htmlFor="email-login">
+                  Saat Seçiniz{' '}
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  sx={{ width: '100%' }}
+                  value={time}
+                  label="Age"
+                  defaultValue={'Saat seçiniz..'}
+                  onChange={(e) => {
+                    router.push(pathname + '?' + createQueryString('time', e.target.value));
+                  }}
+                >
+                  {times.map((time, index) => (
+                    <MenuItem
+                      key={time}
+                      value={time}
+                      // disabled={!isTimeAllowed(time.split(':')[0], time.split(':')[1])}
+                    >
+                      {time.split('T')[1].slice(0, 5)}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Stack>
+            ) : (
+              <div style={{ textAlign: 'right' }}>Uygun saat bulunamadi.</div>
+            ))}
 
-          {durations && durations?.availableDurations.length > 0 && (
+          {durations && durations.length > 0 && (
             <Stack sx={{ gap: 1, display: 'flex', alignItems: 'center', justifyContent: 'items-start', flexDirection: 'row' }}>
               <InputLabel sx={{ minWidth: 130 }} htmlFor="email-login">
                 Süre Seçiniz{' '}
               </InputLabel>
               <Box sx={{ width: '100%' }}>
-                {durations.availableDurations.map((item, index) => (
+                {durations.map((item, index) => (
                   <Button
                     key={index}
                     color={duration == item ? 'primary' : 'secondary'}
@@ -232,16 +326,23 @@ export default function BasicDateTimePickers({ durations }) {
               </Box>
             </Stack>
           )}
-          <Stack sx={{ gap: 1, display: 'flex', alignItems: 'center', justifyContent: 'justify-between', flexDirection: 'row' }}>
-            <InputLabel sx={{ minWidth: 130 }} htmlFor="email-login">
-              Tutar{' '}
-            </InputLabel>
-            <Typography variant="h6" fontWeight="bold" sx={{ width: '100%', textAlign: 'right' }}>
-              1000TL
-            </Typography>
-          </Stack>
+          {totalPrice && (
+            <Stack sx={{ gap: 1, display: 'flex', alignItems: 'center', justifyContent: 'justify-between', flexDirection: 'row' }}>
+              <InputLabel sx={{ minWidth: 130 }} htmlFor="email-login">
+                Tutar{' '}
+              </InputLabel>
+              <Typography variant="h6" fontWeight="bold" sx={{ width: '100%', textAlign: 'right' }}>
+                {totalPrice}₺
+              </Typography>
+            </Stack>
+          )}
           <Stack sx={{ display: 'flex', justifyContent: 'flex-end', flexDirection: 'row' }}>
-            <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isPending || !alignment || !duration}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              disabled={isPending || !time || !alignment || !duration || !date}
+            >
               Satin Al
             </Button>
           </Stack>

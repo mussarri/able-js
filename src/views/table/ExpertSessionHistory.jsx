@@ -15,7 +15,7 @@ import TableRow from '@mui/material/TableRow';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import DebouncedInput from 'components/third-party/react-table/DebouncedInput';
-
+import Search from 'components/Search';
 // third-party
 
 // project-imports
@@ -188,9 +188,9 @@ function ReactTable({ columns, data, title }) {
         </Stack>
       }
     >
-      {/* <Stack sx={{ gap: 1, maxWidth: '500px', padding: '10px' }}>
-              <Select fullWidth value={''} onChange={() => {}} placeholder="Ara.." />
-            </Stack> */}
+      <Stack sx={{ gap: 1, maxWidth: '500px', padding: '10px' }}>
+        <Search />
+      </Stack>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
