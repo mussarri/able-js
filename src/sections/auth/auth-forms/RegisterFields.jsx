@@ -139,7 +139,7 @@ export function Step0({ setStep }) {
               onBlur={handleBlur}
               onChange={handleChange}
               onFocus={() => setFieldError('gsm', '')}
-              placeholder={'54433322211'}
+              placeholder={'5443332211'}
             />
           ) : (
             <OutlinedInput
@@ -171,7 +171,7 @@ export function Step0({ setStep }) {
             label={
               <Typography variant="body2">
                 {' '}
-                <Link component={NextLink} href="/" passHref variant="subtitle2">
+                <Link component={NextLink} href={'#'} passHref variant="subtitle2">
                   Kullanıcı sözleşmesini'ni
                 </Link>
                 &nbsp; okudum, onaylıyorum. &nbsp;
@@ -192,7 +192,7 @@ export function Step0({ setStep }) {
             label={
               <Typography variant="body2">
                 {' '}
-                <Link component={NextLink} href="/" passHref variant="subtitle2">
+                <Link component={NextLink} href={'#'} passHref variant="subtitle2">
                   KVKK Aydınlatma Metni'ni
                 </Link>
                 &nbsp; okudum, onaylıyorum. &nbsp;
@@ -344,7 +344,7 @@ export function Step1({ setStep }) {
                   },
                   body: JSON.stringify({
                     phoneNumber: values.country.slice(1) + values.gsm,
-                    purpose: 1
+                    purpose: 3
                   })
                 });
 

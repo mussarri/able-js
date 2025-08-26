@@ -23,22 +23,25 @@ export async function POST(req) {
 
     console.log(data);
 
-    // 2. Token + role cookie yaz
-    if (token) {
-      const cookie = await cookies();
-      cookie.set('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        path: '/'
-      });
+    if (!isExistingUser) {
+      return NextResponse.json({ isExistingUser: false });
     }
 
-    if (boardLevel == 6) {
-      return NextResponse.json({ success: true });
-    } else {
+    // 2. Token + role cookie yaz
+    // if (token) {
+    //   const cookie = await cookies();
+    //   cookie.set('token', token, {
+    //     httpOnly: true,
+    //     secure: process.env.NODE_ENV === 'production',
+    //     sameSite: 'strict',
+    //     path: '/'
+    //   });
+    // }
+
+    if (boardLevel !== 6) {
       throw new Error(message);
     }
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });

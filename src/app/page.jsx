@@ -22,6 +22,8 @@ export default async function HomePage() {
       if (res.ok) {
         const data = await res.json();
         user = data.data;
+        console.log(data);
+        
       }
     } catch (error) {
       console.error('Kullanıcı bilgisi alınamadı:', error);

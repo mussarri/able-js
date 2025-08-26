@@ -25,16 +25,32 @@ import { facebookColor, linkedInColor } from 'config';
 
 // assets
 import { Apple, Camera, Facebook, Google } from '@wandersonalwes/iconsax-react';
+import { userUploadImage } from 'actions';
 const avatarImage = '/assets/images/users';
 
 // ==============================|| USER PROFILE - TABS ||============================== //
 
 export default function ProfileTabs({ focusInput, info }) {
   const [selectedImage, setSelectedImage] = useState(undefined);
-  const [avatar, setAvatar] = useState(`${avatarImage}/default.png`);
+  const [avatar, setAvatar] = useState(info.personalInfo.url);
+
+  const [state, formAction, isPending] = useActionState(userUploadImage, null);
+
+  useEffect(() => {
+    if (state?.success) {
+      toast.success(state?.message);
+    }
+    if (state?.error) {
+      toast.error(state?.message);
+      setSelectedImage(undefined);
+    }
+  }, [state]);
 
   useEffect(() => {
     if (selectedImage) {
+      const formData = new FormData();
+      formData.append('file', selectedImage);
+      formAction(formData);
       setAvatar(URL.createObjectURL(selectedImage));
     }
   }, [selectedImage]);

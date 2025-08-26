@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 
 // next
 import Link from 'next/link';
@@ -25,16 +25,33 @@ import { facebookColor, linkedInColor } from 'config';
 
 // assets
 import { Apple, Camera, Facebook, Google } from '@wandersonalwes/iconsax-react';
+import { userUploadImage } from 'actions';
+import { toast } from 'react-toastify';
 const avatarImage = '/assets/images/users';
 
 // ==============================|| USER PROFILE - TABS ||============================== //
 
 export default function ProfileTabs({ focusInput, user }) {
   const [selectedImage, setSelectedImage] = useState(undefined);
-  const [avatar, setAvatar] = useState(`${avatarImage}/default.png`);
+  const [avatar, setAvatar] = useState(user.url);
+
+  const [state, formAction, isPending] = useActionState(userUploadImage, null);
+
+  useEffect(() => {
+    if (state?.success) {
+      toast.success(state?.message);
+    }
+    if (state?.error) {
+      toast.error(state?.message);
+      setSelectedImage(undefined);
+    }
+  }, [state]);
 
   useEffect(() => {
     if (selectedImage) {
+      const formData = new FormData();
+      formData.append('file', selectedImage);
+      formAction(formData);
       setAvatar(URL.createObjectURL(selectedImage));
     }
   }, [selectedImage]);
@@ -50,7 +67,7 @@ export default function ProfileTabs({ focusInput, user }) {
     setAnchorEl(null);
   };
 
-  console.log(user);
+  console.log(selectedImage);
 
   return (
     <MainCard>
@@ -79,8 +96,6 @@ export default function ProfileTabs({ focusInput, user }) {
               transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
               <MenuItem
-                component={Link}
-                href="/apps/profiles/user/personal"
                 onClick={() => {
                   handleClose();
                   setTimeout(() => {
@@ -106,7 +121,7 @@ export default function ProfileTabs({ focusInput, user }) {
                 cursor: 'pointer'
               }}
             >
-              <Avatar alt="Avatar 1" src={user.url} sx={{ width: 124, height: 124, border: '1px dashed' }} />
+              <Avatar alt="Avatar 1" src={avatar} sx={{ width: 124, height: 124, border: '1px dashed' }} />
               <Box
                 sx={(theme) => ({
                   position: 'absolute',

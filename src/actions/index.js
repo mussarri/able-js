@@ -416,41 +416,129 @@ export const clientChangeUsername = async (prev, formData) => {
   }
 };
 
-// export const creteSlotExpert = async (prev, formData) => {
-//   const cookie = await cookies();
-//   const token = cookie.get('token')?.value;
+export const userUploadImage = async (prev, formData) => {
+  const cookie = await cookies();
+  const token = cookie.get('token')?.value;
+  const image = formData.get('file');
 
-//   const startTimes = [];
-//   let index = 0;
+  try {
+    const formData = new FormData();
+    formData.append('file', image);
 
-//   while (formData.get(`startTimes[${index}]`)) {
-//     startTimes.push(formData.get(`startTimes[${index}]`));
-//     index++;
-//   }
+    const res = await fetch(process.env.API_URL + `api/MediaFile/upload`, {
+      method: 'POST',
+      headers: {
+        // 'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`
+      },
+      body: formData
+    });
 
-//   try {
-//     const res = await fetch(process.env.API_URL + 'api/Slot/createSlots', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: `Bearer ${token}`
-//       },
-//       body: JSON.stringify({
-//         startTimes
-//       })
-//     });
+    const data = await res.json();
 
-//     if (res.status !== 200) throw new Error('Slot olusturulamadi');
-//     revalidatePath('/admin/calendar');
-//     revalidatePath('/therapist/calendar');
-//     return {
-//       message: 'Slot olusturuldu',
-//       success: true
-//     };
-//   } catch (error) {
-//     return {
-//       message: 'Slot olusturulamadi',
-//       error: true
-//     };
-//   }
-// };
+
+    if (res.status !== 200) throw new Error(data.message);
+
+    const res2 = await fetch(process.env.API_URL + `api/Auth/addUserProfilePhoto?mediaFileId=` + data.data.id, {
+      method: 'POST',
+      headers: {
+        // 'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data2 = await res2.json();
+
+    if (res2.status !== 200) throw new Error(data.message);
+
+    revalidatePath('/user/account-info');
+
+    return {
+      message: data2.message,
+      success: true,
+      url: data2.url
+    };
+  } catch (error) {
+    console.log(error.message);
+
+    return {
+      message: error.message,
+      error: true
+    };
+  }
+};
+
+export const putUploadImage = async (prev, formData) => {
+  const cookie = await cookies();
+  const token = cookie.get('token')?.value;
+  const image = formData.get('file');
+  const mediaId = formData.get('mediaId').toString();
+
+  try {
+    const formData = new FormData();
+    formData.append('file', image);
+
+    const res = await fetch(process.env.API_URL + `/api/MediaFile/` + mediaId, {
+      method: 'PUT',
+      headers: {
+        // 'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`
+      },
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (res.status !== 200) throw new Error(data.message);
+
+    revalidatePath('/user/account-info');
+
+    return {
+      message: data.message,
+      success: true,
+      url: data.url
+    };
+  } catch (error) {
+    console.log(error.message);
+
+    return {
+      message: error.message,
+      error: true
+    };
+  }
+};
+
+export const deleteUploadImage = async (prev, formData) => {
+  const cookie = await cookies();
+  const token = cookie.get('token')?.value;
+  const mediaId = formData.get('mediaId').toString();
+
+  try {
+    const res = await fetch(process.env.API_URL + `api/MediaFile/` + mediaId, {
+      method: 'DELETE',
+      headers: {
+        // 'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await res.json();
+
+    if (res.status !== 200) throw new Error(data.message);
+
+    revalidatePath('/user/account-info');
+
+    return {
+      message: data.message,
+      success: true,
+      url: data.url
+    };
+  } catch (error) {
+    console.log(error.message);
+
+    return {
+      message: error.message,
+      error: true
+    };
+  }
+};

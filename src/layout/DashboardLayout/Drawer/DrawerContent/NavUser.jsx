@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 
 // next
 import { useRouter } from 'next/navigation';
@@ -21,8 +21,7 @@ import Avatar from 'components/@extended/Avatar';
 
 // assets
 import { ArrowRight2 } from '@wandersonalwes/iconsax-react';
-
-const avatar1 = '/assets/images/users/avatar-6.png';
+import NavUserPhoto from './NavUserPhoto';
 
 const ExpandMore = styled(IconButton, {
   shouldForwardProp: (prop) => prop !== 'theme' && prop !== 'expand' && prop !== 'drawerOpen'
@@ -52,7 +51,6 @@ export default function UserList() {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
-    router.push('/account-info');
     setAnchorEl(null);
   };
 
@@ -86,10 +84,7 @@ export default function UserList() {
             '& .MuiListItemSecondaryAction-root': { right: !drawerOpen ? 16 : -16 }
           }}
         >
-          <ListItemAvatar>
-            <Avatar alt="Avatar" src={avatar1} sx={{ ...(drawerOpen && { width: 46, height: 46 }) }} />
-          </ListItemAvatar>
-          <ListItemText primary={user ? user?.name : ''} sx={{ ...(!drawerOpen && { display: 'none' }) }} secondary="" />
+          <NavUserPhoto drawerOpen={drawerOpen} />
         </ListItem>
       </List>
       <Menu
