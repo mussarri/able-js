@@ -24,16 +24,18 @@ async function Render({ date }) {
 
   if (token) {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/Slot/GetSlotsByDate?date=` + dateObject.toISOString(), {
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        cache: 'no-store' // her seferinde güncel veri çekmek için
-      });
+      if (dateObject) {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/Slot/GetSlotsByDate?date=` + dateObject?.toISOString(), {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          cache: 'no-store' // her seferinde güncel veri çekmek için
+        });
 
-      if (res.ok) {
-        const data = await res.json();
-        slots = data.data;
+        if (res.ok) {
+          const data = await res.json();
+          slots = data.data;
+        }
       }
     } catch (error) {
       console.error('Session history alınamadı:', error);
