@@ -30,18 +30,15 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets
 import { Eye, EyeSlash, Flag, Flag2, Whatsapp } from '@wandersonalwes/iconsax-react';
-import { Autocomplete, CardMedia, Checkbox, FormControlLabel, MenuItem, Select, TextField, useTheme } from '@mui/material';
+import { Autocomplete, CardMedia, Checkbox, FormControlLabel, IconButton, MenuItem, Select, TextField, useTheme } from '@mui/material';
 import { FlagCircleRounded } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
-export function Step0({ setStep }) {
+export function Step0({ setStep, values, setValues }) {
   const theme = useTheme();
   const router = useRouter();
   const [isResendSubmit, setIsResendSubmit] = useState(false);
-  const [values, setValues] = useState({
-    gsm: '',
-    country: '+90'
-  });
+
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isSubmitting, setSubmitting] = useState(false);
@@ -236,7 +233,7 @@ export function Step0({ setStep }) {
                   setStep(1);
                 } else {
                   const data = await res.json();
-                  throw new Error(data.error);
+                  throw new Error(data.message);
                 }
               } catch (err) {
                 toast.error(err.message);
@@ -264,11 +261,13 @@ export function Step0({ setStep }) {
   );
 }
 
-export function Step1({ setStep }) {
+export function Step1({ setStep, country, gsm }) {
   const theme = useTheme();
   const router = useRouter();
   const [isResendSubmit, setIsResendSubmit] = useState(false);
   const [values, setValues] = useState({
+    country: country,
+    gsm: gsm,
     otp: ''
   });
   const [errors, setErrors] = useState({});
@@ -336,7 +335,7 @@ export function Step1({ setStep }) {
               try {
                 setSubmitting(true);
                 setIsResendSubmit(true);
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/resend-otp`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/auth/resend-otp`, {
                   cache: 'no-store', // her seferinde güncel veri çekmek için,
                   method: 'POST',
                   headers: {
@@ -611,7 +610,7 @@ export function Step3({ setStep }) {
                 });
 
                 if (setUser.ok) {
-                  setStep(3);
+                  router.push('/');
                 } else {
                   const data = await setUser.json();
                   throw new Error(data.error);
@@ -627,7 +626,535 @@ export function Step3({ setStep }) {
           }}
           disabled={!values.rumuz || Boolean(errors.rumuz)}
         >
+          Tamamla
+        </Button>
+      </Stack>
+    </Grid>
+  );
+}
+
+//boardlevel is not 6 save token
+export function VerifyPhone({ next, country, gsm, purpose }) {
+  const theme = useTheme();
+  const router = useRouter();
+  const [isResendSubmit, setIsResendSubmit] = useState(false);
+  const [values, setValues] = useState({
+    country: country,
+    gsm: gsm,
+    otp: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+  const [isSubmitting, setSubmitting] = useState(false);
+
+  const setFieldValue = (name, value) => {
+    setValues({ ...values, [name]: value });
+  };
+  const setFieldError = (name, value) => {
+    setErrors({ ...errors, [name]: value });
+  };
+  const setFieldTouched = (name, value) => {
+    setTouched({ ...touched, [name]: value });
+  };
+  const handleChange = (event) => {
+    setFieldValue(event.target.name, event.target.value);
+  };
+  const handleBlur = (event) => {
+    setFieldTouched(event.target.name, true);
+  };
+
+  const [isFirstSend, setFirstSend] = useState(purpose == 2);
+
+  return (
+    <Grid size={12}>
+      <Stack>
+        <Box
+          sx={(theme) => ({
+            '& input:focus-visible': {
+              outline: 'none !important',
+              borderColor: `${theme.palette.primary.main} !important`,
+              boxShadow: `${theme.customShadows.primary} !important`
+            }
+          })}
+        >
+          <OtpInput
+            value={values.otp}
+            onChange={(otp) => setFieldValue('otp', otp)}
+            onBlur={handleBlur}
+            inputType="tel"
+            shouldAutoFocus
+            renderInput={(props) => <input {...props} />}
+            numInputs={6}
+            containerStyle={{ justifyContent: 'space-between', margin: -8 }}
+            inputStyle={{
+              width: '100%',
+              margin: '8px',
+              padding: '10px',
+              border: '1px solid',
+              outline: 'none',
+              borderRadius: 4,
+              borderColor: touched.otp && errors.otp ? theme.palette.error.main : theme.palette.divider
+            }}
+          />
+          {touched.otp && errors.otp && (
+            <FormHelperText error id="standard-weight-helper-text-otp">
+              {errors.otp}
+            </FormHelperText>
+          )}
+        </Box>
+      </Stack>
+
+      <Grid size={12}>
+        <Stack direction="row" sx={{ justifyContent: 'start', alignItems: 'baseline' }}>
+          <Typography
+            onClick={async () => {
+              if (isResendSubmit) return;
+              try {
+                setValues((prev) => {
+                  return {
+                    ...prev,
+                    otp: ''
+                  };
+                });
+                setSubmitting(true);
+                setIsResendSubmit(true);
+                const params = new URLSearchParams();
+                params.set('phoneNumber', values.country.slice(1) + values.gsm);
+                params.set('purpose', purpose);
+
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/auth/resend-otp?${params.toString()}`, {
+                  cache: 'no-store', // her seferinde güncel veri çekmek için,
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                });
+
+                if (res.ok) {
+                  setFirstSend(true);
+                  toast.success('Yeni kod gönderildi.');
+                } else {
+                  const data = await res.json();
+                  throw new Error(data.error);
+                }
+              } catch (err) {
+                toast.error(err.message);
+              } finally {
+                setSubmitting(false);
+                setIsResendSubmit(false);
+              }
+            }}
+            variant="body1"
+            sx={{
+              minWidth: 87,
+              width: '100%',
+              cursor: 'pointer',
+              textAlign: 'left',
+              marginTop: '10px',
+              textDecoration: 'none',
+              cursor: 'pointer',
+              opacity: isResendSubmit ? 0.5 : 1,
+              transition: 'opacity 0.1s ease'
+            }}
+            color="primary"
+          >
+            {isFirstSend ? 'Tekrar Gönder' : 'Kod Gönder'}
+          </Typography>
+        </Stack>
+      </Grid>
+      <Stack sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+        <Button
+          type="button"
+          variant="contained"
+          sx={{ mt: 2, ml: 'auto' }}
+          onClick={async () => {
+            // verify-otp
+            try {
+              setSubmitting(true);
+              const res = await fetch(`/api/auth/verify-otp`, {
+                cache: 'no-store', // her seferinde güncel veri çekmek için,
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  phoneNumber: values.country.slice(1) + values.gsm,
+                  otp: values.otp
+                })
+              });
+              if (res.ok) {
+                next();
+              } else {
+                const data = await res.json();
+                throw new Error(data.error);
+              }
+            } catch (err) {
+              toast.error(err.message);
+              setFieldError('otp', err);
+              console.log(err);
+            } finally {
+              setSubmitting(false);
+            }
+          }}
+          disabled={isResendSubmit || isSubmitting || !values.otp}
+        >
           İleri
+        </Button>
+      </Stack>
+    </Grid>
+  );
+}
+
+export function SetPasswordForLogin({ next }) {
+  const theme = useTheme();
+  const router = useRouter();
+  const [values, setValues] = useState({
+    password: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+  const [isSubmitting, setSubmitting] = useState(false);
+
+  const setFieldValue = (name, value) => {
+    setValues({ ...values, [name]: value });
+  };
+  const setFieldError = (name, value) => {
+    setErrors({ ...errors, [name]: value });
+  };
+  const setFieldTouched = (name, value) => {
+    setTouched({ ...touched, [name]: value });
+  };
+  const handleChange = (event) => {
+    setFieldValue(event.target.name, event.target.value);
+  };
+  const handleBlur = (event) => {
+    setFieldTouched(event.target.name, true);
+  };
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+  const [showPasswordRepeat, setShowPasswordRepeat] = useState(false);
+  const handleClickShowPasswordrepeat = () => setShowPasswordRepeat(!showPasswordRepeat);
+  const handleMouseDownPasswordrepeat = (event) => {
+    event.preventDefault();
+  };
+  return (
+    <Grid size={12}>
+      <Stack sx={{ gap: 1 }}>
+        <InputLabel htmlFor="password-signup">Parola</InputLabel>
+        <OutlinedInput
+          fullWidth
+          error={Boolean(touched.password && errors.password)}
+          id="password-signup"
+          type={showPassword ? 'text' : 'password'}
+          value={values.password}
+          name="password"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          placeholder="******"
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+                size="large"
+                color="secondary"
+              >
+                {showPassword ? <Eye /> : <EyeSlash />}
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+        {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
+      </Stack>
+      <Stack sx={{ gap: 1, mt: 2 }}>
+        <InputLabel htmlFor="password-signup">Parola Tekrar</InputLabel>
+        <OutlinedInput
+          fullWidth
+          error={Boolean(touched.passwordRepeat && errors.passwordRepeat)}
+          id="password-signup"
+          type={showPasswordRepeat ? 'text' : 'password'}
+          value={values.passwordRepeat}
+          name="passwordRepeat"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          placeholder="******"
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPasswordrepeat}
+                onMouseDown={handleMouseDownPasswordrepeat}
+                edge="end"
+                size="large"
+                color="secondary"
+              >
+                {showPasswordRepeat ? <Eye /> : <EyeSlash />}
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+        {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
+      </Stack>
+
+      <Stack direction="row" spacing={2} sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+        <AnimateButton>
+          <Button
+            disableElevation
+            disabled={!values.password || Boolean(errors.password) || isSubmitting}
+            fullWidth
+            size="large"
+            type="button"
+            variant="contained"
+            color="primary"
+            onClick={async () => {
+              try {
+                setSubmitting(true);
+                // if (validateField('password') !== true) {
+                //   return;
+                // }
+                const setPassword = await fetch(`/api/auth/set-password`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    newPassword: values.password
+                  })
+                });
+                if (setPassword.ok) {
+                  next();
+                } else {
+                  const data = await setPassword.json();
+                  throw new Error(data.error);
+                }
+              } catch (err) {
+                toast.error(err.message);
+                setFieldError('password', err);
+                console.log(err);
+              } finally {
+                setSubmitting(false);
+              }
+            }}
+          >
+            İleri
+          </Button>
+        </AnimateButton>
+      </Stack>
+    </Grid>
+  );
+}
+
+export function EnterPasswordForLogin({ next, country, gsm }) {
+  const theme = useTheme();
+  const router = useRouter();
+  const [values, setValues] = useState({
+    country: country,
+    gsm: gsm,
+    password: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+  const [isSubmitting, setSubmitting] = useState(false);
+
+  const setFieldValue = (name, value) => {
+    setValues({ ...values, [name]: value });
+  };
+  const setFieldError = (name, value) => {
+    setErrors({ ...errors, [name]: value });
+  };
+  const setFieldTouched = (name, value) => {
+    setTouched({ ...touched, [name]: value });
+  };
+  const handleChange = (event) => {
+    setFieldValue(event.target.name, event.target.value);
+  };
+  const handleBlur = (event) => {
+    setFieldTouched(event.target.name, true);
+  };
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+  return (
+    <Grid size={12}>
+      <Stack sx={{ gap: 1 }}>
+        <InputLabel htmlFor="password-signup">Parola</InputLabel>
+        <OutlinedInput
+          fullWidth
+          error={Boolean(touched.password && errors.password)}
+          id="password-signup"
+          type="password"
+          value={values.password}
+          name="password"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          placeholder="******"
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+                size="large"
+                color="secondary"
+              >
+                {showPassword ? <Eye /> : <EyeSlash />}
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+        {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
+      </Stack>
+
+      <Stack direction="row" spacing={2} sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+        <AnimateButton>
+          <Button
+            disableElevation
+            disabled={!values.password || Boolean(errors.password) || isSubmitting}
+            fullWidth
+            size="large"
+            type="button"
+            variant="contained"
+            color="primary"
+            onClick={async () => {
+              try {
+                setSubmitting(true);
+                // if (validateField('password') !== true) {
+                //   return;
+                // }
+                const loginPassword = await fetch(`/api/auth/login-password`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    password: values.password,
+                    phoneNumber: values.country.slice(1) + values.gsm
+                  })
+                });
+                if (loginPassword.ok) {
+                  next();
+                } else {
+                  const data = await loginPassword.json();
+                  throw new Error(data.error);
+                }
+              } catch (err) {
+                toast.error(err.message);
+                setFieldError('password', err);
+                console.log(err);
+              } finally {
+                setSubmitting(false);
+              }
+            }}
+          >
+            İleri
+          </Button>
+        </AnimateButton>
+      </Stack>
+    </Grid>
+  );
+}
+
+export function SetUserInfoLogin({ setStep }) {
+  const theme = useTheme();
+  const router = useRouter();
+  const [values, setValues] = useState({
+    rumuz: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+  const [isSubmitting, setSubmitting] = useState(false);
+
+  const setFieldValue = (name, value) => {
+    setValues({ ...values, [name]: value });
+  };
+  const setFieldError = (name, value) => {
+    setErrors({ ...errors, [name]: value });
+  };
+  const setFieldTouched = (name, value) => {
+    setTouched({ ...touched, [name]: value });
+  };
+  const handleChange = (event) => {
+    setFieldValue(event.target.name, event.target.value);
+  };
+  const handleBlur = (event) => {
+    setFieldTouched(event.target.name, true);
+  };
+  return (
+    <Grid size={12}>
+      <Stack sx={{ gap: 1 }}>
+        <InputLabel htmlFor="rumuz-signup">Rumuz*</InputLabel>
+        <OutlinedInput
+          id="rumuz-signup"
+          type="text"
+          value={values.rumuz}
+          name="rumuz"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          placeholder="Bir takma ad"
+          fullWidth
+          error={Boolean(touched.rumuz && errors.rumuz)}
+        />
+        {touched.rumuz && errors.rumuz && <FormHelperText error>{errors.rumuz}</FormHelperText>}
+      </Stack>
+      <Stack sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+        <Button
+          type="button"
+          variant="contained"
+          sx={{ mt: 2, ml: 'auto' }}
+          onClick={async () => {
+            try {
+              setSubmitting(true);
+              const checkusename = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/auth/check-username?username=${values.rumuz}`, {
+                cache: 'no-store', // her seferinde güncel veri çekmek için,
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+              if (!checkusename.ok) {
+                const data = await checkusename.json();
+                throw new Error(data.error);
+              }
+
+              if (checkusename.ok) {
+                const setUser = await fetch(`/api/auth/set-user-info`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    userName: values.rumuz,
+                    birthDate: '2000-08-16T13:52:48.372Z',
+                    gender: 0
+                  })
+                });
+
+                if (setUser.ok) {
+                  router.refresh();
+                  router.push('/');
+                } else {
+                  const data = await setUser.json();
+                  throw new Error(data.error);
+                }
+              }
+            } catch (err) {
+              setFieldError('otp', err);
+              toast.error(err.message);
+              console.log(err);
+            } finally {
+              setSubmitting(false);
+            }
+          }}
+          disabled={!values.rumuz || Boolean(errors.rumuz) || isSubmitting}
+        >
+          Tamamla
         </Button>
       </Stack>
     </Grid>

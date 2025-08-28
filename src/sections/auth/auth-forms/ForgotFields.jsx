@@ -22,7 +22,6 @@ import Box from '@mui/material/Box';
 import countries from 'utils/countries';
 import OtpInput from 'react-otp-input';
 // third-party
-import * as Yup from 'yup';
 
 // project-imports
 import IconButton from 'components/@extended/IconButton';
@@ -36,7 +35,7 @@ import { Autocomplete, CardMedia, Checkbox, FormControlLabel, MenuItem, Select, 
 import { FlagCircleRounded, Visibility, VisibilityOff } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
-export function Step0({ setStep, values, setValues }) {
+export function EnterPhone({ next, values, setValues }) {
   const theme = useTheme();
   const router = useRouter();
   const [isResendSubmit, setIsResendSubmit] = useState(false);
@@ -146,13 +145,13 @@ export function Step0({ setStep, values, setValues }) {
         </Stack>
         {touched?.gsm && errors?.gsm && <FormHelperText error>{errors?.gsm}</FormHelperText>}
 
-        <Stack direction="row" spacing={2} sx={{ mt: 0, display: 'flex', justifyContent: 'flex-end' }}>
+        <Stack direction="row" spacing={2} sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
           <Button
             variant="contained"
             onClick={async () => {
               try {
                 setSubmitting(true);
-                const res = await fetch(`/api/auth/login-start`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/auth/forget-password`, {
                   cache: 'no-store', // her seferinde güncel veri çekmek için,
                   method: 'POST',
                   headers: {
@@ -167,15 +166,7 @@ export function Step0({ setStep, values, setValues }) {
                 if (!res.ok) {
                   throw new Error(data.error);
                 }
-                if (data.boardLevel == 6) {
-                  setStep(1);
-                } else if (data.boardLevel < 4) {
-                  toast.warning('Kullanici kayıdı tamamlanmadı. Telefon numaranizi dogrulayin.');
-                  setStep(2);
-                } else if (data.boardLevel < 6) {
-                  setStep(3);
-                  toast.warning('Kullanici kayıdı tamamlanmadı.');
-                }
+                next();
               } catch (err) {
                 console.log(err);
                 setFieldError('gsm', err.message || 'Bilinmeyen bir hata');
@@ -186,7 +177,7 @@ export function Step0({ setStep, values, setValues }) {
             }}
             disabled={isSubmitting || !values.gsm || !values.country}
           >
-            İleri
+            Kod Gönder
           </Button>
         </Stack>
       </Stack>
@@ -194,10 +185,13 @@ export function Step0({ setStep, values, setValues }) {
   );
 }
 
-export function Step1({ setStep, values, setValues }) {
+export function SetPasswordForForgot({ next, country, gsm }) {
   const theme = useTheme();
   const router = useRouter();
-
+  const [values, setValues] = useState({
+    password: '',
+    passwordRepeat: ''
+  });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isSubmitting, setSubmitting] = useState(false);
@@ -217,10 +211,14 @@ export function Step1({ setStep, values, setValues }) {
   const handleBlur = (event) => {
     setFieldTouched(event.target.name, true);
   };
-
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+  const [showPasswordRepeat, setShowPasswordRepeat] = useState(false);
+  const handleClickShowPasswordRepeat = () => setShowPasswordRepeat(!showPasswordRepeat);
+  const handleMouseDownPasswordRepeat = (event) => {
     event.preventDefault();
   };
 
@@ -228,7 +226,6 @@ export function Step1({ setStep, values, setValues }) {
     <Grid size={12}>
       <Stack sx={{ gap: 1 }}>
         <InputLabel htmlFor="password-signup">Parola</InputLabel>
-
         <OutlinedInput
           fullWidth
           error={Boolean(touched.password && errors.password)}
@@ -239,7 +236,6 @@ export function Step1({ setStep, values, setValues }) {
           onBlur={handleBlur}
           onChange={handleChange}
           placeholder="******"
-          onFocus={() => setFieldError('password', '')}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
@@ -255,23 +251,43 @@ export function Step1({ setStep, values, setValues }) {
             </InputAdornment>
           }
         />
-
         {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
       </Stack>
-      <Stack sx={{ mt: 3, display: 'flex', justifyContent: 'space-between' }}>
-        <Typography component={NextLink} href="/forgot-password" variant="body1" sx={{ textDecoration: 'none' }} color="primary">
-          Parolamı Unuttum
-        </Typography>
+      <Stack sx={{ gap: 1, mt: 2 }}>
+        <InputLabel htmlFor="password-signup">Parola Tekrar</InputLabel>
+        <OutlinedInput
+          fullWidth
+          error={Boolean(touched.passwordRepeat && errors.passwordRepeat)}
+          id="passwordRepeat-signup"
+          type={showPasswordRepeat ? 'text' : 'password'}
+          value={values.passwordRepeat}
+          name="passwordRepeat"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          placeholder="******"
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle passwordRepeat visibility"
+                onClick={handleClickShowPasswordRepeat}
+                onMouseDown={handleMouseDownPasswordRepeat}
+                edge="end"
+                size="large"
+                color="secondary"
+              >
+                {showPasswordRepeat ? <Eye /> : <EyeSlash />}
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+        {touched.passwordRepeat && errors.passwordRepeat && <FormHelperText error>{errors.passwordRepeat}</FormHelperText>}
       </Stack>
 
-      <Stack direction="row" spacing={2} sx={{ mt: 3, display: 'flex', justifyContent: 'space-between' }}>
-        <Button variant="outlined" onClick={() => setStep(0)}>
-          Geri
-        </Button>
+      <Stack direction="row" spacing={2} sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
         <AnimateButton>
           <Button
             disableElevation
-            disabled={!values.password || isSubmitting}
+            disabled={!values.password || Boolean(errors.password) || isSubmitting}
             fullWidth
             size="large"
             type="button"
@@ -280,45 +296,40 @@ export function Step1({ setStep, values, setValues }) {
             onClick={async () => {
               try {
                 setSubmitting(true);
-
-                const enterPassword = await fetch(`/api/auth/login-password`, {
+                if (values.password !== values.passwordRepeat) {
+                  setFieldError('password', 'Parolalar ayni olmalidir');
+                  return;
+                }
+                const setPassword = await fetch(`/api/auth/set-new-password`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
-                    password: values.password,
-                    phoneNumber: values.country.slice(1) + values.gsm
+                    newPassword: values.password,
+                    phoneNumber: country.slice(1) + gsm
                   })
                 });
-
-                const data = await enterPassword.json();
-                if (enterPassword.ok) {
-                  if (data.boardLevel == 6) {
-                    router.refresh();
-                    router.push('/');
-                  } else if (data.boardLevel < 6) {
-                    setStep(3);
-                    toast.error('Kayıt işlemini tamamlanyiniz.');
-                  } else {
-                    throw new Error(data.error);
-                  }
+                if (setPassword.ok) {
+                  router.refresh();
+                  router.push('/');
+                } else {
+                  const data = await setPassword.json();
+                  throw new Error(data.error);
                 }
               } catch (err) {
+                toast.error(err.message);
+                setFieldError('password', err);
                 console.log(err);
-                setFieldError('password', err.message);
               } finally {
                 setSubmitting(false);
               }
             }}
           >
-            Giriş Yap
+            İleri
           </Button>
         </AnimateButton>
       </Stack>
     </Grid>
   );
 }
-
- 
-

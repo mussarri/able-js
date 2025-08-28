@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // next
 
@@ -16,11 +16,14 @@ import { APP_DEFAULT_PATH } from 'config';
 
 // assets
 import { Step0, Step1, Step2, Step3 } from './RegisterFields';
+import { useSearchParams } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 // ============================|| JWT - REGISTER ||============================ //
 
 export default function AuthRegister() {
   const [step, setStep] = useState(0);
+  const searchParams = useSearchParams();
 
   return (
     <Grid container spacing={3}>

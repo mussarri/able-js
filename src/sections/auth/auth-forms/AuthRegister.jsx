@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // next
 
@@ -11,18 +11,24 @@ import * as Yup from 'yup';
 
 // assets
 import { Step0, Step1, Step2, Step3 } from './RegisterFields';
+import { useSearchParams } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 // ============================|| JWT - REGISTER ||============================ //
 
 export default function AuthRegister() {
   const [step, setStep] = useState(0);
+  const [values, setValues] = useState({
+    gsm: '',
+    country: '+90'
+  });
 
   return (
     <>
       <Grid container spacing={3}>
-        {step == 0 && <Step0 setStep={setStep} />}
+        {step == 0 && <Step0 setStep={setStep} values={values} setValues={setValues} />}
 
-        {step == 1 && <Step1 setStep={setStep} />}
+        {step == 1 && <Step1 setStep={setStep} country={values.country} gsm={values.gsm} />}
 
         {step === 2 && <Step2 setStep={setStep} />}
 

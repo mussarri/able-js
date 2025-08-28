@@ -18,9 +18,9 @@ export default function ForgotPassword() {
       <Grid container spacing={3}>
         <Grid size={12}>
           <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'baseline', mb: { xs: -0.5, sm: 0.5 } }}>
-            <Typography variant="h3">Forgot Password</Typography>
+            <Typography variant="h3">Parola Sıfırlama</Typography>
             <Typography component={Link} href="/login" variant="body1" sx={{ textDecoration: 'none' }} color="primary">
-              Back to Login
+              Girişe Dön
             </Typography>
           </Stack>
         </Grid>

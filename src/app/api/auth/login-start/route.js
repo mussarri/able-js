@@ -21,10 +21,8 @@ export async function POST(req) {
       data: { isExistingUser, boardLevel, token, message }
     } = data;
 
-    console.log(data);
-
     if (!isExistingUser) {
-      return NextResponse.json({ isExistingUser: false });
+      return NextResponse.json({ success: false, message });
     }
 
     // 2. Token + role cookie yaz
@@ -38,10 +36,7 @@ export async function POST(req) {
     //   });
     // }
 
-    if (boardLevel !== 6) {
-      throw new Error(message);
-    }
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, boardLevel });
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });

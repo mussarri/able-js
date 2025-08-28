@@ -10,6 +10,7 @@ export default async function HomePage() {
   const token = cookie.get('token')?.value;
 
   let user = null;
+ 
   if (token) {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/auth/me`, {
@@ -23,12 +24,12 @@ export default async function HomePage() {
         const data = await res.json();
         user = data.data;
         console.log(data);
-        
       }
     } catch (error) {
       console.error('Kullanıcı bilgisi alınamadı:', error);
     }
   }
+ 
 
   if (!user) return redirect('/login');
   if (user.role == 1) return redirect('/admin/calendar');

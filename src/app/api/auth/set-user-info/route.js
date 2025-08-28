@@ -12,12 +12,19 @@ export async function POST(req) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({
-        firstName: 'string',
-        lastName: 'string',
-        userName: 'string',
+        userName: userName,
         birthDate: '2025-08-16T17:35:39.099Z',
         gender: 0
       })
+    });
+    const data = await res.json();
+    // 2. Token + role cookie yaz
+    const cookie = await cookies();
+    cookie.set('token', data.data.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/'
     });
 
     if (!res.ok) {
