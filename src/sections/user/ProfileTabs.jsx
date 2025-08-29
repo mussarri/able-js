@@ -33,7 +33,7 @@ const avatarImage = '/assets/images/users';
 
 export default function ProfileTabs({ focusInput, user }) {
   const [selectedImage, setSelectedImage] = useState(undefined);
-  const [avatar, setAvatar] = useState(user.url);
+  const [avatar, setAvatar] = useState(user?.url);
 
   const [state, formAction, isPending] = useActionState(userUploadImage, null);
 

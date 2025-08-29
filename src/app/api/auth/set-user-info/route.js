@@ -17,7 +17,15 @@ export async function POST(req) {
         gender: 0
       })
     });
-    const data = await res.json();
+    console.log(res);
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (err) {
+      console.error('JSON parse hatası:', err);
+      data = null; // veya default değer
+    }
     // 2. Token + role cookie yaz
     const cookie = await cookies();
     cookie.set('token', data.data.token, {

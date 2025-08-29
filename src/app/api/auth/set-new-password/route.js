@@ -22,8 +22,6 @@ export async function POST(req) {
       return NextResponse.json({ error: data.message }, { status: 401 });
     }
 
-    console.log(data);
-
     const cookie = await cookies();
     cookie.set('token', data.data.token, {
       httpOnly: true,

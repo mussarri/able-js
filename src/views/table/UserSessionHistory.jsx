@@ -134,7 +134,7 @@ function ReactTable({ columns, data, title }) {
   const theme = useTheme();
 
   const table = useReactTable({
-    data: data.items,
+    data: data?.items || [],
     columns,
     state: { columnFilters, sorting },
     getFilteredRowModel: getFilteredRowModel(),

@@ -281,32 +281,25 @@ export function Step1({ setStep, values, setValues }) {
               try {
                 setSubmitting(true);
 
-                const enterPassword = await fetch(`/api/auth/login-password`, {
+                const response = await fetch(`/api/auth/login-password`, {
                   method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
+                  headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({
                     password: values.password,
                     phoneNumber: values.country.slice(1) + values.gsm
                   })
                 });
 
-                const data = await enterPassword.json();
-                if (enterPassword.ok) {
-                  if (data.boardLevel == 6) {
-                    router.refresh();
-                    router.push('/');
-                  } else if (data.boardLevel < 6) {
-                    setStep(3);
-                    toast.error('Kayıt işlemini tamamlanyiniz.');
-                  } else {
-                    throw new Error(data.error);
-                  }
+                const data = await response.json();
+
+                if (response.ok) {
+                  router.push('/');
+                } else {
+                  toast.error(data.error || 'Giriş başarısız.');
                 }
               } catch (err) {
-                console.log(err);
-                setFieldError('password', err.message);
+                console.error(err);
+                setFieldError('password', err instanceof Error ? err.message : String(err));
               } finally {
                 setSubmitting(false);
               }
@@ -319,6 +312,3 @@ export function Step1({ setStep, values, setValues }) {
     </Grid>
   );
 }
-
- 
-

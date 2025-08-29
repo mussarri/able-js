@@ -45,6 +45,9 @@ export default function UserProfile({ tab, user }) {
     // eslint-disable-next-line
   }, [pathname]);
 
+  console.log(user);
+  
+
   return (
     <Grid container spacing={3}>
       <Grid size={{ xs: 12, md: 3 }}>
