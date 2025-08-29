@@ -25,7 +25,7 @@ export async function RenderPage({ exprertId, searchParams }) {
   const formattedDate = searchParams.date ? newDate.toISOString() : '';
 
   let durations = [];
-
+  let prices = {};
   if (token) {
     try {
       const res = await fetch(
@@ -47,7 +47,6 @@ export async function RenderPage({ exprertId, searchParams }) {
       if (resPrice.ok) {
         const data = await resPrice.json();
         prices = data.data;
-        console.log(data);
       }
 
       if (res.ok) {

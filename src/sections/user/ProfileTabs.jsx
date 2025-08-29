@@ -67,8 +67,6 @@ export default function ProfileTabs({ focusInput, user }) {
     setAnchorEl(null);
   };
 
-  console.log(selectedImage);
-
   return (
     <MainCard>
       <Grid container spacing={6}>

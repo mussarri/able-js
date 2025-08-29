@@ -113,7 +113,7 @@ export default function BasicDateTimePickers({ durations, prices }) {
     });
   };
 
-  const price = alignment && (alignment === '0' ? prices?.videoPrice : prices?.soundPrice);
+  const price = alignment && (alignment === '0' ? prices?.data.videoPrice : prices?.data.soundPrice);
   const totalPrice = duration && (price * duration) / 30;
 
   return (

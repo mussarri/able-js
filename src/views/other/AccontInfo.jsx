@@ -31,8 +31,6 @@ export default function UserProfile({ tab, user }) {
   const pathname = usePathname();
   const { menuMaster } = useGetMenuMaster();
 
-  console.log(user);
-
   // uzman hesap bilgileri iban, paytrid,
   // adres mail kullanici
 
@@ -44,9 +42,6 @@ export default function UserProfile({ tab, user }) {
     if (menuMaster.openedItem !== 'user-profile') handlerActiveItem('user-profile');
     // eslint-disable-next-line
   }, [pathname]);
-
-  console.log(user);
-  
 
   return (
     <Grid container spacing={3}>
