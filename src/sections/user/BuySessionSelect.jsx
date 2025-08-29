@@ -151,14 +151,11 @@ export default function BasicDateTimePickers({ days, times, durations, prices })
     formData.append('expertId', params.name);
     formData.append('status', alignment);
     formData.append('duration', duration);
-    console.log(formData);
 
     startTransition(() => {
       formAction(formData);
     });
   };
-
-  console.log(prices);
 
   const price = alignment && (alignment === '0' ? prices?.videoPrice : prices?.soundPrice);
   const totalPrice = duration && (price * duration) / 30;

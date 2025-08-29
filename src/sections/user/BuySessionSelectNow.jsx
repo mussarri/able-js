@@ -113,7 +113,8 @@ export default function BasicDateTimePickers({ durations, prices }) {
     });
   };
 
-  const price = alignment && (alignment === '0' ? prices?.data.videoPrice : prices?.data.soundPrice);
+ 
+  const price = alignment && (alignment === '0' ? prices?.videoPrice : prices?.soundPrice);
   const totalPrice = duration && (price * duration) / 30;
 
   return (
@@ -170,7 +171,7 @@ export default function BasicDateTimePickers({ durations, prices }) {
                     <MicIcon />{' '}
                   </div>
                   <Typography variant="h4" textAlign="center" fontWeight={'light'}>
-                    {prices?.soundPrice}₺
+                    {prices?.videoPrice}₺
                   </Typography>
                   <Typography
                     style={{ minWidth: 'max-content' }}

@@ -49,12 +49,11 @@ export async function RenderPage({ exprertId, searchParams }) {
         const data = await res.json();
         list = data.data.filter((item) => item.isAvailable === true);
       }
-      console.log(resPrice);
+   
 
       if (resPrice.ok) {
         const data = await resPrice.json();
         prices = data.data;
-        console.log(data);
       }
 
       if (searchParams?.date) {
