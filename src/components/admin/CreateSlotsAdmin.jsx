@@ -9,9 +9,11 @@ const CreateSlots = ({ slots, setSelected, expertId }) => {
   useEffect(() => {
     if (state?.error) {
       toast.error(state?.message);
+      setSelected([]);
     }
     if (state?.success) {
       toast.success(state?.message);
+      setSelected([]);
     }
   }, [state]);
 

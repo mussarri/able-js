@@ -222,7 +222,7 @@ export default function TabInvoice({ info }) {
           </Grid>
         </Grid>
       </Box>
-      <CardHeader title="Bakiye Bilgileri" />
+      {/* <CardHeader title="Bakiye Bilgileri" />
       <Divider />
       <Box sx={{ p: 2.5 }}>
         <Grid container spacing={3}>
@@ -252,7 +252,7 @@ export default function TabInvoice({ info }) {
             </Stack>
           </Grid>
         </Grid>
-      </Box>
+      </Box> */}
       <Box sx={{ p: 2.5, textAlign: 'right' }} disabled={isPending} onClick={handleSubmit}>
         <Button variant="contained" type="submit">
           Kaydet

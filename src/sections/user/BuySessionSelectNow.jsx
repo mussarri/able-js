@@ -220,7 +220,7 @@ export default function BasicDateTimePickers({ durations, prices }) {
           {durations && durations?.availableDurations.length > 0 && (
             <Stack sx={{ gap: 1, display: 'flex', alignItems: 'center', justifyContent: 'items-start', flexDirection: 'row' }}>
               <InputLabel sx={{ minWidth: 130 }} htmlFor="email-login">
-                Süre Seçiniz{' '}
+                Dakika Seçiniz{' '}
               </InputLabel>
               <Box sx={{ width: '100%' }}>
                 {durations.availableDurations.map((item, index) => (

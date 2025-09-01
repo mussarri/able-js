@@ -55,8 +55,9 @@ export const createMultiSlotsAdmin = async (prev, formData) => {
     const data = await res.json();
 
     if (res.status !== 200) throw new Error(data.message);
+
+    
     revalidatePath('/admin/calendar');
-    revalidatePath('/therapist/calendar');
     return {
       message: data.message,
       success: true

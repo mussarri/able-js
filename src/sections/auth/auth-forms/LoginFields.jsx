@@ -164,8 +164,9 @@ export function Step0({ setStep, values, setValues }) {
                 });
 
                 const data = await res.json();
-                if (!res.ok) {
-                  throw new Error(data.error);
+                
+                if (!res.ok || !data.success) {
+                  throw new Error(data.message);
                 }
                 if (data.boardLevel == 6) {
                   setStep(1);

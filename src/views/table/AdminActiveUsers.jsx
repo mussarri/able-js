@@ -183,7 +183,7 @@ function ReactTable({ columns, data, title }) {
           direction="row"
           sx={{ gap: { xs: 1, sm: 2 }, alignItems: 'center', justifyContent: { xs: 'space-between', sm: 'flex-end' } }}
         >
-          <SelectColumnSorting {...{ getState: table.getState, getAllColumns: table.getAllColumns, setSorting }} />
+          {/* <SelectColumnSorting {...{ getState: table.getState, getAllColumns: table.getAllColumns, setSorting }} /> */}
           <CSVExport {...{ data: table.getSortedRowModel().rows.map((d) => d.original), headers, filename: 'sorting.csv' }} />
         </Stack>
       }

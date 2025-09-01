@@ -33,7 +33,7 @@ import {
 } from '@tanstack/react-table';
 import { fontSize, Grid } from '@mui/system';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { Divider, TextField, useTheme } from '@mui/material';
+import { Button, Divider, TextField, useTheme } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
@@ -183,7 +183,7 @@ function ReactTable({ columns, data, title }) {
           direction="row"
           sx={{ gap: { xs: 1, sm: 2 }, alignItems: 'center', justifyContent: { xs: 'space-between', sm: 'flex-end' } }}
         >
-          <SelectColumnSorting {...{ getState: table.getState, getAllColumns: table.getAllColumns, setSorting }} />
+          {/* <SelectColumnSorting {...{ getState: table.getState, getAllColumns: table.getAllColumns, setSorting }} /> */}
           <CSVExport {...{ data: table.getSortedRowModel().rows.map((d) => d.original), headers, filename: 'sorting.csv' }} />
         </Stack>
       }
@@ -283,6 +283,16 @@ export default function SortingTable({ list }) {
       },
 
       {
+        header: 'Satin Alma Tarihi',
+        accessorKey: 'dateCreated',
+        type: 'date',
+        filterFn: 'between',
+        cell: (info) => {
+          const d = new Date(info.getValue());
+          return isNaN(d.getTime()) ? '-' : d.toISOString().split('T')[0] + ' - ' + d.toISOString().split('T')[1].slice(0, 5);
+        }
+      },
+      {
         header: 'Baslangic',
         accessorKey: 'startTime',
         type: 'date',
@@ -302,7 +312,6 @@ export default function SortingTable({ list }) {
           return isNaN(d.getTime()) ? '-' : d.toISOString().split('T')[0] + ' - ' + d.toISOString().split('T')[1].slice(0, 5);
         }
       },
-
       {
         header: 'Fiyat',
         accessorKey: 'price',
@@ -315,11 +324,33 @@ export default function SortingTable({ list }) {
         }
       },
       {
+        header: 'Tip',
+        accessorKey: 'type',
+        enableColumnFilter: true,
+        // eğer özel filterFn istersen:
+        filterFn: 'fuzzy'
+      },
+
+      {
         header: 'Durum',
         accessorKey: 'status',
         enableColumnFilter: true,
         // eğer özel filterFn istersen:
-        filterFn: 'fuzzy'
+        filterFn: 'fuzzy',
+        cell: (info) => {
+          const d = info.getValue();
+          return (
+            <>
+              {info.row.original.appointmentStatusValue == 0 ? (
+                <p>{d}</p>
+              ) : (
+                <Button size={'small'} variant="contained" color={info.row.original.appointmentStatusValue === 3 ? 'error' : 'success'}>
+                  {d}
+                </Button>
+              )}
+            </>
+          );
+        }
       }
     ],
     []

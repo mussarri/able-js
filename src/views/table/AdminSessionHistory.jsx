@@ -34,7 +34,7 @@ import {
 } from '@tanstack/react-table';
 import { fontSize, Grid } from '@mui/system';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { Divider, MenuItem, OutlinedInput, Select, TextField, useTheme } from '@mui/material';
+import { Button, Divider, MenuItem, OutlinedInput, Select, TextField, useTheme } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useRouter } from 'next/navigation';
 
@@ -182,7 +182,7 @@ function ReactTable({ columns, data, title }) {
           direction="row"
           sx={{ gap: { xs: 1, sm: 2 }, alignItems: 'center', justifyContent: { xs: 'space-between', sm: 'flex-end' } }}
         >
-          <SelectColumnSorting {...{ getState: table.getState, getAllColumns: table.getAllColumns, setSorting }} />
+          {/* <SelectColumnSorting {...{ getState: table.getState, getAllColumns: table.getAllColumns, setSorting }} /> */}
           <CSVExport {...{ data: table.getSortedRowModel().rows.map((d) => d.original), headers, filename: 'sorting.csv' }} />
         </Stack>
       }
@@ -319,8 +319,23 @@ export default function SortingTable({ sessions }) {
       {
         header: 'Durum',
         accessorKey: 'status',
-        enableColumnFilter: false
+        enableColumnFilter: false,
+        cell: (info) => {
+          const d = info.getValue();
+          return (
+            <>
+              {info.row.original.appointmentStatusValue == 0 ? (
+                <p>{d}</p>
+              ) : (
+                <Button size={'small'} variant="contained" color={info.row.original.appointmentStatusValue === 3 ? 'error' : 'success'}>
+                  {d}
+                </Button>
+              )}
+            </>
+          );
+        }
         // eğer özel filterFn istersen:
+        //0 pending 1 confirmed 2 completed 3 cancelled
       }
     ],
     []
