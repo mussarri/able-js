@@ -33,6 +33,11 @@ import { Eye, EyeSlash, Flag, Flag2, Whatsapp } from '@wandersonalwes/iconsax-re
 import { Autocomplete, CardMedia, Checkbox, FormControlLabel, IconButton, MenuItem, Select, TextField, useTheme } from '@mui/material';
 import { FlagCircleRounded } from '@mui/icons-material';
 import { toast } from 'react-toastify';
+import { isLowercaseChar, isNumber, isSpecialChar, isUppercaseChar, minLength } from 'utils/password-validation';
+
+const checkPassword = (password) => {
+  return minLength(password, 8) && isUppercaseChar(password) && isLowercaseChar(password) && isNumber(password) && isSpecialChar(password);
+};
 
 export function Step0({ setStep, values, setValues }) {
   const theme = useTheme();
@@ -498,7 +503,15 @@ export function Step2({ setStep }) {
             onClick={async () => {
               try {
                 setSubmitting(true);
-                if (validateField('password') !== true) {
+                if (checkPassword(values.password) !== true) {
+                  setFieldError(
+                    'password',
+                    'Parola geçerli değil. Lütfen en az 8 karakter uzunluğunda, büyük harf, küçük harf, sayı ve özel karakter içeren bir parola girin.'
+                  );
+                  return;
+                }
+                if (values.password !== values.password_repeat) {
+                  setFieldError('password', 'Parolalar ayni degil. Lütfen tekrar deneyin.');
                   return;
                 }
                 const setPassword = await fetch(`/api/auth/set-password`, {

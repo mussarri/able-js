@@ -296,8 +296,15 @@ export function SetPasswordForForgot({ next, country, gsm }) {
             onClick={async () => {
               try {
                 setSubmitting(true);
+                if (checkPassword(values.password) !== true) {
+                  setFieldError(
+                    'password',
+                    'Parola geçerli değil. Lütfen en az 8 karakter uzunluğunda, büyük harf, küçük harf, sayı ve özel karakter içeren bir parola girin.'
+                  );
+                  return;
+                }
                 if (values.password !== values.passwordRepeat) {
-                  setFieldError('password', 'Parolalar ayni olmalidir');
+                  setFieldError('password', 'Parolalar ayni degil. Lütfen tekrar deneyin.');
                   return;
                 }
                 const setPassword = await fetch(`/api/auth/set-new-password`, {
