@@ -10,12 +10,12 @@ export async function POST(req) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password, phoneNumber })
     });
+    const data = await res.json();
 
     if (!res.ok) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+      return NextResponse.json({ error: data.message }, { status: 401 });
     }
 
-    const data = await res.json();
     // Beklenen response örneği: { token: 'jwt...', role: 'admin' }
 
     // 2. Token + role cookie yaz

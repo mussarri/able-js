@@ -11,11 +11,11 @@ export async function POST(req) {
       body: JSON.stringify({ phoneNumber })
     });
 
+    const data = await res.json();
     if (!res.ok) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+      return NextResponse.json({ error: data.message }, { status: 401 });
     }
 
-    const data = await res.json();
     // Beklenen response örneği: { token: 'jwt...', role: 'admin' }
     const {
       data: { isExistingUser, boardLevel, token, message }

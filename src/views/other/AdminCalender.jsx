@@ -60,7 +60,7 @@ export default function Calendar({ experts, slots }) {
     [searchParams]
   );
 
-  console.log(selected);
+   
 
   const style = {
     unset: {

@@ -296,7 +296,7 @@ export function Step1({ setStep, values, setValues }) {
                 if (response.ok) {
                   router.push('/');
                 } else {
-                  toast.error(data.error || 'Giriş başarısız.');
+                  toast.error(data.message || 'Giriş başarısız.');
                 }
               } catch (err) {
                 console.error(err);

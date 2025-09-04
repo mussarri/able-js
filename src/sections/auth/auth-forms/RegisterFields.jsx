@@ -930,7 +930,7 @@ export function SetPasswordForLogin({ next }) {
                   next();
                 } else {
                   const data = await setPassword.json();
-                  throw new Error(data.error);
+                  throw new Error(data.message);
                 }
               } catch (err) {
                 toast.error(err.message);
@@ -1043,7 +1043,7 @@ export function EnterPasswordForLogin({ next, country, gsm }) {
                   next();
                 } else {
                   const data = await loginPassword.json();
-                  throw new Error(data.error);
+                  throw new Error(data.message);
                 }
               } catch (err) {
                 toast.error(err.message);
@@ -1120,7 +1120,7 @@ export function SetUserInfoLogin({ setStep }) {
               });
               if (!checkusename.ok) {
                 const data = await checkusename.json();
-                throw new Error(data.error);
+                throw new Error(data.message);
               }
 
               if (checkusename.ok) {
@@ -1141,11 +1141,11 @@ export function SetUserInfoLogin({ setStep }) {
                   router.push('/');
                 } else {
                   const data = await setUser.json();
-                  throw new Error(data.error);
+                  throw new Error(data.message);
                 }
               }
             } catch (err) {
-              setFieldError('otp', err);
+              setFieldError('rumuz', err);
               toast.error(err.message);
               console.log(err);
             } finally {
